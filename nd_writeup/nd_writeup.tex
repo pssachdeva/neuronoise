@@ -1,0 +1,99 @@
+\documentclass[11pt]{article}
+
+% AMS Packages
+\usepackage{amsmath} 
+\usepackage{amssymb} 
+\usepackage{amsthm}
+% Page dimensions
+\usepackage[margin=1in]{geometry}
+% Images
+\usepackage[pdftex]{graphicx} 
+% Enumerate package
+\usepackage{enumitem} 
+\usepackage{array} 
+% Fancify pages
+\usepackage{fancyhdr} 
+% Convert captions on figures to bold font
+\usepackage[labelfont=bf,textfont=md]{caption}
+% Time New Roman font
+\usepackage{times}
+% SI Units in math type
+\usepackage{siunitx}
+\usepackage{textcomp} 
+% Change sizes of sections
+\usepackage{titlesec}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalfont\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalfont\small\bfseries}{\thesubsubsection}{1em}{}
+% Declare useful math operators
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\plim}{plim}
+\DeclareMathOperator{\Tr}{Tr}
+
+
+\begin{document}
+
+\section{Mutual Information}
+
+Recall that the output of the $i$th neuron can be written as 
+\begin{align}
+	r_i &= g_i(\ell_i) \\
+	&= g_i(v_i s + \sigma_I w_i \xi_I + \sigma_G\xi_i).
+\end{align}
+Ultimately, we want $I[s, \mathbf{r}]$. For now, we will focus on $I[s, \boldsymbol{\ell}]$ and note that $I[s,\mathbf{r}] \leq I[s, \boldsymbol{\ell}]$ by the data processing inequality. To calculate the mutual information, we must first calculate $P[\boldsymbol{\ell}|s]$. We can do this via marginalization:
+\begin{align}
+	P[\boldsymbol{\ell}|s] &= \int P[\boldsymbol{\ell}|s, \xi_I] P[\xi_I]d\xi_I \\
+	&= \int d\xi_I  \frac{1}{\sqrt{2\pi}} \exp(-\xi_I^2/2) \prod_{i=1}^N P[\ell_i|s,\xi_I] \\
+	&=  \frac{1}{\sqrt{2\pi}} \int d\xi_I   \exp(-\xi_I^2/2) \prod_{i=1}^N \frac{1}{\sqrt{2\pi \sigma_G^2}} \exp\left(-\frac{\left(\ell_i - (v_i s + \sigma_I w_i \xi_I)\right)^2}{2\sigma_G^2}\right) \\
+	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \left(\ell_i - (v_i s + \sigma_I w_i \xi_I)\right)^2\right) \\
+	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \notag \\
+	& \qquad \times \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2 -2\ell_i (v_i s + \sigma_I w_i \xi_I) + (v_i s + \sigma_I w_i \xi_I)^2\right) \\
+	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right) \notag \\
+	&\times \int d\xi_I\exp\left[-\frac{1}{2}\left(1+\frac{\sigma_I^2}{\sigma_G^2} \left\{w\right\}_2\right)\xi_I^2 +\frac{1}{\sigma_G^2}\left( \sum_{i=1}^N \ell_i w_i - s\sigma_I \left\{v,w\right\}_{1,1}\right)\xi_I \right] \\
+	&=  \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N}\exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right) \notag \\
+	&\qquad \times \frac{\sqrt{2\pi \sigma_G^2}}{\sqrt{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}}\exp\left[\frac{\left(\displaystyle\sum_{i=1}^N \ell_i w_i - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2 \sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right] \\
+	&= \frac{1}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}}\exp\left(-\frac{1}{2\sigma_G^2}\left\{\ell \right\}_2\right)\exp\left(\frac{1}{\sigma_G^2} s\left\{\ell, v\right\}_{1,1}\right) \notag \\
+	&\qquad \times \exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right].
+\end{align}
+Next, we must calculate $P[\boldsymbol{\ell}]$. This is doable also by marginalization:
+\begin{align}
+	P[\boldsymbol{\ell}] &= \int ds P[\boldsymbol{\ell}|s] P[s] \\
+	&= \frac{\exp\left(-\frac{1}{2\sigma_G^2}\left\{\ell \right\}_2\right)}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}} \int ds \exp\left(\frac{1}{\sigma_G^2} s\left\{\ell, v\right\}_{1,1}\right) \\
+	&\times \exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right]\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\times \frac{1}{\sqrt{2\pi \sigma_S^2}} \exp\left(-\frac{s^2}{2\sigma_S^2}\right) \\
+	&= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}} \exp\left(-\frac{\left\{\ell \right\}_2}{2\sigma_G^2}\right)\exp\left(\frac{\left\{\ell,w\right\}_{1,1}^2}{2 \sigma_G^2(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) }\right)    \notag \\
+	&\exp\left[\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \left(\left\{\ell,w\right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I - \left\{\ell, v\right\}_{1,1} (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2)\right)^2\right]
+\end{align}
+where 
+\begin{align}
+	\kappa &= \left(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2\right)\left(\sigma_G^2 + \sigma_S^2 \left\{v\right\}_2\right) - \sigma_G^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2.
+\end{align}
+The mutual information is 
+\begin{align}
+	I[s,\boldsymbol{\ell}] &= \int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \log \frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]}.
+\end{align}
+Carefully placing all these terms in the mutual information gives us 
+\begin{align}
+I[s, \boldsymbol{\ell}] &= \int d\boldsymbol{\ell}ds \frac{1}{\sqrt{2\pi \sigma_S^2}}\exp\left(-\frac{s^2}{2\sigma_S^2}\right) \notag \\ 
+& \times \frac{1}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}}\exp\left(-\frac{1}{2\sigma_G^2}\left\{\ell \right\}_2\right)\exp\left(\frac{1}{\sigma_G^2} s\left\{\ell, v\right\}_{1,1}\right)\notag \\
+& \times \exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right] \notag \\
+& \times \left[\log \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}}  + \frac{s \left\{\ell, v\right\}_{1,1}}{\sigma_G^2} - \frac{s^2 \left\{v\right\}_2}{2\sigma_G^2} - \frac{s \sigma_I\left\{\ell, w\right\}_{1,1} \left\{v,w\right\}_{1,1}}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \right. \notag \\
+& \left. +\frac{s^2 \sigma_I^2\left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} -\frac{\sigma_S^2\left(\left\{\ell,w\right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I - \left\{\ell, v\right\}_{1,1} (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2)\right)^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}  \right].
+\end{align}
+The first term in the brackets comes from the interaction of the normalization constants and will appear alone, as its prefactors will integrate out. As for the overall integral, we will first integrate $s$ and then treat $\boldsymbol{\ell}$. The last term in the brackets is independent of $s$ and thus we will denote it a constant, $C$, for now. Thus,
+\begin{align}
+	I[s,\boldsymbol{\ell}] &= \log \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}}  +\frac{1}{\sqrt{2\pi \sigma_S^2}}\cdot \frac{1}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}} \int d\boldsymbol{\ell} \exp\left(-\frac{\left\{\ell \right\}_2}{2\sigma_G^2}\right) \notag \\
+	 \times & \int ds \exp\left(-\frac{s^2}{2\sigma_S^2}\right)\exp\left(\frac{s\left\{\ell, v\right\}_{1,1}}{\sigma_G^2} \right)\exp\left(-\frac{s^2 \left\{v\right\}_2}{2\sigma_G^2}\right)\exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right] \notag \\
+	 \times & \left[\frac{s \left\{\ell, v\right\}_{1,1}}{\sigma_G^2} - \frac{s^2 \left\{v\right\}_2}{2\sigma_G^2} - \frac{s \sigma_I\left\{\ell, w\right\}_{1,1} \left\{v,w\right\}_{1,1}}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}+\frac{s^2 \sigma_I^2\left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} + C\right]
+\end{align}
+The output of the $s$ integral is very complicated. However, it lends itself well to the general form given by
+\begin{align}
+	\int d\boldsymbol{\ell} \left(C_0 +\boldsymbol{\ell}^T \mathbf{D} \boldsymbol{\ell}\right)\exp\left(\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right) = \sqrt{\frac{\pi^N}{\det \mathbf{A}}}\left(C_0 + \Tr\left(\mathbf{D}\mathbf{A}^{-1}\right)\right).
+\end{align}
+Thus, our goal is to determine the matrices $\mathbf{A}$ and $\mathbf{D}$. 
+
+
+
+
+
+
+\end{document}
