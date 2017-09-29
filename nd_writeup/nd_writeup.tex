@@ -88,7 +88,7 @@ The first term in the brackets comes from the interaction of the normalization c
 The constant term can be written as 
 \begin{align}
 	C &= -\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \left(\left\{\ell, w\right\}_{1,1}^2 \left\{v,w\right\}_{1,1}^2 \sigma_I^2   \right. \notag \\
-	&\left. - 2 \left\{\ell, w\right\}_{1,1} \left\{\ell ,v \right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) + \left\{\ell, v\right\}_{1,1}^2 (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2^2\right).
+	&\left. - 2 \left\{\ell, w\right\}_{1,1} \left\{\ell ,v \right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) + \left\{\ell, v\right\}_{1,1}^2 (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2)^2\right).
 \end{align}
 Note that 
 \begin{align}
@@ -98,7 +98,12 @@ Note that
 \end{align}
 Thus,
 \begin{align}
-C &= -\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\boldsymbol{\ell}^T \left(\right)
+C &= -\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\boldsymbol{\ell}^T \left((\mathbf{v}\cdot \mathbf{w}) \sigma_I^2 \mathbf{w}\mathbf{w}^T - 2(\mathbf{v}\cdot \mathbf{w}) \sigma_I (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2) \mathbf{v}\mathbf{w}^T \right. \notag \\
+& \qquad \qquad \qquad \left. + (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2)^2\mathbf{w}\mathbf{w}^T \right) \boldsymbol{\ell}.
+\end{align}
+The remaining part of the $s$ integral is given by
+\begin{align}
+\int ds  \ [\cdots] &= \sqrt{\frac{\pi}{2}} \frac{\sigma_S^3 \sqrt{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}}{\kappa^{5/2}} \left[C_0 + \boldsymbol{\ell} \mathbf{D} \boldsymbol{\ell}\right] \exp\left[-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right]
 \end{align}
 The output of the $s$ integral is very complicated. However, it lends itself well to the general form given by
 \begin{align}
