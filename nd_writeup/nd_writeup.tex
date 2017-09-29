@@ -83,7 +83,22 @@ The first term in the brackets comes from the interaction of the normalization c
 \begin{align}
 	I[s,\boldsymbol{\ell}] &= \log \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}}  +\frac{1}{\sqrt{2\pi \sigma_S^2}}\cdot \frac{1}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}} \int d\boldsymbol{\ell} \exp\left(-\frac{\left\{\ell \right\}_2}{2\sigma_G^2}\right) \notag \\
 	 \times & \int ds \exp\left(-\frac{s^2}{2\sigma_S^2}\right)\exp\left(\frac{s\left\{\ell, v\right\}_{1,1}}{\sigma_G^2} \right)\exp\left(-\frac{s^2 \left\{v\right\}_2}{2\sigma_G^2}\right)\exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right] \notag \\
-	 \times & \left[\frac{s \left\{\ell, v\right\}_{1,1}}{\sigma_G^2} - \frac{s^2 \left\{v\right\}_2}{2\sigma_G^2} - \frac{s \sigma_I\left\{\ell, w\right\}_{1,1} \left\{v,w\right\}_{1,1}}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}+\frac{s^2 \sigma_I^2\left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} + C\right]
+	 \times & \left[\frac{s \left\{\ell, v\right\}_{1,1}}{\sigma_G^2} - \frac{s^2 \left\{v\right\}_2}{2\sigma_G^2} - \frac{s \sigma_I\left\{\ell, w\right\}_{1,1} \left\{v,w\right\}_{1,1}}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}+\frac{s^2 \sigma_I^2\left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} + C\right].
+\end{align}
+The constant term can be written as 
+\begin{align}
+	C &= -\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \left(\left\{\ell, w\right\}_{1,1}^2 \left\{v,w\right\}_{1,1}^2 \sigma_I^2   \right. \notag \\
+	&\left. - 2 \left\{\ell, w\right\}_{1,1} \left\{\ell ,v \right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) + \left\{\ell, v\right\}_{1,1}^2 (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2^2\right).
+\end{align}
+Note that 
+\begin{align}
+	\left\{\ell, w\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j w_i w_j = \boldsymbol{\ell}^T \mathbf{ww}^T \boldsymbol{\ell} \\
+	\left\{\ell, v\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j  v_i v_j = \boldsymbol{\ell}^T \mathbf{vv}^T \boldsymbol{\ell} \\
+	\left\{\ell, v\right\}_{1,1} \left\{\ell,w\right\}_{1,1}&= \sum_{i,j} \ell_i \ell_j v_i w_j= \boldsymbol{\ell}^T \mathbf{vw}^T \boldsymbol{\ell}.
+\end{align}
+Thus,
+\begin{align}
+C &= -\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\boldsymbol{\ell}^T \left(\right)
 \end{align}
 The output of the $s$ integral is very complicated. However, it lends itself well to the general form given by
 \begin{align}
