@@ -107,8 +107,18 @@ The remaining part of the $s$ integral is given by
 \end{align}
 The output of the $s$ integral is very complicated. However, it lends itself well to the general form given by
 \begin{align}
-	\int d\boldsymbol{\ell} \left(C_0 +\boldsymbol{\ell}^T \mathbf{D} \boldsymbol{\ell}\right)\exp\left(\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right) = \sqrt{\frac{\pi^N}{\det \mathbf{A}}}\left(C_0 + \Tr\left(\mathbf{D}\mathbf{A}^{-1}\right)\right).
+	\int d\boldsymbol{\ell} \left(C_0 +\boldsymbol{\ell}^T \mathbf{D} \boldsymbol{\ell}\right)\exp\left(\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right) = \sqrt{\frac{\pi^N}{\det \mathbf{A}}}\left(C_0 + \Tr\left(\mathbf{D}\mathbf{A}^{-1}\right)\right)
 \end{align}
+where 
+\begin{align}
+	\mathbf{D} &= -\sigma_G^2 \sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2  \mathbf{w}\mathbf{w}^T - (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2)\left(\left(\sigma_G^2+\sigma_I^2 ||\mathbf{w}||^2\right) \left(2 \sigma_G^2+\sigma_S^2 ||\mathbf{v}||^2\right) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2\right)\mathbf{v}\mathbf{v}^T \notag \\
+	&\qquad + \sigma_I (\mathbf{v} \cdot \mathbf{w}) \left(\left(\sigma_G^2+\sigma_I^2 ||\mathbf{w}||^2\right) \left(2 \sigma_G^2+\sigma_S^2 ||\mathbf{v}||^2\right) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2\right)\mathbf{v}\mathbf{w}^T,
+\end{align}
+and 
+\begin{align}
+	\mathbf{A} &= \frac{1}{2 \sigma_G^2 \kappa} \left((\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2 ) \mathbf{w}\mathbf{w}^T - 2 \sigma_I \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})\mathbf{v}\mathbf{w}^T  +\sigma_S^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)\mathbf{v}\mathbf{v}^T\right)
+\end{align}
+
 Thus, our goal is to determine the matrices $\mathbf{A}$ and $\mathbf{D}$. 
 
 
