@@ -61,15 +61,24 @@ Next, we must calculate $P[\boldsymbol{\ell}]$. This is doable also by marginali
 	&= \frac{\exp\left(-\frac{1}{2\sigma_G^2}\left\{\ell \right\}_2\right)}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}} \int ds \exp\left(\frac{1}{\sigma_G^2} s\left\{\ell, v\right\}_{1,1}\right) \\
 	&\times \exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right]\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\times \frac{1}{\sqrt{2\pi \sigma_S^2}} \exp\left(-\frac{s^2}{2\sigma_S^2}\right) \\
 	&= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}} \exp\left(-\frac{\left\{\ell \right\}_2}{2\sigma_G^2}\right)\exp\left(\frac{\left\{\ell,w\right\}_{1,1}^2}{2 \sigma_G^2(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) }\right)    \notag \\
-	&\exp\left[\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \left(\left\{\ell,w\right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I - \left\{\ell, v\right\}_{1,1} (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2)\right)^2\right]
+	&\exp\left[\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \left(\left\{\ell,w\right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I - \left\{\ell, v\right\}_{1,1} (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2)\right)^2\right] \\
+	&= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}}  \exp\left(-\frac{\left\{\ell \right\}_2}{2\sigma_G^2}\right) \exp\left( \frac{\sigma_G^2 + \sigma_S^2 \left\{v\right\}_2}{2 \sigma_G^2 \kappa} \left\{\ell, w\right\}_{1,1}^2\right) \notag \\
+	& \times \exp\left(-\frac{\sigma_I \sigma_S^2}{\sigma_G^2} \left\{\ell, w\right\}_{1,1} \left\{\ell, v\right\}_{1,1} \right) \exp\left(\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}{2 \sigma_G^2 \kappa} \left\{\ell, v\right\}_{1,1}^2\right),
 \end{align}
 where 
 \begin{align}
-	\kappa &= \left(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2\right)\left(\sigma_G^2 + \sigma_S^2 \left\{v\right\}_2\right) - \sigma_G^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2.
+	\kappa &= \left(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2\right)\left(\sigma_G^2 + \sigma_S^2 \left\{v\right\}_2\right) - \sigma_I^2 \sigma_S^2 \left\{v,w\right\}_{1,1}^2.
 \end{align}
 The mutual information is 
 \begin{align}
 	I[s,\boldsymbol{\ell}] &= \int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \log \frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]}.
+\end{align}
+First, we can see that 
+\begin{align}
+ \frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]} &= \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}}\exp\left(\frac{s}{\sigma_G^2} \left\{\ell, v\right\}_{1,1}\right) \exp\left(- \frac{s \sigma_I \left\{v,w\right\}_{1,1}}{ \sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \left\{\ell, w\right\}_{1,1}\right) \notag \\
+ \times &\exp\left(-\frac{s^2}{2\sigma_G^2} \left\{v\right\}_2\right) \exp\left(\frac{s^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2}{2 \sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right) \exp\left(\frac{\left\{\ell \right\}_2}{2\sigma_G^2}\right)  \notag \\
+ \times & \exp\left( -\frac{\sigma_G^2 + \sigma_S^2 \left\{v\right\}_2}{2 \sigma_G^2 \kappa} \left\{\ell, w\right\}_{1,1}^2\right)\exp\left(\frac{\sigma_I \sigma_S^2}{\sigma_G^2} \left\{\ell, w\right\}_{1,1} \left\{\ell, v\right\}_{1,1} \right) \notag \\
+ \times & \exp\left(-\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}{2 \sigma_G^2 \kappa} \left\{\ell, v\right\}_{1,1}^2\right)
 \end{align}
 Carefully placing all these terms in the mutual information gives us 
 \begin{align}
