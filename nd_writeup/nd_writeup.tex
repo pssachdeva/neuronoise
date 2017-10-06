@@ -96,87 +96,77 @@ where
 \end{align}
 and lastly 
 \begin{align}
-	
+	I_3 &= \int d\boldsymbol{\ell} \int ds P[s] P[\boldsymbol{\ell}|s] \left(\frac{s}{\sigma_G^2} \left\{\ell, v\right\}_{1,1} - \frac{s \sigma_I \left\{v,w\right\}_{1,1}}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\left\{\ell, w\right\}_{1,1} - \frac{s^2}{2\sigma_G^2} \left\{v\right\}_2 \right. \notag \\
+	&\qquad  \qquad \qquad \qquad \qquad \left. + \frac{s^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right).
 \end{align}
-Carefully placing all these terms in the mutual information gives us 
+Now, we turn to vector notation. Note that 
 \begin{align}
-I[s, \boldsymbol{\ell}] &= \int d\boldsymbol{\ell}ds \frac{1}{\sqrt{2\pi \sigma_S^2}}\exp\left(-\frac{s^2}{2\sigma_S^2}\right) \notag \\ 
-& \times \frac{1}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}}\exp\left(-\frac{1}{2\sigma_G^2}\left\{\ell \right\}_2\right)\exp\left(\frac{1}{\sigma_G^2} s\left\{\ell, v\right\}_{1,1}\right)\notag \\
-& \times \exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right] \notag \\
-& \times \left[\log \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}}  + \frac{s \left\{\ell, v\right\}_{1,1}}{\sigma_G^2} - \frac{s^2 \left\{v\right\}_2}{2\sigma_G^2} - \frac{s \sigma_I\left\{\ell, w\right\}_{1,1} \left\{v,w\right\}_{1,1}}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \right. \notag \\
-& \left. +\frac{s^2 \sigma_I^2\left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} -\frac{\sigma_S^2\left(\left\{\ell,w\right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I - \left\{\ell, v\right\}_{1,1} (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2)\right)^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}  \right].
+\left\{v\right\}_2 &= ||\mathbf{v}||^2_2 \\
+\left\{w\right\}_2 &= ||\mathbf{w}||^2_2 \\
+\left\{v,w\right\}_{1,1} &= \mathbf{v}\cdot \mathbf{w}\\
+\left\{\ell, w\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j w_i w_j = \boldsymbol{\ell}^T \mathbf{ww}^T \boldsymbol{\ell} \\
+\left\{\ell, v\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j  v_i v_j = \boldsymbol{\ell}^T \mathbf{vv}^T \boldsymbol{\ell} \\
+\left\{\ell, v\right\}_{1,1} \left\{\ell,w\right\}_{1,1}&= \sum_{i,j} \ell_i \ell_j v_i w_j= \boldsymbol{\ell}^T \mathbf{vw}^T \boldsymbol{\ell}.
 \end{align}
-The first term in the brackets comes from the interaction of the normalization constants and will appear alone, as its prefactors will integrate out. As for the overall integral, we will first integrate $s$ and then treat $\boldsymbol{\ell}$. The last term in the brackets is independent of $s$ and thus we will denote it a constant, $C$, for now. Thus,
+The easiest term is $I_1$:
 \begin{align}
-	I[s,\boldsymbol{\ell}] &= \log \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}}  +\frac{1}{\sqrt{2\pi \sigma_S^2}}\cdot \frac{1}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}} \int d\boldsymbol{\ell} \exp\left(-\frac{\left\{\ell \right\}_2}{2\sigma_G^2}\right) \notag \\
-	 \times & \int ds \exp\left(-\frac{s^2}{2\sigma_S^2}\right)\exp\left(\frac{s\left\{\ell, v\right\}_{1,1}}{\sigma_G^2} \right)\exp\left(-\frac{s^2 \left\{v\right\}_2}{2\sigma_G^2}\right)\exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right] \notag \\
-	 \times & \left[\frac{s \left\{\ell, v\right\}_{1,1}}{\sigma_G^2} - \frac{s^2 \left\{v\right\}_2}{2\sigma_G^2} - \frac{s \sigma_I\left\{\ell, w\right\}_{1,1} \left\{v,w\right\}_{1,1}}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}+\frac{s^2 \sigma_I^2\left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} + C\right].
+	I_1 &= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}}.
 \end{align}
+Next, we write $P[\boldsymbol{\ell}]$ as 
+\begin{align}
+	P[\boldsymbol{\ell}] &= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}} \exp\left(- \boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right), 
+\end{align}
+where 
+\begin{align}
+	\mathbf{A} &= \frac{1}{2\sigma_G^2}\mathbf{I} - \frac{\sigma_G^2 +\sigma_S^2 ||\mathbf{v}||^2}{2\sigma_G^2 \kappa} \mathbf{ww}^T+ \frac{\sigma_I \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2\sigma_G^2 \kappa} \mathbf{vv}^T.
+\end{align}
+Thus, we can write $I_2$ as 
+\begin{align}
+	I_2 &= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}}\int d\boldsymbol{\ell} (\boldsymbol{\ell}^T \mathbf{B} \boldsymbol{\ell}) \exp(-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell})
+\end{align}
+where 
+\begin{align}
+	\mathbf{B} &= - \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2}{2 \sigma_G^2 \kappa(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)} \mathbf{ww}^T+ \frac{\sigma_I \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2 \sigma_G^2 \kappa} \mathbf{vv}^T.
+\end{align}
+
 To evaluate this integral we utilize the following identity
 \begin{align}
 \int d\boldsymbol{\ell} \left(C_0 +\boldsymbol{\ell}^T \mathbf{C}_1 \boldsymbol{\ell}\right)\exp\left(\boldsymbol{\ell}^T \mathbf{C}_2 \boldsymbol{\ell}\right) = \sqrt{\frac{\pi^N}{\det \mathbf{C}_2}}\left(C_0 + \Tr\left(\mathbf{C}_1\mathbf{C}_2^{-1}\right)\right)
 \end{align}
-The constant term can be written as 
+so that
 \begin{align}
-	C &= -\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)} \left(\left\{\ell, w\right\}_{1,1}^2 \left\{v,w\right\}_{1,1}^2 \sigma_I^2   \right. \notag \\
-	&\left. - 2 \left\{\ell, w\right\}_{1,1} \left\{\ell ,v \right\}_{1,1} \left\{v,w\right\}_{1,1} \sigma_I (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) + \left\{\ell, v\right\}_{1,1}^2 (\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2)^2\right).
+	I_2 &= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}} \sqrt{\frac{\pi^N}{\det \mathbf{A}}} \Tr(\mathbf{B} \mathbf{A}^{-1}) \\
+	&= \frac{1}{\sigma_G^{N-2} 2^{N/2} \sqrt{\kappa \det \mathbf{A}}}\Tr(\mathbf{B} \mathbf{A}^{-1}).
 \end{align}
-Note that 
+We turn to the last integral. For this one, we must first perform the $s$ integration: 
 \begin{align}
-	\left\{\ell, w\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j w_i w_j = \boldsymbol{\ell}^T \mathbf{ww}^T \boldsymbol{\ell} \\
-	\left\{\ell, v\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j  v_i v_j = \boldsymbol{\ell}^T \mathbf{vv}^T \boldsymbol{\ell} \\
-	\left\{\ell, v\right\}_{1,1} \left\{\ell,w\right\}_{1,1}&= \sum_{i,j} \ell_i \ell_j v_i w_j= \boldsymbol{\ell}^T \mathbf{vw}^T \boldsymbol{\ell}.
-\end{align}
-Thus,
-\begin{align}
-C &= -\frac{\sigma_S^2}{2\sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\boldsymbol{\ell}^T \left((\mathbf{v}\cdot \mathbf{w})^2 \sigma_I^2 \mathbf{w}\mathbf{w}^T - 2(\mathbf{v}\cdot \mathbf{w}) \sigma_I (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2) \mathbf{v}\mathbf{w}^T \right. \notag \\
-& \qquad \qquad \qquad \left. + (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2)^2\mathbf{v}\mathbf{v}^T \right) \boldsymbol{\ell}. \\
-&= \boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell},
-\end{align}
-with 
-\begin{align}
-\mathbf{A} &= -\frac{\sigma_S^2 \sigma_I^2 (\mathbf{v}\cdot \mathbf{w})^2}{2\sigma_G^2 \kappa (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2)} \mathbf{w}\mathbf{w}^T+ \frac{\sigma_S^2 \sigma_I (\mathbf{v}\cdot\mathbf{w})}{\sigma_G^2\kappa} \mathbf{vw}^T + \frac{\sigma_S^2 (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2)}{2 \sigma_G^2 \kappa} \mathbf{v}\mathbf{v}^T.
-\end{align}
-We can extract $C$ in the mutual information to obtain 
-\begin{align}
-	\int d\boldsymbol{\ell} ds P[s]P[\boldsymbol{\ell}|s] C = \int d\boldsymbol{\ell} P[\boldsymbol{\ell}] C
-\end{align}
-since $C$ only depends on $\boldsymbol{\ell}$. Note that we can write
-\begin{align}
-	P[\boldsymbol{\ell}] &= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}}\exp\left[-\boldsymbol{\ell}^T \mathbf{B} \boldsymbol{\ell}\right]
+	&\frac{\exp\left(-\frac{1}{2\sigma_G^2}\left\{\ell \right\}_2\right)}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}} \int ds \exp\left(\frac{1}{\sigma_G^2} s\left\{\ell, v\right\}_{1,1}\right) \notag \\
+	&\times \exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right]\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\times \frac{1}{\sqrt{2\pi \sigma_S^2}} \exp\left(-\frac{s^2}{2\sigma_S^2}\right) \notag \\
+	&\times \left(\frac{s}{\sigma_G^2} \left\{\ell, v\right\}_{1,1} - \frac{s \sigma_I \left\{v,w\right\}_{1,1}}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\left\{\ell, w\right\}_{1,1} - \frac{s^2}{2\sigma_G^2} \left\{v\right\}_2   + \frac{s^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right) \\
+	&= -\frac{\sigma_S^2}{2(2\pi)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}\int d\boldsymbol{\ell}(C + \boldsymbol{\ell}^T \mathbf{E} \boldsymbol{\ell})\exp(-\boldsymbol{\ell} \mathbf{D} \boldsymbol{\ell})
 \end{align}
 where
 \begin{align}
-	\mathbf{B} &= \frac{1}{2\sigma_G^2}\mathbf{I} -\frac{\kappa +\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2}{2 \kappa \sigma_G^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}\mathbf{w}\mathbf{w}^T - \frac{\sigma_S^2(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2 \sigma_G^2 \kappa}\mathbf{v}\mathbf{v}^T + \frac{\sigma_S^2 \sigma_I(\mathbf{v}\cdot\mathbf{w}) }{\sigma_G^2 \kappa }\mathbf{v}\mathbf{w}^T
+\mathbf{D} &= \frac{1}{2\sigma_G^2 \kappa}\left(\kappa \mathbf{I} - (\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2) \mathbf{ww}^T + 2 \sigma_I \sigma_S^2 (\mathbf{v}\cdot \mathbf{w}) \mathbf{wv}^T - \sigma_S^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)\mathbf{vv}^T\right),
 \end{align}
-so that this term's contribution to the mutual information is 
+and
 \begin{align}
-	\int d\boldsymbol{\ell} (\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}) \cdot \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}} \exp(-\boldsymbol{\ell}^T \mathbf{B} \boldsymbol{\ell}) &= \frac{1}{\sigma_G^{N-2}\sqrt{2^N \kappa \det \mathbf{B}}} \Tr (\mathbf{A} \mathbf{B}^{-1}) 
+	\mathbf{E} &= \gamma \left(-\sigma_I^2 \mathbf{ww}^T+ 2\sigma_I (\mathbf{v} \cdot \mathbf{w})\mathbf{wv}^T -(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)^2 \mathbf{vv}^T\right),\\
+	\gamma &= (2\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2)(\sigma_G^2 + \sigma_I^2 ||w||^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2.
 \end{align}
-The remaining part of the $s$ integral is given by
+Finally,
 \begin{align}
-\int ds  \ [\cdots] &= \sqrt{\frac{\pi}{2}} \frac{\sigma_S^3 \sqrt{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}}{\kappa^{5/2}} \left[C_0 + \boldsymbol{\ell}^T \mathbf{C} \boldsymbol{\ell}\right] \exp\left[-\boldsymbol{\ell}^T \mathbf{D} \boldsymbol{\ell}\right]
+	C &= \sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)(\sigma_G^2 ||\mathbf{v}||^2 + \sigma_I^2(||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot \mathbf{w})^2)).
 \end{align}
-where 
+So, we can write $I_3$ as 
 \begin{align}
-C_0 &= \sigma_G^2 (\sigma_G^2 ||\mathbf{v}||^2 + \sigma_I^2 (||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot \mathbf{w})^2))\notag \\
-&\times \left(\sigma_G^4 + \sigma_G^2 (\sigma_S^2 ||\mathbf{v}||^2 +\sigma_I^2 ||\mathbf{w}||^2) + \sigma_I^2 \sigma_G^2 (||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot \mathbf{w})^2)\right),
-\end{align}
-along with
-\begin{align}
-	\mathbf{C} &= -\sigma_G^2 \sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2  \mathbf{w}\mathbf{w}^T - (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2)\left(\left(\sigma_G^2+\sigma_I^2 ||\mathbf{w}||^2\right) \left(2 \sigma_G^2+\sigma_S^2 ||\mathbf{v}||^2\right) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2\right)\mathbf{v}\mathbf{v}^T \notag \\
-	&\qquad + \sigma_I (\mathbf{v} \cdot \mathbf{w}) \left(\left(\sigma_G^2+\sigma_I^2 ||\mathbf{w}||^2\right) \left(2 \sigma_G^2+\sigma_S^2 ||\mathbf{v}||^2\right) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2\right)\mathbf{v}\mathbf{w}^T,
-\end{align}
-and 
-\begin{align}
-	\mathbf{D} &= \frac{1}{2 \sigma_G^2 \kappa} \left(\kappa \mathbf{I}+ (\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2 ) \mathbf{w}\mathbf{w}^T - 2 \sigma_I \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})\mathbf{v}\mathbf{w}^T  +\sigma_S^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)\mathbf{v}\mathbf{v}^T\right)
+	I_3 &= -\frac{\sigma_S^2}{2(2)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}(\det \mathbf{D})^{-1/2} \left(C + \Tr (\mathbf{E}\mathbf{D}^{-1})\right)
 \end{align}
 
-The overall mutual information becomes 
-\begin{align}
-	I[s,\boldsymbol{\ell}] &=  \log \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 +\sigma_I^2 \left\{w\right\}_2}} + \frac{1}{\sigma_G^{N-2}\sqrt{2^N \kappa \det \mathbf{B}}} \Tr (\mathbf{A} \mathbf{B}^{-1}) \notag \\
-	&+ \frac{\sigma_S^2}{2}\cdot \frac{1}{\sigma_G^{N-1}\kappa^{5/2}\sqrt{2^N}} \frac{1}{\sqrt{\det \mathbf{D}}}\left[C_0 + \Tr(C\mathbf{D}^{-1})\right].
-\end{align}
+
+
+
+
 
 
 
