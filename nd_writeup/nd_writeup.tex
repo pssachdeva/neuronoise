@@ -87,28 +87,29 @@ where
 	I_1 &= \int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}} = \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}},
 \end{align}
 \begin{align}
-	I_2 &= \int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \left(-\frac{\sigma_I^2 \sigma_S^2 \left\{v,w\right\}_{1,1}^2}{2 \sigma_G^2(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) \kappa} \left\{\ell, w\right\}_{1,1}^2 + \frac{\sigma_I \sigma_S^2\left\{v,w\right\}_{1,1}}{\sigma_G^2\kappa} \left\{\ell, w\right\}_{1,1} \left\{\ell, v\right\}_{1,1}\right. \notag \\
+	I_2 &= \int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \left(-\frac{\sigma_I^4 \sigma_S^2 \left\{v,w\right\}_{1,1}^2}{2 \sigma_G^2(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) \kappa} \left\{\ell, w\right\}_{1,1}^2 + \frac{\sigma_I^2 \sigma_S^2\left\{v,w\right\}_{1,1}}{\sigma_G^2\kappa} \left\{\ell, w\right\}_{1,1} \left\{\ell, v\right\}_{1,1}\right. \notag \\
 	&\left. \qquad \qquad \qquad \qquad \qquad  -\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}{2 \sigma_G^2 \kappa} \left\{\ell, v\right\}_{1,1}^2 \right) \\
-	&= \int d\boldsymbol{\ell} P[\boldsymbol{\ell}] \left(-\frac{\sigma_I^2 \sigma_S^2 \left\{v,w\right\}_{1,1}^2}{2 \sigma_G^2(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) \kappa} \left\{\ell, w\right\}_{1,1}^2 + \frac{\sigma_I \sigma_S^2\left\{v,w\right\}_{1,1}}{\sigma_G^2\kappa} \left\{\ell, w\right\}_{1,1} \left\{\ell, v\right\}_{1,1}\right. \notag \\
+	&= \int d\boldsymbol{\ell} P[\boldsymbol{\ell}] \left(-\frac{\sigma_I^4 \sigma_S^2 \left\{v,w\right\}_{1,1}^2}{2 \sigma_G^2(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2) \kappa} \left\{\ell, w\right\}_{1,1}^2 + \frac{\sigma_I^2 \sigma_S^2\left\{v,w\right\}_{1,1}}{\sigma_G^2\kappa} \left\{\ell, w\right\}_{1,1} \left\{\ell, v\right\}_{1,1}\right. \notag \\
 	&\left. \qquad \qquad \qquad \qquad \qquad  -\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}{2 \sigma_G^2 \kappa} \left\{\ell, v\right\}_{1,1}^2 \right),
 \end{align}
 and lastly 
 \begin{align}
-	I_3 &= \int d\boldsymbol{\ell} \int ds P[s] P[\boldsymbol{\ell}|s] \left(\frac{s}{\sigma_G^2} \left\{\ell, v\right\}_{1,1} - \frac{s \sigma_I \left\{v,w\right\}_{1,1}}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\left\{\ell, w\right\}_{1,1} - \frac{s^2}{2\sigma_G^2} \left\{v\right\}_2 \right. \notag \\
+	I_3 &= \int d\boldsymbol{\ell} \int ds P[s] P[\boldsymbol{\ell}|s] \left(\frac{s}{\sigma_G^2} \left\{\ell, v\right\}_{1,1} - \frac{s \sigma_I^2 \left\{v,w\right\}_{1,1}}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\left\{\ell, w\right\}_{1,1} - \frac{s^2}{2\sigma_G^2} \left\{v\right\}_2 \right. \notag \\
 	&\qquad  \qquad \qquad \qquad \qquad \left. + \frac{s^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right).
 \end{align}
 Now, we turn to vector notation. Note that 
 \begin{align}
-\left\{v\right\}_2 &= ||\mathbf{v}||^2_2 \\
-\left\{w\right\}_2 &= ||\mathbf{w}||^2_2 \\
+\left\{v\right\}_2 &= ||\mathbf{v}||^2 \\
+\left\{w\right\}_2 &= ||\mathbf{w}||^2 \\
 \left\{v,w\right\}_{1,1} &= \mathbf{v}\cdot \mathbf{w}\\
 \left\{\ell, w\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j w_i w_j = \boldsymbol{\ell}^T \mathbf{ww}^T \boldsymbol{\ell} \\
 \left\{\ell, v\right\}_{1,1}^2 &= \sum_{i,j} \ell_i \ell_j  v_i v_j = \boldsymbol{\ell}^T \mathbf{vv}^T \boldsymbol{\ell} \\
-\left\{\ell, v\right\}_{1,1} \left\{\ell,w\right\}_{1,1}&= \sum_{i,j} \ell_i \ell_j v_i w_j= \boldsymbol{\ell}^T \mathbf{vw}^T \boldsymbol{\ell}.
+\left\{\ell, v\right\}_{1,1} \left\{\ell,w\right\}_{1,1}&= \sum_{i,j} \ell_i \ell_j v_i w_j= \boldsymbol{\ell}^T \mathbf{vw}^T \boldsymbol{\ell} = \boldsymbol{\ell}^T \mathbf{w}\mathbf{v}^T \boldsymbol{\ell}
 \end{align}
 The easiest term is $I_1$:
 \begin{align}
-	I_1 &= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}}.
+	I_1 &= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}},\\
+	\kappa &= (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)(\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
 \end{align}
 Next, we write $P[\boldsymbol{\ell}]$ as 
 \begin{align}
@@ -116,7 +117,7 @@ Next, we write $P[\boldsymbol{\ell}]$ as
 \end{align}
 where 
 \begin{align}
-	\mathbf{A} &= \frac{1}{2\sigma_G^2}\mathbf{I} - \frac{\sigma_G^2 +\sigma_S^2 ||\mathbf{v}||^2}{2\sigma_G^2 \kappa} \mathbf{ww}^T+ \frac{\sigma_I \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2\sigma_G^2 \kappa} \mathbf{vv}^T.
+	\mathbf{A} &= \frac{1}{2\sigma_G^2}\mathbf{I} - \frac{\sigma_I^2(\sigma_G^2 +\sigma_S^2 ||\mathbf{v}||^2)}{2\sigma_G^2 \kappa} \mathbf{ww}^T+ \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2\sigma_G^2 \kappa} \mathbf{vv}^T.
 \end{align}
 Thus, we can write $I_2$ as 
 \begin{align}
@@ -124,7 +125,7 @@ Thus, we can write $I_2$ as
 \end{align}
 where 
 \begin{align}
-	\mathbf{B} &= - \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2}{2 \sigma_G^2 \kappa(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)} \mathbf{ww}^T+ \frac{\sigma_I \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2 \sigma_G^2 \kappa} \mathbf{vv}^T.
+	\mathbf{B} &= - \frac{\sigma_I^4 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2}{2 \sigma_G^2 \kappa(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)} \mathbf{ww}^T+ \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2 \sigma_G^2 \kappa} \mathbf{vv}^T.
 \end{align}
 
 To evaluate this integral we utilize the following identity
@@ -134,7 +135,7 @@ To evaluate this integral we utilize the following identity
 so that
 \begin{align}
 	I_2 &= \frac{1}{\sigma_G^{N-2}\sqrt{(2\pi)^N \kappa}} \sqrt{\frac{\pi^N}{\det \mathbf{A}}} \Tr(\mathbf{B} \mathbf{A}^{-1}) \\
-	&= \frac{1}{\sigma_G^{N-2} 2^{N/2} \sqrt{\kappa \det \mathbf{A}}}\Tr(\mathbf{B} \mathbf{A}^{-1}).
+	&= \frac{1}{\sigma_G^{N-2} \sqrt{2^N \kappa \det \mathbf{A}}}\Tr(\mathbf{B} \mathbf{A}^{-1}).
 \end{align}
 We turn to the last integral. For this one, we must first perform the $s$ integration: 
 \begin{align}
