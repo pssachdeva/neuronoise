@@ -140,32 +140,28 @@ so that
 We turn to the last integral. For this one, we must first perform the $s$ integration: 
 \begin{align}
 	&\frac{\exp\left(-\frac{1}{2\sigma_G^2}\left\{\ell \right\}_2\right)}{\sigma_G^{N-1}\sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}} \int ds \exp\left(\frac{1}{\sigma_G^2} s\left\{\ell, v\right\}_{1,1}\right) \notag \\
-	&\times \exp\left[\frac{\left(\left\{\ell, w\right\}_{1,1} - s \sigma_I \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right]\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\times \frac{1}{\sqrt{2\pi \sigma_S^2}} \exp\left(-\frac{s^2}{2\sigma_S^2}\right) \notag \\
-	&\times \left(\frac{s}{\sigma_G^2} \left\{\ell, v\right\}_{1,1} - \frac{s \sigma_I \left\{v,w\right\}_{1,1}}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\left\{\ell, w\right\}_{1,1} - \frac{s^2}{2\sigma_G^2} \left\{v\right\}_2   + \frac{s^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right) \\
-	&= -\frac{\sigma_S^2}{2(2\pi)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}\int d\boldsymbol{\ell}(C + \boldsymbol{\ell}^T \mathbf{E} \boldsymbol{\ell})\exp(-\boldsymbol{\ell} \mathbf{D} \boldsymbol{\ell})
+	&\times \exp\left[\frac{\sigma_I^2\left(\left\{\ell, w\right\}_{1,1} - s \left\{v,w\right\}_{1,1}\right)^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right]\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right)\times \frac{1}{\sqrt{2\pi \sigma_S^2}} \exp\left(-\frac{s^2}{2\sigma_S^2}\right) \notag \\
+	&\times \left(\frac{s}{\sigma_G^2} \left\{\ell, v\right\}_{1,1} - \frac{s \sigma_I^2 \left\{v,w\right\}_{1,1}}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\left\{\ell, w\right\}_{1,1} - \frac{s^2}{2\sigma_G^2} \left\{v\right\}_2   + \frac{s^2 \sigma_I^2 \left\{v,w\right\}_{1,1}^2}{2\sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right) \\
+	&= -\frac{\sigma_S^2}{2(2\pi)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}\int d\boldsymbol{\ell}(C + \boldsymbol{\ell}^T \mathbf{D} \boldsymbol{\ell})\exp(-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell})
 \end{align}
 where
 \begin{align}
-\mathbf{D} &= \frac{1}{2\sigma_G^2 \kappa}\left(\kappa \mathbf{I} - (\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2) \mathbf{ww}^T + 2 \sigma_I \sigma_S^2 (\mathbf{v}\cdot \mathbf{w}) \mathbf{wv}^T - \sigma_S^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)\mathbf{vv}^T\right),
-\end{align}
-and
-\begin{align}
-	\mathbf{E} &= \gamma \left(-\sigma_I^2 \mathbf{ww}^T+ 2\sigma_I (\mathbf{v} \cdot \mathbf{w})\mathbf{wv}^T -(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)^2 \mathbf{vv}^T\right),\\
-	\gamma &= (2\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2)(\sigma_G^2 + \sigma_I^2 ||w||^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2.
+	\mathbf{D} &= \gamma \left(-\sigma_I^4 \mathbf{ww}^T+ 2\sigma_I^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)(\mathbf{v} \cdot \mathbf{w})\mathbf{wv}^T -(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)^2 \mathbf{vv}^T\right),\\
+	\gamma &= (2\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2)(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2.
 \end{align}
 Finally,
 \begin{align}
-	C &= \sigma_G^2 \kappa (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)(\sigma_G^2 ||\mathbf{v}||^2 + \sigma_I^2(||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot \mathbf{w})^2)).
+	C &= \kappa \sigma_G^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)(\sigma_G^2 ||\mathbf{v}||^2 + \sigma_I^2(||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot \mathbf{w})^2)).
 \end{align}
 So, we can write $I_3$ as 
 \begin{align}
-	I_3 &= -\frac{\sigma_S^2}{2(2)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}(\det \mathbf{D})^{-1/2} \left(C + \Tr (\mathbf{E}\mathbf{D}^{-1})\right).
+	I_3 &= -\frac{\sigma_S^2}{2(2)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}(\det \mathbf{A})^{-1/2} \left(C + \Tr (\mathbf{D}\mathbf{A}^{-1})\right).
 \end{align}
 The total mutual information is
 \begin{align}
 	I &= I_1 + I_2 + I_3 \\
 	&= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}} +\frac{1}{\sigma_G^{N-2} 2^{N/2} \sqrt{\kappa \det \mathbf{A}}}\Tr(\mathbf{B} \mathbf{A}^{-1}) \notag \\
-	&\qquad \qquad -\frac{\sigma_S^2}{2(2)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}(\det \mathbf{D})^{-1/2} \left(C + \Tr (\mathbf{E}\mathbf{D}^{-1})\right)
+	&\qquad \qquad -\frac{\sigma_S^2}{2(2)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}(\det \mathbf{A})^{-1/2} \left(C + \Tr (\mathbf{D}\mathbf{A}^{-1})\right)
 \end{align}
 Let's now evaluate the inverses. We can write 
 \begin{align}
@@ -183,24 +179,63 @@ Second,
 	&-A_2\frac{\mathbf{wv}^T - \frac{A_1(\mathbf{v}\cdot \mathbf{w})}{1+ A_1||\mathbf{w}||^2} \mathbf{ww}^T - \frac{A_1||\mathbf{w}||^2}{1+ A_1||\mathbf{w}||^2} \mathbf{wv}^T  + \left(\frac{A_1}{1+ A_1||\mathbf{w}||^2}\right)^2 (\mathbf{v}\cdot \mathbf{w}) ||\mathbf{w}||^2 \mathbf{ww}^T}{1 + A_2 (\mathbf{v}\cdot \mathbf{w}) - \frac{A_1 A_2 (\mathbf{v}\cdot\mathbf{w}) ||\mathbf{w}||^2}{1 + A_1 ||\mathbf{w}||^2}} \\
 	&=  \mathbf{I} -  \frac{A_1 \mathbf{ww}^T}{1 + A_1 ||\mathbf{w}||^2}  - A_2\frac{\frac{1}{1+ A_1||\mathbf{w}||^2} \left(\mathbf{wv}^T -\frac{A_1 (\mathbf{v}\cdot \mathbf{w})}{1 + A_1 ||\mathbf{w}||^2} \mathbf{ww}^T\right)}{1 + A_2 (\mathbf{v}\cdot \mathbf{w}) - \frac{A_1 A_2 (\mathbf{v}\cdot\mathbf{w}) ||\mathbf{w}||^2}{1 + A_1 ||\mathbf{w}||^2}}\\
 	&= \mathbf{I} -  \frac{A_1 \mathbf{ww}^T}{1 + A_1 ||\mathbf{w}||^2} - A_2\frac{\mathbf{wv}^T -\frac{A_1 (\mathbf{v}\cdot \mathbf{w})}{1 + A_1 ||\mathbf{w}||^2} \mathbf{ww}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v} \cdot \mathbf{w})} \\
-	&= \mathbf{I} - \frac{A_1}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot \mathbf{w})^2} \mathbf{ww}^T - \frac{A_2}{1 + A_1 ||\mathbf{w}||^2 + A_2(\mathbf{v}\cdot \mathbf{w})}\mathbf{wv}^T.\\
-	&= \mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2}.
+	&= \mathbf{I} - \frac{A_1}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot \mathbf{w})} \mathbf{ww}^T - \frac{A_2}{1 + A_1 ||\mathbf{w}||^2 + A_2(\mathbf{v}\cdot \mathbf{w})}\mathbf{wv}^T.\\
+	&= \mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})}.
 \end{align*}
 Lastly, 
 \begin{align}
-	&(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T)^{-1} = \mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2} \notag \\
-	&-A_3 \frac{\left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2}\right)\mathbf{vv}^T \left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2}\right)}{1 + A_3 \mathbf{v}^T \left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2}\right)\mathbf{v}}.
+	&(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T)^{-1} = \mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})} \notag \\
+	&-A_3 \frac{\left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})}\right)\mathbf{vv}^T \left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})}\right)}{1 + A_3 \mathbf{v}^T \left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})}\right)\mathbf{v}}.
 \end{align}
 We'll focus on the last term in this expression. The denominator is 
 \begin{align}
-1 + A_3 \mathbf{v}^T \left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2}\right)\mathbf{v} &= 1 + A_3 ||\mathbf{v}||^2 - \frac{A_1A_3(\mathbf{v} \cdot \mathbf{w})^2 + A_2A_3(\mathbf{v}\cdot\mathbf{w})||\mathbf{v}||^2}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot \mathbf{w})^2}.
+1 + A_3 ||\mathbf{v}||^2 - &\frac{A_1A_3(\mathbf{v} \cdot \mathbf{w})^2 + A_2A_3(\mathbf{v}\cdot\mathbf{w})||\mathbf{v}||^2}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot \mathbf{w})} \notag \\
+&\qquad \qquad = 1 + \frac{A_3 ||\mathbf{v}||^2 + A_1 A_3 (||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot \mathbf{w})^2)}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})}
 \end{align}
 The numerator is 
 \begin{align}
-	&\mathbf{vv}^T - \frac{A_1 (\mathbf{v}\cdot\mathbf{w}) \mathbf{vw}^T + A_2 (\mathbf{v}\cdot \mathbf{w}) \mathbf{vv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2} - \frac{A_1(\mathbf{v}\cdot\mathbf{w}) \mathbf{wv}^T + A_2 ||\mathbf{v}||^2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2} \notag \\
-	&+ \frac{A_1^2 (\mathbf{v}\cdot\mathbf{w})^2\mathbf{ww}^T+ A_1 A_2 (\mathbf{v}\cdot\mathbf{w})^2 \mathbf{wv}^T + A_1 A_2(\mathbf{v}\cdot\mathbf{w}) ||\mathbf{v}||^2\mathbf{ww}^T + A_2^2(\mathbf{v}\cdot\mathbf{w})||\mathbf{v}||^2 \mathbf{wv}^T}{(1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})^2)^2}
+	&\mathbf{vv}^T - \frac{A_1 (\mathbf{v}\cdot\mathbf{w}) \mathbf{vw}^T + A_2 (\mathbf{v}\cdot \mathbf{w}) \mathbf{vv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})} - \frac{A_1(\mathbf{v}\cdot\mathbf{w}) \mathbf{wv}^T + A_2 ||\mathbf{v}||^2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})} \notag \\
+	&+ \frac{A_1^2 (\mathbf{v}\cdot\mathbf{w})^2\mathbf{ww}^T+ A_1 A_2 (\mathbf{v}\cdot\mathbf{w})^2 \mathbf{wv}^T + A_1 A_2(\mathbf{v}\cdot\mathbf{w}) ||\mathbf{v}||^2\mathbf{ww}^T + A_2^2(\mathbf{v}\cdot\mathbf{w})||\mathbf{v}||^2 \mathbf{wv}^T}{(1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}))^2}.
 \end{align}
-
+Combining the numerator and denominator into the entire expression for the inverse gives us
+\begin{align}
+	&(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T)^{-1} =  \notag \\
+	& \mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 +A_1 A_3 \left(||\mathbf{v}||^2||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)} \notag \\
+	&- A_1 A_3\frac{||\mathbf{w}||^2 \mathbf{vv}^T + ||\mathbf{v}||^2 \mathbf{ww}^T -(\mathbf{v}\cdot \mathbf{w}) \left(\mathbf{vw}^T +\mathbf{wv}^T\right)}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 +A_1 A_3 \left(||\mathbf{v}||^2||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}.
+\end{align}
+The determinant is 
+\begin{align}
+	\det \mathbf{A} = \frac{1}{2^N \sigma_G^{2N}} \det \left(\mathbf{I}+ A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T\right).
+\end{align}
+Proceeding iteratively with the matrix determinant lemma, we have
+\begin{align}
+	\det (\mathbf{I} + A_1 \mathbf{ww}^T) &= (1 + A_1 \mathbf{w}^T \mathbf{w}) (1) \\
+	&= 1  + A_1 ||\mathbf{w}||^2.
+\end{align}
+Next,
+\begin{align}
+	\det (\mathbf{I} + A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T) &= \left(1 + A_2\mathbf{v}^T  \left( \mathbf{I} - \frac{A_1 \mathbf{ww}^T}{1 + A_1 ||\mathbf{w}||^2}\right) \mathbf{w}\right) (1 + A_1 ||\mathbf{w}||^2) \\
+	&= \left((1  +A_1 ||\mathbf{w}||^2)(1 + A_2 (\mathbf{v}\cdot\mathbf{w})) - A_1 A_2 (\mathbf{v}\cdot\mathbf{w}) ||\mathbf{w}||^2\right) \\
+	&= 1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}).
+\end{align}
+Finally,
+\begin{align}
+	\det &\left(\mathbf{I}+ A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T\right) \notag \\
+	&=\left(1 + A_3 \mathbf{v}^T \left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})}\right)\mathbf{v}\right)\left(1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})\right) \\
+	& =\left(1 + A_3 ||\mathbf{v}||^2 - \frac{A_1 A_3 (\mathbf{v}\cdot\mathbf{w})^2 + A_2 A_3 ||\mathbf{v}||^2 (\mathbf{v}\cdot\mathbf{w})}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})}\right)\left(1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w})\right)\\
+	&= 1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 + A_1 A_3 (||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2).
+\end{align}
+We have the tools in place to evaluate the mutual information. Let's make a small change for ease: we'll define
+\begin{align}
+	\mathbf{A}' &= \mathbf{I} + A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T
+\end{align}
+so that
+\begin{align}
+	I &= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}} +\frac{1}{\sigma_G^{N-2} 2^{N/2} \sqrt{\kappa  \cdot 2^{-N} \sigma_G^{-2N}\det \mathbf{A}'}}\Tr(\mathbf{B} \mathbf{A}'^{-1}) (2\sigma_G^2) \notag \\
+	&\qquad \qquad -\frac{\sigma_S^2}{2(2)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}(2^{-N}\sigma_G^{-2N}\det \mathbf{A}')^{-1/2} \left(C + \Tr (\mathbf{D}\mathbf{A}'^{-1}) (2\sigma_G^2)\right) \\
+	&= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}} + \frac{2\sigma_G^4}{\sqrt{\kappa \det \mathbf{A}'}}\Tr (\mathbf{B} \mathbf{A}'^{-1}) \notag \\
+	&\qquad -\frac{\sigma_S^2}{2\kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}) \frac{1}{\sqrt{\det \mathbf{A}'}} (C + 2\sigma_G^2 \Tr (\mathbf{D}\mathbf{A}'^{-1}))
+\end{align}
 
 
 
