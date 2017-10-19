@@ -125,7 +125,8 @@ Thus, we can write $I_2$ as
 \end{align}
 where 
 \begin{align}
-	\mathbf{B} &= - \frac{\sigma_I^4 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2}{2 \sigma_G^2 \kappa(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)} \mathbf{ww}^T+ \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2 \sigma_G^2 \kappa} \mathbf{vv}^T.
+	\mathbf{B} &= - \frac{\sigma_I^4 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2}{2 \sigma_G^2 \kappa(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)} \mathbf{ww}^T+ \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})}{\sigma_G^2 \kappa} \mathbf{wv}^T - \frac{\sigma_S^2(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}{2 \sigma_G^2 \kappa} \mathbf{vv}^T. \\
+	&= \frac{1}{2\sigma_G^2} \left(B_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T\right).
 \end{align}
 
 To evaluate this integral we utilize the following identity
@@ -146,7 +147,7 @@ We turn to the last integral. For this one, we must first perform the $s$ integr
 \end{align}
 where
 \begin{align}
-	\mathbf{D} &= \gamma \left(-\sigma_I^4 \mathbf{ww}^T+ 2\sigma_I^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)(\mathbf{v} \cdot \mathbf{w})\mathbf{wv}^T -(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)^2 \mathbf{vv}^T\right),\\
+	\mathbf{D} &= \gamma \left(-\sigma_I^4 (\mathbf{v}\cdot\mathbf{w})^2\mathbf{ww}^T+ 2\sigma_I^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)(\mathbf{v} \cdot \mathbf{w})\mathbf{wv}^T -(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)^2 \mathbf{vv}^T\right),\\
 	\gamma &= (2\sigma_G^2 + \sigma_S^2 ||\mathbf{v}||^2)(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot \mathbf{w})^2.
 \end{align}
 Finally,
@@ -234,12 +235,24 @@ so that
 	I &= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}} +\frac{1}{\sigma_G^{N-2} 2^{N/2} \sqrt{\kappa  \cdot 2^{-N} \sigma_G^{-2N}\det \mathbf{A}'}}\Tr(\mathbf{B} \mathbf{A}'^{-1}) (2\sigma_G^2) \notag \\
 	&\qquad \qquad -\frac{\sigma_S^2}{2(2)^{N/2} \sigma_G^N \kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}(2^{-N}\sigma_G^{-2N}\det \mathbf{A}')^{-1/2} \left(C + \Tr (\mathbf{D}\mathbf{A}'^{-1}) (2\sigma_G^2)\right) \\
 	&= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}} + \frac{2\sigma_G^4}{\sqrt{\kappa \det \mathbf{A}'}}\Tr (\mathbf{B} \mathbf{A}'^{-1}) \notag \\
-	&\qquad -\frac{\sigma_S^2}{2\kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}) \frac{1}{\sqrt{\det \mathbf{A}'}} (C + 2\sigma_G^2 \Tr (\mathbf{D}\mathbf{A}'^{-1}))
+	&\qquad -\frac{\sigma_S^2}{2\kappa^{5/2} (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)} \frac{1}{\sqrt{\det \mathbf{A}'}} (C + 2\sigma_G^2 \Tr (\mathbf{D}\mathbf{A}'^{-1})) \\
+	&= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}} + \frac{\sigma_G^2}{\sqrt{\kappa \det \mathbf{A}'}} \Tr (\mathbf{B} \mathbf{A}^{-1})
 \end{align}
+We calculate 
+\begin{align}
+	\Tr(\mathbf{B}\mathbf{A}^{-1}) &= (B_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T) \times \notag \\
+		& \left(\mathbf{I} - \frac{A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 +A_1 A_3 \left(||\mathbf{v}||^2||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)} \right.\notag \\
+	&- \left. A_1 A_3\frac{||\mathbf{w}||^2 \mathbf{vv}^T + ||\mathbf{v}||^2 \mathbf{ww}^T -(\mathbf{v}\cdot \mathbf{w}) \left(\mathbf{vw}^T +\mathbf{wv}^T\right)}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 +A_1 A_3 \left(||\mathbf{v}||^2||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}\right) \\
+	&= \frac{B_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 + (A_1 + B_1) A_3 (||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w}))}{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 +A_1 A_3 \left(||\mathbf{v}||^2||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}.
+\end{align}
+Note that the trace of an outer product is the inner product, and furthermore the trace of a sum is the sum of the individual traces. 
 
-
-
-
+The mutual information is
+\begin{align}
+	I &= \log \frac{1}{\sigma_G} \sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}} \notag \\
+	&+ \frac{\sigma_G^2}{\sqrt{\kappa}} \frac{B_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 + (A_1 + B_1) A_3 (||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w}))}{\left(1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 +A_1 A_3 \left(||\mathbf{v}||^2||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)\right)^{3/2}} \\
+	&-\frac{\sigma_S^2 \sigma_G^2}{2 \kappa^{3/2}} \left(\frac{\sigma_G^2 ||\mathbf{v}||^2 + \sigma_I^2(||\mathbf{v}||^2 ||\mathbf{w}||^2 - (\mathbf{v}\cdot \mathbf{w})^2)}{\sqrt{1 + A_1 ||\mathbf{w}||^2 + A_2 (\mathbf{v}\cdot\mathbf{w}) + A_3 ||\mathbf{v}||^2 +A_1 A_3 \left(||\mathbf{v}||^2||\mathbf{w}||^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}}\right)
+\end{align}
 
 
 
