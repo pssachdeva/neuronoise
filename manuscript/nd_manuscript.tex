@@ -83,13 +83,56 @@
 	\end{tikzpicture}
 	\caption{Linear-Nonlinear Network Architecture}
 	\end{figure}
-	\section{Fisher Information, First Stage}
+	\section{Fisher Information, Linear Stage}
 	We can calculate the Fisher information after the first stage. 
 	
-	\section{Mutual Information}
+	\section{Fisher Information, Quadratic Nonlinearity}
+	\section{Mutual Information, Linear Stage}
 	
 	
 	\appendix
+	\newpage
+	\section{Calculation of  Fisher Information, Linear Stage}
+	All variability after the linear stage is Gaussian; thus, the Fisher information can be expressed in the form
+	\begin{align}
+		I_{F}(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}^{-1} (s) \mathbf{f}'(s) + \frac{1}{2}\Tr\left[\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\right]. \label{IF-gaussian}
+	\end{align}
+	Our immediate goal is to calculate $\mathbf{f}(s)$, the average response of the linear stage, and $\boldsymbol{\Sigma}$, the covariance between the responses. The output of the $i$th neuron after the linear stage is
+	\begin{align}
+		\ell_i &= v_i s + w_i \sigma_I \xi_I + \sigma_G\xi_i,
+	\end{align}
+	so that the average response as a function of $s$ is
+	\begin{align}
+		f_i(s) &= \langle \ell_i \rangle = v_i s.
+	\end{align}
+	Thus,
+	\begin{align}
+		\mathbf{f}(s) = \mathbf{v}s \Rightarrow \mathbf{f}'(s) = \mathbf{v}.
+	\end{align}
+	
+	Meanwhile,
+	\begin{align}
+		\langle \ell_i \ell_j \rangle &= \langle (v_i s + w_i \sigma_I\xi_I + \sigma_G\xi_i) (v_j s + w_j \sigma_I\xi_I + \sigma_G\xi_j)\rangle \\
+		&= v_i v_j s^2 + w_i w_j \sigma_I^2 + \sigma_G^2 \delta_{ij}
+	\end{align}
+	so that
+	\begin{align}
+		\Sigma_{ij} &= v_i v_j s^2 + w_i w_j \sigma_I^2 + \sigma_G^2 \delta_{ij} - v_i v_j s^2 \\
+		&= \sigma_G^2 \delta_{ij} + w_i w_j \sigma_I^2 \\
+		\Rightarrow \boldsymbol{\Sigma} &= \sigma_G^2 \mathbf{I} + \sigma_I^2\mathbf{ww}^T.
+	\end{align}
+	Notice that the covariance matrix does not depend on $s$, so the second term in equation \eqref{IF-gaussian} will vanish. We do, however, need the inverse covariance matrix for the first term:
+	\begin{align}
+		\boldsymbol{\Sigma}^{-1} &= \frac{1}{\sigma_G^2} \mathbf{I} - \frac{\sigma_I^2}{\sigma_G^4} \frac{\mathbf{ww}^T}{1+\frac{\sigma_I^2}{\sigma_G^2}||\mathbf{w}||^2}\\
+		&= \frac{1}{\sigma_G^2}\left(\mathbf{I} - \frac{\sigma_I^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\mathbf{ww}^T\right).
+	\end{align}
+	
+	Hence, the Fisher information is
+	\begin{align}
+		I_{F}(s) &= \frac{1}{\sigma_G^2}\mathbf{v}^T \left(\mathbf{I} - \frac{\sigma_I^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\mathbf{ww}^T\right) \mathbf{v} \\
+		&= \frac{1}{\sigma_G^2} \left(|\mathbf{v}|^2 - \frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) \\
+		&= \frac{\sigma_G^2 |\mathbf{v}|^2 + \sigma_I^2 \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}.
+	\end{align}
 	\newpage
 	\section{Calculation of Conditional and Marginal Probability Distributions}
 	We present the calculation of the conditional and marginal probability distributions after the linear stage of computation. Recall that the output of the $i$th neuron in the linear stage can be written as
@@ -110,23 +153,52 @@
 	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \left(\ell_i - (v_i s + \sigma_I w_i \xi_I)\right)^2\right) \\
 	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \notag \\
 	& \qquad \times \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2 -2\ell_i (v_i s + \sigma_I w_i \xi_I) + (v_i s + \sigma_I w_i \xi_I)^2\right) \\
-	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right) \notag \\
-	&\times \int d\xi_I\exp\left[-\frac{1}{2}\left(1+\frac{\sigma_I^2}{\sigma_G^2} \left\{w\right\}_2\right)\xi_I^2 +\frac{\sigma_I}{\sigma_G^2}\left( \sum_{i=1}^N \ell_i w_i - s \left\{v,w\right\}_{1,1}\right)\xi_I \right] \\
-	&=  \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N}\exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 \left\{v\right\}_2\right) \notag \\
-	&\qquad \times \frac{\sqrt{2\pi \sigma_G^2}}{\sqrt{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}}\exp\left[\frac{\sigma_I^2\left(\displaystyle\sum_{i=1}^N \ell_i w_i - s  \left\{v,w\right\}_{1,1}\right)^2}{2 \sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right],
+	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 |\mathbf{v}|^2\right) \notag \\
+	&\times \int d\xi_I\exp\left[-\frac{1}{2}\left(1+\frac{\sigma_I^2}{\sigma_G^2} |\mathbf{w}|^2\right)\xi_I^2 +\frac{\sigma_I}{\sigma_G^2}\left( \sum_{i=1}^N \ell_i w_i - s v_i w_i\right)\xi_I \right] \\
+	&=  \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N}\exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 |\mathbf{v}|^2\right) \notag \\
+	&\qquad \times \frac{\sqrt{2\pi \sigma_G^2}}{\sqrt{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}}\exp\left[\frac{\sigma_I^2\left(\displaystyle\sum_{i=1}^N \ell_i w_i - s  v_i w_i \right)^2}{2 \sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right],
 	\end{align}
 	which we can write concisely as
 	\begin{align}
-		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \exp\left[-\frac{1}{2\sigma_G^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right] \notag 
+		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \exp\left[-\frac{1}{2\sigma_G^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right].
 	\end{align}
-	
-	\section{Calculation of Mutual Information}
-	In this section we calculate the mutual information $I[s,\boldsymbol{\ell}]$ between the stimulus $s$ and the output of the linear layer $\boldsymbol{\ell}$. 
-	
-	Recall that the output of the $i$th neuron can be written as 
+	This probability distribution makes sense as it can be constructed by the addition of two multivariate Gaussians: $\mathbf{w}\sigma_I \xi_I$ and $\sigma_G\boldsymbol{\xi}$. We can write the distribution in an alternative form which may be more useful for further calculation:
 	\begin{align}
-	r_i &= g_i(\ell_i) \\
-	&= g_i(v_i s + \sigma_I w_i \xi_I + \sigma_G\xi_i).
+		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}}\exp\left(-\frac{|\boldsymbol{\ell}|^2}{2 \sigma_G^2}\right)
 	\end{align}
-	Ultimately, we want $I[s, \mathbf{r}]$. For now, we will focus on $I[s, \boldsymbol{\ell}]$ and note that $I[s,\mathbf{r}] \leq I[s, \boldsymbol{\ell}]$ by the data processing inequality. To calculate the mutual information, we must first calculate $P[\boldsymbol{\ell}|s]$. We can do this via marginalization:
+	
+	\subsection{Marginal Distribution $P[\boldsymbol{\ell}]$}
+	We can calculate the marginal distribution either by summing the three Gaussians $\mathbf{v}s$, $\mathbf{w} \sigma_I \xi_I$, and $\sigma_G\boldsymbol{\xi}$, or by marginalizing the conditional probability distribution. 
+	
+	The marginal distribution is 
+	\begin{align}
+		 P[\boldsymbol{\ell}] = \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} &\exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T  \left(\mathbf{I} -\frac{\sigma_I^2 (\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2)}{\kappa} \mathbf{ww}^T + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T \right. \right. \notag \\
+		&\left. \left. \qquad \qquad \qquad \qquad  + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T- \frac{\sigma_S^2 (\sigma_G^2 +\sigma_I^2 |\mathbf{w}|^2)}{\kappa} \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-1}
+	\end{align}
+	where 
+	\begin{align}
+		\kappa &= (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
+	\end{align}
+	The second two terms in the exponential of equation \eqref{marginal-1} can be combined (since they are transposes of each other), which allows us to write the marginal as 
+	\begin{align}
+		P[\boldsymbol{\ell}] &= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-2}
+	\end{align}
+	where
+	\begin{align}
+		A_1 &= -\frac{\sigma_I^2 (\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2)}{\kappa} \\
+		A_2 &= \frac{2 \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa} \\
+		A_3 &= -\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}{\kappa}.
+	\end{align}
+	\newpage
+	\section{Calculation of Mutual Information, Linear Stage}
+	Here we present the calculation of mutual information $I[s, \boldsymbol{\ell}]$ between the stimulus $s$ and the output of the linear stage $\boldsymbol{\ell}$.
+	
+	The mutual information is given by 
+	\begin{align}
+		I[s,\boldsymbol{\ell}] &= \int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \log \frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]}.
+	\end{align}
+	The ratio between the conditional and marginal distribution is given by 
+	\begin{align}
+		\frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]} &= \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}}
+	\end{align}
 \end{document}
