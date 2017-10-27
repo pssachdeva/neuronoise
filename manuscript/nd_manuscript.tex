@@ -162,11 +162,6 @@
 	\begin{align}
 		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \exp\left[-\frac{1}{2\sigma_G^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right].
 	\end{align}
-	This probability distribution makes sense as it can be constructed by the addition of two multivariate Gaussians: $\mathbf{w}\sigma_I \xi_I$ and $\sigma_G\boldsymbol{\xi}$. We can write the distribution in an alternative form which may be more useful for further calculation:
-	\begin{align}
-		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}}\exp\left(-\frac{|\boldsymbol{\ell}|^2}{2 \sigma_G^2}\right)
-	\end{align}
-	
 	\subsection{Marginal Distribution $P[\boldsymbol{\ell}]$}
 	We can calculate the marginal distribution either by summing the three Gaussians $\mathbf{v}s$, $\mathbf{w} \sigma_I \xi_I$, and $\sigma_G\boldsymbol{\xi}$, or by marginalizing the conditional probability distribution. 
 	
@@ -175,13 +170,14 @@
 		 P[\boldsymbol{\ell}] = \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} &\exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T  \left(\mathbf{I} -\frac{\sigma_I^2 (\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2)}{\kappa} \mathbf{ww}^T + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T \right. \right. \notag \\
 		&\left. \left. \qquad \qquad \qquad \qquad  + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T- \frac{\sigma_S^2 (\sigma_G^2 +\sigma_I^2 |\mathbf{w}|^2)}{\kappa} \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-1}
 	\end{align}
-	where 
+	where we note that 
 	\begin{align}
 		\kappa &= (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
 	\end{align}
-	The second two terms in the exponential of equation \eqref{marginal-1} can be combined (since they are transposes of each other), which allows us to write the marginal as 
+	We can write the marginal as 
 	\begin{align}
-		P[\boldsymbol{\ell}] &= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-2}
+		P[\boldsymbol{\ell}] &= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 (\mathbf{wv}^T +\mathbf{vw}^T) + A_3 \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-2}\\
+		&= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right]
 	\end{align}
 	where
 	\begin{align}
@@ -189,7 +185,25 @@
 		A_2 &= \frac{2 \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa} \\
 		A_3 &= -\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}{\kappa}.
 	\end{align}
+	Noting, however, that the marginal is effectively a multivariate Gaussian, we know that
+	\begin{align}
+		P[\boldsymbol{\ell}] &= \frac{1}{\sqrt{(2\pi)^N \det\boldsymbol{\Sigma}}} \exp\left[-\frac{1}{2} \boldsymbol{\ell}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{\ell}\right]
+	\end{align}
+	where 
+	\begin{align}
+		\boldsymbol{\Sigma}&= \sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T,
+	\end{align}
+	or the covariance matrix comprised from summing the random variables $\mathbf{v}s+\mathbf{w}\sigma_I\xi_I + \sigma_G\boldsymbol{\xi}$. This implies that 
+	\begin{align}
+		\mathbf{A} &= \frac{1}{2} \boldsymbol{\Sigma}^{-1} \\
+		\Rightarrow \mathbf{A}^{-1} &= 2 \boldsymbol{\Sigma} = 2\left(\sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T\right).
+	\end{align}
+	Furthermore, 
+	\begin{align}
+		\det \mathbf{\mathbf{A}} &= \frac{1}{2^N} \det \boldsymbol{\Sigma}^{-1} = \frac{1}{2^N \sigma_G^{2N-4} \kappa}.
+	\end{align}
 	\newpage
+	
 	\section{Calculation of Mutual Information, Linear Stage}
 	Here we present the calculation of mutual information $I[s, \boldsymbol{\ell}]$ between the stimulus $s$ and the output of the linear stage $\boldsymbol{\ell}$.
 	
@@ -199,6 +213,47 @@
 	\end{align}
 	The ratio between the conditional and marginal distribution is given by 
 	\begin{align}
-		\frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]} &= \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}}
+		\frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]} &= \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}} \exp\left[\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(A_1 \mathbf{ww}^T + A_2 \mathbf{wv}^T + A_2 \mathbf{vw}^T+ A_3 \mathbf{vv}^T\right)\boldsymbol{\ell}\right] \notag \\
+		&\times \exp\left[\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(\frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right)\boldsymbol{\ell}\right]\exp\left[\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right)\mathbf{v}s\right] \notag \\
+		&\times \exp\left[\frac{1}{2\sigma_G^2} s\mathbf{v}^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) \boldsymbol{\ell}\right]\exp\left[-\frac{1}{2\sigma_G^2} s^2 \mathbf{v}^T \left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) \mathbf{v}\right] \\
+		&=  \frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}} \exp\left[\frac{1}{2\sigma_G^2}\boldsymbol{\ell}^T\left(-\frac{\sigma_I^4 \sigma_S^2(\mathbf{v}\cdot\mathbf{w})^2}{\kappa(\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\mathbf{ww}^T + A_2 \mathbf{wv}^T + A_3 \mathbf{vv}^T\right)\boldsymbol{\ell}\right] \notag \\
+		&\times \exp\left[\frac{s (\boldsymbol{\ell} \cdot \mathbf{v})}{\sigma_G^2}\right]\exp\left[-\frac{s\sigma_I^2 (\boldsymbol{\ell}\cdot \mathbf{w})(\mathbf{v}\cdot\mathbf{w})}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right]\exp\left[-\frac{s^2}{2\sigma_G^2} \left(|\mathbf{v}|^2 -\frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right)\right].
+	\end{align}
+	Taking the logarithm of this gives us
+	\begin{align}
+		\log \frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]} &= \log \left(\frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}}\right) \notag \\
+		&+ \frac{1}{2\sigma_G^2}\boldsymbol{\ell}^T\left(-\frac{\sigma_I^4 \sigma_S^2(\mathbf{v}\cdot\mathbf{w})^2}{\kappa(\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\mathbf{ww}^T + A_2 \mathbf{wv}^T + A_2 \mathbf{vw}^T+ A_3 \mathbf{vv}^T\right)\boldsymbol{\ell} \notag \\
+		&+ \frac{1}{2\sigma_G^2} \left[-s^2 \left(|\mathbf{v}|^2 -\frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) + 2s \left((\boldsymbol{\ell} \cdot\mathbf{v}) - \frac{\sigma_I^2 (\boldsymbol{\ell}\cdot \mathbf{w})(\mathbf{v}\cdot\mathbf{w})}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right)\right].
+	\end{align}
+	The log-ratio consists of three terms: a consist, a term depending strictly on $\boldsymbol{\ell}$, and a term that depends on both $\boldsymbol{\ell}$ and $s$. We can split the mutual information into three terms:
+	\begin{gather}
+		 I = \int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \log \left(\frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}}\right) \notag \\
+		+ \int d\boldsymbol{\ell} ds P[s]P[\boldsymbol{\ell}|s] \left[\frac{1}{2\sigma_G^2}\boldsymbol{\ell}^T\left(-\frac{\sigma_I^4 \sigma_S^2(\mathbf{v}\cdot\mathbf{w})^2}{\kappa(\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\mathbf{ww}^T + A_2 \mathbf{wv}^T + A_2 \mathbf{vw}^T + A_3 \mathbf{vv}^T\right)\boldsymbol{\ell}\right] \notag \\
+		+ \int d\boldsymbol{\ell}ds P[s] P[\boldsymbol{\ell}|s] \times  \frac{1}{2\sigma_G^2} \left[-s^2 \left(|\mathbf{v}|^2 -\frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) + 2s \left((\boldsymbol{\ell} \cdot\mathbf{v}) - \frac{\sigma_I^2 (\boldsymbol{\ell}\cdot \mathbf{w})(\mathbf{v}\cdot\mathbf{w})}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right)\right].
+	\end{gather}
+	The first term, call it $I_1$ is easy: the integral will marginalize out both probability distributions, and we are left with
+	\begin{align}
+		I_1 &= \log \left(\frac{1}{\sigma_G}\sqrt{\frac{\kappa}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}}\right).
+	\end{align}
+	In the second term, $I_2$, we can evaluate the $s$ integral for free because the attached term only depends on $\boldsymbol{\ell}$. So,
+	\begin{align}
+		I_2 &= \int d\boldsymbol{\ell}\left[\frac{1}{2\sigma_G^2}\boldsymbol{\ell}^T\left(-\frac{\sigma_I^4 \sigma_S^2(\mathbf{v}\cdot\mathbf{w})^2}{\kappa(\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\mathbf{ww}^T + A_2 \mathbf{wv}^T + A_2 \mathbf{vw}^T+ A_3 \mathbf{vv}^T\right)\boldsymbol{\ell}\right]  P[\boldsymbol{\ell}] \\
+		&= \frac{1}{2\sigma_G^N\sqrt{(2\pi)^N \kappa}} \int d\boldsymbol{\ell} \ \boldsymbol{\ell}^T\left(B_1 \mathbf{ww}^T + A_2\mathbf{wv}^T+ A_2\mathbf{vw}^T+ A_3\mathbf{vv}^T\right)\boldsymbol{\ell} \exp\left[-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right] \\
+		&= \frac{1}{2\sigma_G^N \sqrt{(2\pi)^N \kappa}} \int d\boldsymbol{\ell} \left[\boldsymbol{\ell}^T \mathbf{B} \boldsymbol{\ell}\right]  \exp\left[-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right]
+	\end{align}
+	where 
+	\begin{align}
+		\mathbf{B} &= B_1 \mathbf{ww}^T + A_2\mathbf{wv}^T + A_2\mathbf{vw}^T+ A_3\mathbf{vv}^T.
+	\end{align}
+	These integrals can be evaluated with the identity
+	\begin{align}
+		\int d\boldsymbol{\ell}  \left[\boldsymbol{\ell}^T \mathbf{C}_1 \boldsymbol{\ell} \right] \exp\left[-\boldsymbol{\ell}^T \mathbf{C}_2 \boldsymbol{\ell}\right] &= \sqrt{\frac{\pi^N}{\det \mathbf{C}_2}}\Tr(\mathbf{C}_1 \mathbf{C}_2^{-1}).
+	\end{align}
+	Thus, 
+	\begin{align}
+		I_2 &= \frac{1}{2\sigma_G^N \sqrt{(2\pi)^N \kappa}}\sqrt{\frac{\pi^N}{\det \mathbf{A}}}\Tr(\mathbf{B} \mathbf{A}^{-1}) \\
+		&= \frac{1}{2\sigma_G^N} \sqrt{\frac{2^N \sigma_G^{2N-4} \kappa}{2^N \kappa}} \Tr (\mathbf{B}\mathbf{A}^{-1}) \\
+		&= \frac{1}{2\sigma_G^2} \Tr(\mathbf{B}\mathbf{A}^{-1}) \\
+		&= \frac{1}{\sigma_G^2} \Tr \left[\left(B_1 \mathbf{ww}^T + A_2(\mathbf{wv}^T + \mathbf{vw}^T) + A_3\mathbf{vv}^T\right)  (\sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T)\right]
 	\end{align}
 \end{document}
