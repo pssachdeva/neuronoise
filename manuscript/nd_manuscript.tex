@@ -259,6 +259,9 @@
 	
 	As for the last term, we have
 	\begin{align}
-		I_3 
+		I_3 &= \frac{1}{2\sigma_G^2}\int d\boldsymbol{\ell} ds P[s] P[\boldsymbol{\ell}|s] \left[-s^2 \left(|\mathbf{v}|^2 -\frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) + 2s \left((\boldsymbol{\ell} \cdot\mathbf{v}) - \frac{\sigma_I^2 (\boldsymbol{\ell}\cdot \mathbf{w})(\mathbf{v}\cdot\mathbf{w})}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right)\right] \\
+		&= \frac{1}{2\sigma_G^2} \frac{1}{\sqrt{2\pi \sigma_S^2}} \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \int d\boldsymbol{\ell} \exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right)\boldsymbol{\ell}\right] \notag \\
+		&\times \int ds \exp\left[\frac{s (\boldsymbol{\ell} \cdot \mathbf{v})}{\sigma_G^2}\right]\exp\left[-\frac{s\sigma_I^2 (\boldsymbol{\ell}\cdot \mathbf{w})(\mathbf{v}\cdot\mathbf{w})}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right]\exp\left[-\frac{s^2}{2\sigma_G^2} \left(|\mathbf{v}|^2 -\frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right)\right] \exp\left[-\frac{s^2}{2\sigma_S^2}\right]\notag \\
+		&\times \left[-s^2 \left(|\mathbf{v}|^2 -\frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) + 2s \left((\boldsymbol{\ell} \cdot\mathbf{v}) - \frac{\sigma_I^2 (\boldsymbol{\ell}\cdot \mathbf{w})(\mathbf{v}\cdot\mathbf{w})}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right)\right]
 	\end{align}
 \end{document}
