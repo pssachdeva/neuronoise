@@ -2,27 +2,30 @@ import numpy as np
 from scipy.stats import truncnorm
 
 class LNN:
-    def __init__(self, v = None, w = None, N = None, sigmaS = 1., sigmaI = 1., sigmaG = 1., nonlinearity = None):
+    def __init__(self, v = None, w = None, N = None, sigmaS = 1., sigmaI = 1., sigmaG = 1., nonlinearity = None, thres = None):
         if v is None:
-            self.v = 0
+            self.v = self.struct_weight_maker(N, 1)
         else:
             self.v = v
         
         if w is None:
-            self.w = 0
+            self.w = self.struct_weight_maker(N, 1)
         else:
             self.w = w
         
-        self.N = v.size
+        self.N = self.v.size
         
         if nonlinearity is None:
             self.nonlinearity = self.squared
-        else:
-            self.nonlinearity = nonlinearity
+        elif nonlinearity == 'ReLU':
+            self.nonlinearity = self.relu
+        elif nonlinearity == 'thres_sq':
+            self.nonlinearity = self.trunc_squared
         
         self.sigmaS = sigmaS
         self.sigmaI = sigmaI
         self.sigmaG = sigmaG
+        self.thres = thres
     
     @staticmethod
     def struct_weight_maker(N, k):
@@ -47,28 +50,27 @@ class LNN:
         return weights
     
     '''Example nonlinearities'''
-    def squared(self,x):
-        return x**2
+    def squared(self, l):
+        return l**2
 
-    def relu(self, x, thres):
-        if x < thres:
-            return 0
-        else:
-            return x
+    def relu(self, l):
+        r = np.copy(l)
+        r[r < self.thres] = 0
+        return r
 
-    def trunc_squared(self, x, thres):
-        if x < thres:
+    def trunc_squared(self, x):
+        if x < self.thres:
             return 0
         else:
             return x**2
 
-    def simulate(self,trials):
-        s = np.random.normal(loc = 0., scale = sigmaG, size = trials)
-        injected_noise = np.random.normal(loc = 0., scale = sigmaI, size = trials)
-        private_noise = np.random.normal(loc = 0., scale = sigmaG, size = (self.N, trials))
-        l = np.outer(self.v, s) + np.outer(self.w, injected_noise) + private_noise
+    def simulate(self, trials):
+        s = np.random.normal(loc = 0., scale = self.sigmaG, size = trials)
+        xiI = np.random.normal(loc = 0., scale = self.sigmaI, size = trials)
+        private_noise = np.random.normal(loc = 0., scale = self.sigmaG, size = (self.N, trials))
+        l = np.outer(self.v, s) + np.outer(self.w, xiI) + private_noise
         r = self.nonlinearity(l)
-        return r
+        return s, l, r
     
     def FI_linear_stage(self):
         v2 = np.sum(self.v**2)
