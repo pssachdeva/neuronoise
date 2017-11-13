@@ -107,25 +107,4 @@ class LNN:
         kappa = sigma_inj * sigma_stim - self.sigmaI**2 * self.sigmaS**2 * vdotw**2
         
         I = -np.log(self.sigmaG) + 0.5 * np.log(kappa/sigma_inj)
-        
-        # second term
-        #A1 = -self.sigmaI**2 * sigma_stim/kappa
-        #A2 = self.sigmaI**2 * self.sigmaS**2 * vdotw/kappa
-        #A3 = -self.sigmaS**2 * sigma_inj/kappa
-        #B1 = -(self.sigmaI**4 * self.sigmaS**2 * vdotw**2)/(kappa * sigma_inj)
-        
-        #A = 1./(2 * self.sigmaG**2) * (np.identity(self.N) + A1 * ww + A2 * (vw + wv)  + A3 * vv)
-        #A_inv = 2 * (self.sigmaG**2 * np.identity(self.N) + self.sigmaS**2 * vv + self.sigmaI**2 * ww)
-        
-        #B = B1 * ww + A2 * wv + A2 * vw + A3
-    
-        #I2 = 1./(2. * self.sigmaG**2) * np.trace(np.dot(B, A_inv))
-        
-        # third term
-        #gamma = (2 * self.sigmaG**2 + self.sigmaS**2 * v2) * (self.sigmaG**2 + self.sigmaI**2 * w2) - self.sigmaI**2 * self.sigmaS**2 * vdotw**2
-        #D = gamma * (-self.sigmaI**4 * vdotw**2 * ww + self.sigmaI**2 * sigma_inj * vdotw * wv + self.sigmaI**2 * sigma_inj * vdotw * vw - (self.sigmaG**2+ self.sigmaI**2 * w2)**2 * vv)
-        #C = kappa * self.sigmaG**2 * sigma_inj * (self.sigmaG**2 * v2 + self.sigmaI**2 * (v2 * w2 - vdotw**2))
-        #I3 = -self.sigmaS**2/(2 * kappa) * (self.sigmaG**2 * v2 + self.sigmaI**2 * (v2 * w2 - vdotw**2))
-        #np.trace(np.dot(D, A_inv))
-        #I4 = -self.sigmaS**2/(2 * self.sigmaG**2 * kappa**2 * sigma_inj) * np.trace(np.dot(D, A_inv))
         return I
