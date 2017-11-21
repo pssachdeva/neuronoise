@@ -93,7 +93,17 @@ class LNN:
 
 		FI = 4 * s**2 * (VMV - (2 * self.sigmaI**4)/(1 + 2 * self.sigmaI**4 * WMW) * VMW**2)
 		return FI
-	
+
+	def covar_lin(self):
+		return self.sigmaG**2 * np.identity(self.N) + self.sigmaS**2 * np.outer(self.v, self.v) + self.sigmaI**2 * np.outer(self.w, self.w)
+
+	def covar_squared_nonlin(self, s):
+		V = self.v**2
+		W = self.w**2
+		X = self.v*self.w
+		covar = 2 * self.sigmaG**4 * np.identity(self.N) + 4 * self.sigmaG**2 * s**2 * np.diag(V) + 4 * self.sigmaG**2 * self.sigmaI**2 * np.diag(W) + 4 * s**2 * self.sigmaI**2 * np.outer(X, X) + 2 * self.sigmaI**4 * np.outer(W,W)
+		return covar 
+
 	def MI_linear_stage(self):
 		v2 = np.sum(self.v**2)
 		w2 = np.sum(self.w**2)

@@ -31,12 +31,14 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 \DeclareMathOperator*{\plim}{plim}
 \DeclareMathOperator{\Tr}{Tr}
+\usepackage{graphics}
 
 \usepackage{tikz}
+%\pgfrealjobname{survey}
 \usetikzlibrary{shapes.geometric, arrows}
 \usepackage{float}
 % title
-\title{Synaptic weight diversity enhances encoding and decoding in the presence of common noise in a linear-nonlinear network}
+\title{Heterogeneous synaptic weighting enhances encoding and decoding in the presence of common noise in a linear-nonlinear network}
 \date{}
 \begin{document}
 	\maketitle
@@ -44,34 +46,52 @@
 	\section{Introduction}
 	\begin{figure}[ht]
 	\centering
+	%\beginpgfgraphicnamed{survey-f1}
 	\begin{tikzpicture}
 	\tikzstyle{main} = [circle, minimum size = 12mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
 	\tikzstyle{main2} = [circle, minimum size = 15mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
-	\node[main, fill = white!100] at (0, 1.) (s) {$s$};
-	\node[main, fill = white!100] at (0, -1.) (inj) {$\xi_I$};
+	\node[main, fill = white!100] at (-2, 1.) (s) {$s$};
+	\node[main, fill = white!100] at (-2, -1.) (inj) {$\xi_I$};
+	
+	\node[main2] at (1.,3.0)  (c1) {${\scriptstyle v_1 s + w_1 \xi_I}$};
+	\node[main2] at (1.,0.0)  (c2) {${\scriptstyle v_2 s + w_2 \xi_I}$};
+	\node[main2] at (1,-3.0) (cN) {${\scriptstyle v_N s + w_N \xi_I}$};
+	
 	\node[main2] at (4.,3.0)  (lin1) {$\ell_1$};
 	\node[main2] at (4.,0.0)  (lin2) {$\ell_2$};
 	\node[main2] at (4,-3.0) (linN) {$\ell_{N}$};
 	
-	\node[main2] at (8, 3.0) (nonlin1) {$g_1(\ell)$};
-	\node[main2] at (8, 0.0) (nonlin2) {$g_2(\ell)$};
-	\node[main2] at (8, -3.0) (nonlinN) {$g_N(\ell)$};
+	\node[main2] at (6, 3.0) (nonlin1) {$g_1(\ell)$};
+	\node[main2] at (6, 0.0) (nonlin2) {$g_2(\ell)$};
+	\node[main2] at (6, -3.0) (nonlinN) {$g_N(\ell)$};
 	
-	\node at (10, 3.0) (r1) {$r_1$};
-	\node at (10, 0.0) (r2) {$r_2$};
-	\node at (10, -3.0) (rN) {$r_N$};
+	\node at (8, 3.0) (r1) {$r_1$};
+	\node at (8, 0.0) (r2) {$r_2$};
+	\node at (8, -3.0) (rN) {$r_N$};
 	
-	\draw[->, line width = 0.4mm] (s) -- (lin1) node[midway, above left, sloped] {$v_1$};
-	\draw[->, line width = 0.4mm] (s) -- (lin2) node[midway, above right, sloped] {$v_2$};
-	\draw[->, line width = 0.4mm] (s) -- (linN) node[midway, above right, sloped] {$v_N$};
+	\node[main] at (2.5, 4.0) (xi1) {$\xi_1$};
+	\node[main] at (2.5, 1.0) (xi2) {$\xi_2$};
+	\node[main] at (2.5, -2.0) (xiN) {$\xi_N$};
 	
-	\draw[->, line width = 0.4mm] (inj) -- (lin1) node[pos = 0.6, above left, sloped] {$w_1$};
-	\draw[->, line width = 0.4mm] (inj) -- (lin2) node[pos = 0.8, above left, sloped] {$w_2$};
-	\draw[->, line width = 0.4mm] (inj) -- (linN) node[midway, above left, sloped] {$w_N$};
+	\draw[->, line width = 0.4mm] (s) -- (c1) node[midway, above left, sloped] {$v_1$};
+	\draw[->, line width = 0.4mm] (s) -- (c2) node[midway, above right, sloped] {$v_2$};
+	\draw[->, line width = 0.4mm] (s) -- (cN) node[midway, above right, sloped] {$v_N$};
 	
-	\draw[->, line width = 0.4mm] (lin1) -- (nonlin1) node[midway, above] {$+\xi_1$};
-	\draw[->, line width = 0.4mm] (lin2) -- (nonlin2) node[midway, above] {$+\xi_2$};
-	\draw[->, line width = 0.4mm] (linN) -- (nonlinN) node[midway, above] {$+\xi_N$};
+	\draw[->, line width = 0.4mm] (inj) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
+	\draw[->, line width = 0.4mm] (inj) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
+	\draw[->, line width = 0.4mm] (inj) -- (cN) node[midway, above left, sloped] {$w_N$};
+	
+	\draw[->, line width = 0.4mm] (c1) -- (lin1);
+	\draw[->, line width = 0.4mm] (c2) -- (lin2);
+	\draw[->, line width = 0.4mm] (cN) -- (linN);
+	
+	\draw[->, line width = 0.4mm] (xi1) -- (lin1);
+	\draw[->, line width = 0.4mm] (xi2) -- (lin2);
+	\draw[->, line width = 0.4mm] (xiN) -- (linN);
+	
+	\draw[->, line width = 0.4mm] (lin1) -- (nonlin1);
+	\draw[->, line width = 0.4mm] (lin2) -- (nonlin2);
+	\draw[->, line width = 0.4mm] (linN) -- (nonlinN);
 	
 	\draw[->, line width = 0.4mm] (nonlin1) -- (r1);
 	\draw[->, line width = 0.4mm] (nonlin2) -- (r2);
@@ -81,6 +101,7 @@
 	\path (nonlin2) -- (nonlinN) node [black, font=\Huge, midway, sloped] {$\dots$};
 	\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
 	\end{tikzpicture}
+	%\endpgfgraphicnamed
 	\caption{Linear-Nonlinear Network Architecture}
 	\end{figure}
 	\newpage
