@@ -16,11 +16,19 @@ class LNN:
 		self.N = self.v.size
 		
 		if nonlinearity is None:
+			self.nonlinearity_name = 'squared'
+			self.nonlinearity = self.squared
+		elif nonlinearity == 'squared':
+			self.nonlinearity_name = 'squared'
 			self.nonlinearity = self.squared
 		elif nonlinearity == 'ReLU':
-			self.nonlinearity = self.relu
-		elif nonlinearity == 'thres_sq':
-			self.nonlinearity = self.trunc_squared
+			self.nonlinearity_name = 'ReLU'
+			self.nonlinearity = self.ReLU
+		elif nonlinearity == 'squared_ReLU':
+			self.nonlinearity_name = 'squared_ReLU'
+			self.nonlinearity = self.squared_ReLU
+		else:
+			raise ValueError('Incorrect nonlinearity choice.')
 		
 		self.sigmaS = sigmaS
 		self.sigmaI = sigmaI
@@ -53,12 +61,12 @@ class LNN:
 	def squared(self, l):
 		return l**2
 
-	def relu(self, l):
+	def ReLU(self, l):
 		r = np.copy(l)
 		r[r < self.thres] = 0
 		return r
 
-	def trunc_squared(self, x):
+	def squared_ReLU(self, x):
 		if x < self.thres:
 			return 0
 		else:
@@ -80,6 +88,12 @@ class LNN:
 		fisher_info = (self.sigmaG**2 * v2 + self.sigmaI**2 * (v2 * w2 - vdotw**2))/(self.sigmaG**2 * sigma_inj)
 		return fisher_info
 	
+	def FI_nonlinear_stage(self, s):
+		if self.nonlinearity_name == 'squared':
+			return self.FI_squared_nonlin(s)
+		else:
+			return ValueError('Nonlinearity not implemented yet.')
+
 	def FI_squared_nonlin(self, s):
 		vw40 = np.sum(self.v**4)
 		vw31 = np.sum(self.v**3 * self.w)
