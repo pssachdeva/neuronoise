@@ -44,14 +44,16 @@
 	\maketitle
 	
 	\section{Introduction}
-	discussion on noise correlations \\
-	discusson on synaptic connectivity \\
-	discussion on differential correlations \\
-	introduction to our results
+	\textcolor{red}{discussion on noise correlations} \\
+	\textcolor{red}{discusson on synaptic connectivity} \\
+	\textcolor{red}{discussion on differential correlations} \\
+	\textcolor{red}{introduction to our results}
+	
+	\newpage 
 	
 	\section{Results}
 	\subsection{Network Architecture}
-	We consider the linear-nonlinear network architecture shown in Figure \ref{architecture}. 
+	We consider the linear-nonlinear network architecture shown in Figure \ref{architecture}. \textcolor{red}{shpeal on network architecutre}
 	\begin{figure}[ht]
 		\centering
 		\scalebox{0.8}{
@@ -105,6 +107,7 @@
 				\draw[->, line width = 0.4mm] (nonlin2) -- (r2);
 				\draw[->, line width = 0.4mm] (nonlinN) -- (rN);
 				
+				\path (c2) -- (cN) node [black, font=\Huge, midway, sloped] {$\dots$};
 				\path (lin2) -- (linN) node [black, font=\Huge, midway, sloped] {$\dots$};
 				\path (nonlin2) -- (nonlinN) node [black, font=\Huge, midway, sloped] {$\dots$};
 				\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
@@ -138,26 +141,21 @@
 	\right) \times c.
 	\]
 	Specifically, the structured weight vectors are parameterized by an integer $k$ which divides the $N$ weights into $k$ homogeneous groups. The weights across the groups span the positive integers up to $k$, and we allow for a final scaling factor $c$. 
-
-	\newpage
-	\section{Fisher Information, Linear Stage}
-	We calculate the Fisher information after the linear stage, shown below:
+	
+	For simplicity, set $k=1$ for the stimulus weight vector $\mathbf{v}$ and allow $k$ to vary for the noise weight vectors. While increasing $k$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. We first consider how the linear Fisher information and mutual information are impacted by the choice of $k$ for the noise weight vector $\mathbf{w}$. Note that both quantities are monotonically increasing functions of $k$, implying that encoding and decoding are enhanced despite the fact that more noise has entered the system. Furthermore, our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively. \textcolor{red}{reference to Brunel/Nadal result}
+	
 	\begin{figure}[H]
 		\centering
-		%\scalebox{0.5}{\includegraphics{fisher_linear_stage.pdf}}
+		\scalebox{0.32}{\includegraphics{img/fisher_linear.pdf}}
+		\scalebox{0.32}{\includegraphics{img/mutual_linear.pdf}}
+		\caption{\textcolor{red}{insert caption here}}
 	\end{figure}
 	
-	\newpage
-	\section{Fisher Information, Quadratic Nonlinearity}
+	\subsection{Unstructured Weights}
+	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from a lognormal distribution [citations] and thresholded. In this case, we calculate both information theoretic quantities 
 	
 	\newpage
-	\section{Mutual Information, Linear Stage}
-	\begin{figure}[H]
-	\centering
-	%\scalebox{0.5}{\includegraphics{mutual_linear_stage.pdf}}
-	\end{figure}
-	
-	
+	\section{Discussion}
 	\appendix
 	\newpage
 	\section{Calculation of  Fisher Information, Linear Stage}
