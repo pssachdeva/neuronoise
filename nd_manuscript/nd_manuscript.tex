@@ -152,8 +152,19 @@
 	\end{figure}
 	
 	\subsection{Unstructured Weights}
-	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from a lognormal distribution [citations] and thresholded. In this case, we calculate both information theoretic quantities 
+	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from a log-normal distribution \textcolor{red}{[citations]} and thresholded. In this case, we calculate both information theoretic quantities many random draws from the log-normal distribution with a given scale $\sigma_w$.  We show our results in Figure \ref{fig:unstruct_linear} for several network sizes. Thus, we have a common theme: as we increase the heterogeneity of the weights, the network's coding capacity increases (though it eventually asymptotes). 
 	
+	\begin{figure}[H]
+		\centering
+		\scalebox{0.32}{\includegraphics{img/fisher_unstruct_linear.pdf}}
+		\scalebox{0.32}{\includegraphics{img/mutual_unstruct_linear.pdf}}
+		\caption{\textcolor{red}{insert caption here}}
+		\label{fig:unstruct_linear}
+	\end{figure}
+	
+	\subsection{Noise Correlations}
+	
+
 	\newpage
 	\section{Discussion}
 	\appendix
@@ -398,6 +409,8 @@
 		&= \frac{1}{2} \log \left(\frac{ (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right) \\
 		&= \frac{1}{2} \log \left(1 + \frac{\sigma_S^2}{\sigma_G^2} |\mathbf{v}|^2 - \frac{\sigma_I^2 \sigma_S^2}{\sigma_G^2} \frac{(\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right)
 	\end{align}
+
+
 %	\subsection{Setting up the Mutual Information Integral}
 %	The mutual information is given by 
 %	\begin{align}
