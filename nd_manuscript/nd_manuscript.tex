@@ -51,12 +51,20 @@
 	
 	\newpage 
 	
-	\section{Results}
+	\section{Methods}
 	\subsection{Network Architecture}
-	We consider the linear-nonlinear network architecture shown in Figure \ref{architecture}. \textcolor{red}{shpeal on network architecutre}
+	We consider the linear-nonlinear architecture depicted in Figure \ref{architecture}. The inputs to the network consist of a stimulus $s$ along with common (Gaussian) noise $\xi^C$ with variance $\sigma_C^2$. The $N$ neurons to the network take a linear combination of the inputs which is then corrupted by i.i.d. ``membrane potential'' Gaussian noise. Thus, the output of the linear stage for the $i$th neuron is 
+	\begin{align}
+		\ell_i &= v_i s + w_i \xi^I + \xi^M_i,
+	\end{align}
+	where $\xi^M_i$ is the membrane potential noise with variance $\sigma_M^2$. The noisy linear combination is passed through a nonlinearity $g_i(\ell)$ whose output $r_i$ can be thought of as a firing rate. Thus, the network-wide computation is given by
+	\begin{align}
+		\mathbf{r} &= \mathbf{g}(\mathbf{v} s + \mathbf{w} \xi^I + \boldsymbol{\xi}^M)
+	\end{align}
+	where vector notation denotes the weights, noises, and nonlinearities across the neuronal population. In this scheme the correlational structure of the network is dictated by the choice of weight vectors $\mathbf{v}$, $\mathbf{w}$ along with the array of nonlinearities $\mathbf{g}$. 
 	\begin{figure}[ht]
 		\centering
-		\scalebox{0.8}{
+		\scalebox{0.75}{
 			\begin{tikzpicture}
 				\tikzstyle{main} = [circle, minimum size = 12mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
 				\tikzstyle{main2} = [circle, minimum size = 15mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
@@ -79,9 +87,9 @@
 				\node at (8, 0.0) (r2) {$r_2$};
 				\node at (8, -3.0) (rN) {$r_N$};
 				
-				\node[main] at (2.5, 4.0) (xi1) {$\xi_1$};
-				\node[main] at (2.5, 1.0) (xi2) {$\xi_2$};
-				\node[main] at (2.5, -2.0) (xiN) {$\xi_N$};
+				\node[main] at (2.5, 4.0) (xi1) {$\xi_1^M$};
+				\node[main] at (2.5, 1.0) (xi2) {$\xi_2^M$};
+				\node[main] at (2.5, -2.0) (xiN) {$\xi_N^M$};
 				
 				\draw[->, line width = 0.4mm] (s) -- (c1) node[midway, above left, sloped] {$v_1$};
 				\draw[->, line width = 0.4mm] (s) -- (c2) node[midway, above right, sloped] {$v_2$};
@@ -112,55 +120,134 @@
 				\path (nonlin2) -- (nonlinN) node [black, font=\Huge, midway, sloped] {$\dots$};
 				\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
 			\end{tikzpicture}
+		}\scalebox{0.75}{
+		\begin{tikzpicture}
+			\tikzstyle{main} = [circle, minimum size = 12mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
+			\tikzstyle{main2} = [circle, minimum size = 15mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
+			\node[main, fill = white!100] at (-2, 2.) (s) {$s$};
+			\node[main, fill = white!100] at (-2, 0.) (inj) {$\xi_I$};
+			\node[main, fill = white!100] at (-2, -3.) (ink) {$\xi^I_k$};
+			
+			\node[main2] at (1.,3.0)  (c1) {${\scriptstyle v_1 s + w_1 \xi_I}$};
+			\node[main2] at (1.,0.0)  (c2) {${\scriptstyle v_2 s + w_2 \xi_I}$};
+			\node[main2] at (1,-3.0) (cN) {${\scriptstyle v_N s + w_N \xi_I}$};
+			
+			\node[main2] at (4.,3.0)  (lin1) {$\ell_1$};
+			\node[main2] at (4.,0.0)  (lin2) {$\ell_2$};
+			\node[main2] at (4,-3.0) (linN) {$\ell_{N}$};
+			
+			\node[main2] at (6, 3.0) (nonlin1) {$g_1(\ell)$};
+			\node[main2] at (6, 0.0) (nonlin2) {$g_2(\ell)$};
+			\node[main2] at (6, -3.0) (nonlinN) {$g_N(\ell)$};
+			
+			\node at (8, 3.0) (r1) {$r_1$};
+			\node at (8, 0.0) (r2) {$r_2$};
+			\node at (8, -3.0) (rN) {$r_N$};
+			
+			\node[main] at (2.5, 4.0) (xi1) {$\xi_1^M$};
+			\node[main] at (2.5, 1.0) (xi2) {$\xi_2^M$};
+			\node[main] at (2.5, -2.0) (xiN) {$\xi_N^M$};
+			
+			\draw[->, line width = 0.4mm] (s) -- (c1) node[midway, above left, sloped] {$v_1$};
+			\draw[->, line width = 0.4mm] (s) -- (c2) node[midway, above right, sloped] {$v_2$};
+			\draw[->, line width = 0.4mm] (s) -- (cN) node[midway, above right, sloped] {$v_N$};
+			
+			\draw[->, line width = 0.4mm] (inj) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
+			\draw[->, line width = 0.4mm] (inj) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
+			\draw[->, line width = 0.4mm] (inj) -- (cN) node[midway, above left, sloped] {$w_N$};
+			
+			\draw[->, line width = 0.4mm] (ink) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
+			\draw[->, line width = 0.4mm] (ink) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
+			\draw[->, line width = 0.4mm] (ink) -- (cN) node[midway, above left, sloped] {$w_N$};
+			\draw[->, line width = 0.4mm] (c1) -- (lin1);
+			\draw[->, line width = 0.4mm] (c2) -- (lin2);
+			\draw[->, line width = 0.4mm] (cN) -- (linN);
+			
+			\draw[->, line width = 0.4mm] (xi1) -- (lin1);
+			\draw[->, line width = 0.4mm] (xi2) -- (lin2);
+			\draw[->, line width = 0.4mm] (xiN) -- (linN);
+			
+			\draw[->, line width = 0.4mm] (lin1) -- (nonlin1);
+			\draw[->, line width = 0.4mm] (lin2) -- (nonlin2);
+			\draw[->, line width = 0.4mm] (linN) -- (nonlinN);
+			
+			\draw[->, line width = 0.4mm] (nonlin1) -- (r1);
+			\draw[->, line width = 0.4mm] (nonlin2) -- (r2);
+			\draw[->, line width = 0.4mm] (nonlinN) -- (rN);
+			
+			\path (inj) -- (ink) node [black, font=\Huge, midway, sloped] {$\dots$};
+			\path (c2) -- (cN) node [black, font=\Huge, midway, sloped] {$\dots$};
+			\path (lin2) -- (linN) node [black, font=\Huge, midway, sloped] {$\dots$};
+			\path (nonlin2) -- (nonlinN) node [black, font=\Huge, midway, sloped] {$\dots$};
+			\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
+			\end{tikzpicture}
 		}
 		\caption{Linear-Nonlinear Network Architecture}
 		\label{architecture}
 	\end{figure}
-
+	
+	\subsection{Measures of Coding Strength}
+	In order to assess the fidelity of the population code represented by $\mathbf{\ell}$ or $\mathbf{r}$, we turn to the Fisher information and the Shannon mutual information. The former has largely been utilized in the context of sensory decoding and correlated variability \textcolor{red}{[citations]} while the latter has been well studied in the context of efficient coding \textcolor{red}{[citation]}.
+	\subsection{Structured Weights}
 	To obtain analytic expressions for these quantities, we first consider the case of ``structured weights'' taking on the form
-	\[
-		\begin{array}{r@{}}
-		N/k \text{ times} ~\left\{\begin{array}{@{}c@{}}\null\\\null\\\null\end{array}\right.\vspace{4pt} \\
-		N/k \text{ times}~\left\{\begin{array}{@{}c@{}}\null\\\null\\\null\end{array}\right. \\
-		\vspace{7pt}\\ 
-		N/k \text{ times}~\left\{\begin{array}{@{}c@{}}\null\\\null\\\null\end{array}\right. \\
-		\end{array}
-		\left(
-		\begin{array}{c}
-		1 \vspace{-3pt}  \\
-		\vdots \\
-		1 \\
-		2 \vspace{-3pt}  \\
-		\vdots \\
-		2 \vspace{-3pt}\\ 
-		\vdots \\
-		k \vspace{-3pt}\\
-		\vdots \\
-		k
-		\end{array}
-	\right) \times c.
-	\]
-	Specifically, the structured weight vectors are parameterized by an integer $k$ which divides the $N$ weights into $k$ homogeneous groups. The weights across the groups span the positive integers up to $k$, and we allow for a final scaling factor $c$. 
+	\begin{align}
+		c \times \left(\underbrace{1 \cdots 1}_{N/k \text{ times}}  \ \underbrace{2 \cdots 2}_{N/k \text{ times}} \ \cdots \ \underbrace{k \cdots k}_{N/k \text{ times}}   \right)^T.
+	\end{align}
+	Specifically, the structured weight vectors are parameterized by an integer $k$ which divides the $N$ weights into $k$ homogeneous groups. The weights across the groups span the positive integers up to $k$, and we allow for a final scaling factor $c$. Importantly,  larger $k$ will only increase the weights in the vector. Thus, in the above scheme, increased ``diversity'' can only be achieved through an increase through the parameter $k$, which will invariably result in an amplification of the signal to which the weight vector is applied. In the case that $k$ does not evenly divide $N$, the last group is repeated $N\mod k$ times.
 	
-	For simplicity, set $k=1$ for the stimulus weight vector $\mathbf{v}$ and allow $k$ to vary for the noise weight vectors. While increasing $k$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. We first consider how the linear Fisher information and mutual information are impacted by the choice of $k$ for the noise weight vector $\mathbf{w}$. Note that both quantities are monotonically increasing functions of $k$, implying that encoding and decoding are enhanced despite the fact that more noise has entered the system. Furthermore, our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively. \textcolor{red}{reference to Brunel/Nadal result}
+	\subsection{Unstructured Weights}
 	
-	\begin{figure}[H]
+	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from some parameterized probability distribution:
+	\begin{align}
+		\mathbf{v} \sim p(\mathbf{v}; \theta_{\mathbf{v}}); \ \mathbf{w} \sim p(\mathbf{w}; \theta_{\mathbf{w}}).
+	\end{align}
+	Thus, we  calculate both information theoretic quantities over many random draws from these distributions. We then observe how the quantities behave as some subset of the parameters $\theta$ are varied.
+	\newpage
+	
+	\section{Results}
+	We consider the coding strength after both the linear stage $(\boldsymbol{\ell})$ and the nonlinear stage $(\mathbf{r})$ along with the 
+	\subsection{Structured Weights}
+	The Fisher information in the linear representation is calculated in Appendix \ref{fisher-linear} as 
+	\begin{align}
+		I_F(s) &= \frac{\sigma_M^2 |\mathbf{v}|^2 + \sigma_C^2 \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{\sigma_M^2 (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)}. \label{eqn:fisher-linear}
+	\end{align}
+	while the mutual information is calculated in Appendix \ref{mutual-linear} as
+	\begin{align}
+		I[s, \boldsymbol{\ell}] &= \frac{1}{2} \log \left(1 + \frac{\sigma_S^2}{\sigma_M^2} |\mathbf{v}|^2 - \frac{\sigma_C^2 \sigma_S^2}{\sigma_M^2} \frac{(\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right). \label{eqn:mutual-linear}
+	\end{align}
+	In the case of mutual information, we have assumed the stimulus prior is Gaussian with zero mean and standard deviation $\sigma_S$. For structured weights, equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} can be explored by varying the choice of $k$ for both $\mathbf{v}$ and $\mathbf{w}$ (call them $k_{\mathbf{v}}$ and $k_{\mathbf{w}}$, respectively).
+	
+	It is simplest to examine these quantities with $k_{\mathbf{v}}=1$ while allowing $k_{\mathbf{w}}$ to vary, as amplifying and diversifying $\mathbf{v}$ will increase coding ability (which our results corroborate) \textcolor{red}{[citation]}. On the other hand, while increasing $k_{\mathbf{w}}$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. 
+	
+	\begin{figure}[b!]
+		\label{fig:struct-linear}
 		\centering
 		\scalebox{0.32}{\includegraphics{img/fisher_linear.pdf}}
 		\scalebox{0.32}{\includegraphics{img/mutual_linear.pdf}}
 		\caption{\textcolor{red}{insert caption here}}
 	\end{figure}
 	
+	We first consider how the Fisher information and mutual information are impacted by the choice of $k_{\mathbf{w}}$. Our results are shown in Figure \ref{fig:struct-linear}: note that both quantities are monotonically increasing functions of $k_{\mathbf{w}}$, implying that encoding and decoding are enhanced despite the fact that more noise has entered the system. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise \textcolor{red}{[citation]}. The qualitative results 
+	
 	\subsection{Unstructured Weights}
 	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from a log-normal distribution \textcolor{red}{[citations]} and thresholded. In this case, we calculate both information theoretic quantities many random draws from the log-normal distribution with a given scale $\sigma_w$.  We show our results in Figure \ref{fig:unstruct_linear} for several network sizes. Thus, we have a common theme: as we increase the heterogeneity of the weights, the network's coding capacity increases (though it eventually asymptotes). 
 	
-	\begin{figure}[H]
-		\centering
-		\scalebox{0.32}{\includegraphics{img/fisher_unstruct_linear.pdf}}
-		\scalebox{0.32}{\includegraphics{img/mutual_unstruct_linear.pdf}}
-		\caption{\textcolor{red}{insert caption here}}
-		\label{fig:unstruct_linear}
-	\end{figure}
+%	\begin{figure}[t]
+%		\centering
+%		\scalebox{0.32}{\includegraphics{img/fisher_unstruct_linear.pdf}}
+%		\scalebox{0.32}{\includegraphics{img/mutual_unstruct_linear.pdf}}
+%		\caption{\textcolor{red}{insert caption here}}
+%		\label{fig:unstruct_linear}
+%	\end{figure}
+
+
+%	\begin{figure}[H]
+%		\centering
+%		\scalebox{0.32}{\includegraphics{img/fisher_squared_struct.pdf}}
+%		\scalebox{0.32}{\includegraphics{img/fisher_squared_unstruct.pdf}}
+%		\caption{\textcolor{red}{insert caption here}}
+%		\label{fig:unstruct_linear}
+%	\end{figure}
 	
 	\subsection{Noise Correlations}
 	
@@ -170,13 +257,14 @@
 	\appendix
 	\newpage
 	\section{Calculation of  Fisher Information, Linear Stage}
-	All variability after the linear stage is Gaussian; thus, the Fisher information can be expressed in the form
+	\label{fisher-linear}
+	All variability after the linear stage is Gaussian; thus, the Fisher information can be expressed in the form \textcolor{red}{[citation]}.
 	\begin{align}
 		I_{F}(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}^{-1} (s) \mathbf{f}'(s) + \frac{1}{2}\Tr\left[\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\right]. \label{IF-gaussian}
 	\end{align}
 	Our immediate goal is to calculate $\mathbf{f}(s)$, the average response of the linear stage, and $\boldsymbol{\Sigma}$, the covariance between the responses. The output of the $i$th neuron after the linear stage is
 	\begin{align}
-		\ell_i &= v_i s + w_i \sigma_I \xi_I + \sigma_G\xi_i,
+		\ell_i &= v_i s + w_i \sigma_C \xi^C + \sigma_M\xi_i^M,
 	\end{align}
 	so that the average response as a function of $s$ is
 	\begin{align}
@@ -189,26 +277,25 @@
 	
 	Meanwhile,
 	\begin{align}
-		\langle \ell_i \ell_j \rangle &= \langle (v_i s + w_i \sigma_I\xi_I + \sigma_G\xi_i) (v_j s + w_j \sigma_I\xi_I + \sigma_G\xi_j)\rangle \\
-		&= v_i v_j s^2 + w_i w_j \sigma_I^2 + \sigma_G^2 \delta_{ij}
+		\langle \ell_i \ell_j \rangle &= \langle (v_i s + w_i \sigma_C\xi^C + \sigma_M\xi_i^M) (v_j s + w_j \sigma_C\xi^C + \sigma_M\xi_j^M)\rangle \\
+		&= v_i v_j s^2 + w_i w_j \sigma_C^2 + \sigma_M^2 \delta_{ij}
 	\end{align}
 	so that
 	\begin{align}
-		\Sigma_{ij} &= v_i v_j s^2 + w_i w_j \sigma_I^2 + \sigma_G^2 \delta_{ij} - v_i v_j s^2 \\
-		&= \sigma_G^2 \delta_{ij} + w_i w_j \sigma_I^2 \\
-		\Rightarrow \boldsymbol{\Sigma} &= \sigma_G^2 \mathbf{I} + \sigma_I^2\mathbf{ww}^T.
+		\Sigma_{ij} &= v_i v_j s^2 + w_i w_j \sigma_C^2 + \sigma_M^2 \delta_{ij} - v_i v_j s^2 \\
+		&= \sigma_M^2 \delta_{ij} + w_i w_j \sigma_C^2 \\
+		\Rightarrow \boldsymbol{\Sigma} &= \sigma_M^2 \mathbf{I} + \sigma_C^2\mathbf{ww}^T.
 	\end{align}
-	Notice that the covariance matrix does not depend on $s$, so the second term in equation \eqref{IF-gaussian} will vanish. We do, however, need the inverse covariance matrix for the first term:
+	Notice that the covariance matrix does not depend on $s$, so the second term in equation \eqref{IF-gaussian} will vanish. We do, however, need the inverse covariance matrix for the first term \textcolor{red}{[citation]}:
 	\begin{align}
-		\boldsymbol{\Sigma}^{-1} &= \frac{1}{\sigma_G^2} \mathbf{I} - \frac{\sigma_I^2}{\sigma_G^4} \frac{\mathbf{ww}^T}{1+\frac{\sigma_I^2}{\sigma_G^2}||\mathbf{w}||^2}\\
-		&= \frac{1}{\sigma_G^2}\left(\mathbf{I} - \frac{\sigma_I^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\mathbf{ww}^T\right).
+		\boldsymbol{\Sigma}^{-1} &= \frac{1}{\sigma_M^2} \mathbf{I} - \frac{\sigma_C^2}{\sigma_M^4} \frac{\mathbf{ww}^T}{1+\frac{\sigma_C^2}{\sigma_M^2}||\mathbf{w}||^2}\\
+		&= \frac{1}{\sigma_M^2}\left(\mathbf{I} - \frac{\sigma_C^2}{\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2}\mathbf{ww}^T\right).
 	\end{align}
-	
 	Hence, the Fisher information is
 	\begin{align}
-		I_{F}(s) &= \frac{1}{\sigma_G^2}\mathbf{v}^T \left(\mathbf{I} - \frac{\sigma_I^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\mathbf{ww}^T\right) \mathbf{v} \\
-		&= \frac{1}{\sigma_G^2} \left(|\mathbf{v}|^2 - \frac{\sigma_I^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right) \\
-		&= \frac{\sigma_G^2 |\mathbf{v}|^2 + \sigma_I^2 \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}.
+		I_{F}(s) &= \frac{1}{\sigma_M^2}\mathbf{v}^T \left(\mathbf{I} - \frac{\sigma_C^2}{\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2}\mathbf{ww}^T\right) \mathbf{v} \\
+		&= \frac{1}{\sigma_M^2} \left(|\mathbf{v}|^2 - \frac{\sigma_C^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2}\right) \\
+		&= \frac{\sigma_M^2 |\mathbf{v}|^2 + \sigma_C^2 \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{\sigma_M^2 (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)}.
 	\end{align}
 	\newpage
 	\section{Calculation of Fisher Information, Quadratic Nonlinearity}
@@ -379,6 +466,7 @@
 	\newpage
 	
 	\section{Calculation of Mutual Information, Linear Stage}
+	\label{mutual-linear}
 	Here we present the calculation of mutual information $I[s, \boldsymbol{\ell}]$ between the stimulus $s$ and the output of the linear stage $\boldsymbol{\ell}$.
 	
 	The mutual information is given by 
@@ -390,10 +478,14 @@
 	\begin{align}
 		H[X] &= \frac{1}{2} \log \left(\det\boldsymbol{\Sigma}\right) + \frac{N}{2} (1 + \log(2\pi)).
 	\end{align}
-	Recall that 
+	Note that, by the Gaussianity of the involved distributions, 
 	\begin{align}
 		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \exp\left[-\frac{1}{2\sigma_G^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right] \\
-		P[\boldsymbol{\ell}] &= \frac{1}{ \sqrt{(2\pi)^N \sigma_G^{2N-4}\kappa}} \exp\left[-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right].
+		P[\boldsymbol{\ell}] &= \frac{1}{ \sqrt{(2\pi)^N \sigma_G^{2N-4}\kappa}} \exp\left[-\frac{1}{2}\boldsymbol{\ell}^T \left(\sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T\right)^{-1} \boldsymbol{\ell}\right].
+	\end{align}
+	where 
+	\begin{align}
+		\kappa &= (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
 	\end{align}
 	Thus,
 	\begin{align}
