@@ -53,13 +53,13 @@
 	
 	\section{Methods}
 	\subsection{Network Architecture}
-	We consider the linear-nonlinear architecture depicted in Figure \ref{architecture}. The inputs to the network consist of a stimulus $s$ along with common (Gaussian) noise $\xi^C$ with variance $\sigma_C^2$. The $N$ neurons to the network take a linear combination of the inputs which is then corrupted by i.i.d. ``membrane potential'' Gaussian noise. Thus, the output of the linear stage for the $i$th neuron is 
+	We consider the linear-nonlinear architecture depicted in Figure \ref{architecture}. The inputs to the network consist of a stimulus $s$ along with common (Gaussian) noise $\xi_C$. The $N$ neurons to the network take a linear combination of the inputs which is then corrupted by i.i.d. ``membrane potential'' Gaussian noise. Thus, the output of the linear stage for the $i$th neuron is 
 	\begin{align}
-		\ell_i &= v_i s + w_i \xi^I + \xi^M_i,
+		\ell_i &= v_i s + w_i \sigma_C \xi_C + \sigma_M\xi_{M,i},
 	\end{align}
-	where $\xi^M_i$ is the membrane potential noise with variance $\sigma_M^2$. The noisy linear combination is passed through a nonlinearity $g_i(\ell)$ whose output $r_i$ can be thought of as a firing rate. Thus, the network-wide computation is given by
+	where $\xi_{M,i}$ is the membrane potential noise. Both noise terms are scaled by positive constants $\sigma_C$ and $\sigma_M$ in order to make their variances explicit. The noisy linear combination is passed through a nonlinearity $g_i(\ell_i)$ whose output $r_i$ can be thought of as a firing rate. Thus, the network-wide computation is given by
 	\begin{align}
-		\mathbf{r} &= \mathbf{g}(\mathbf{v} s + \mathbf{w} \xi^I + \boldsymbol{\xi}^M)
+		\mathbf{r} &= \mathbf{g}(\mathbf{v} s + \mathbf{w} \sigma_C \xi_C +\sigma_M \boldsymbol{\xi}_M)
 	\end{align}
 	where vector notation denotes the weights, noises, and nonlinearities across the neuronal population. In this scheme the correlational structure of the network is dictated by the choice of weight vectors $\mathbf{v}$, $\mathbf{w}$ along with the array of nonlinearities $\mathbf{g}$. 
 	\begin{figure}[ht]
@@ -205,7 +205,7 @@
 	\newpage
 	
 	\section{Results}
-	We consider the coding strength after both the linear stage $(\boldsymbol{\ell})$ and the nonlinear stage $(\mathbf{r})$ along with the 
+	We consider the network's coding ability after both the linear stage $(\boldsymbol{\ell})$ and the nonlinear stage $(\mathbf{r})$. We examine these measures in 
 	\subsection{Structured Weights}
 	The Fisher information in the linear representation is calculated in Appendix \ref{fisher-linear} as 
 	\begin{align}
@@ -220,14 +220,26 @@
 	It is simplest to examine these quantities with $k_{\mathbf{v}}=1$ while allowing $k_{\mathbf{w}}$ to vary, as amplifying and diversifying $\mathbf{v}$ will increase coding ability (which our results corroborate) \textcolor{red}{[citation]}. On the other hand, while increasing $k_{\mathbf{w}}$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. 
 	
 	\begin{figure}[b!]
-		\label{fig:struct-linear}
+		\label{struct-linear}
 		\centering
 		\scalebox{0.32}{\includegraphics{img/fisher_linear.pdf}}
 		\scalebox{0.32}{\includegraphics{img/mutual_linear.pdf}}
 		\caption{\textcolor{red}{insert caption here}}
 	\end{figure}
 	
-	We first consider how the Fisher information and mutual information are impacted by the choice of $k_{\mathbf{w}}$. Our results are shown in Figure \ref{fig:struct-linear}: note that both quantities are monotonically increasing functions of $k_{\mathbf{w}}$, implying that encoding and decoding are enhanced despite the fact that more noise has entered the system. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise \textcolor{red}{[citation]}. The qualitative results 
+	We first consider how the Fisher information and mutual information are impacted by the choice of $k_{\mathbf{w}}$. In the structured regime, we have 
+	\begin{align}
+		|\mathbf{v}|^2 &= N \\
+		\mathbf{v}\cdot\mathbf{w} &= \frac{N}{k} \sum_{i=1}^k i = \frac{N(k+1)}{2} \\
+		|\mathbf{w}|^2 &= \frac{N}{k}\sum_{i=1}^k i^2 = \frac{N(k+1)(2k+1)}{6},
+	\end{align}
+	which allows us to write equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} as 
+	\begin{align}
+		I_F(s) = I_F &= \frac{N}{2\sigma_M^2} \frac{12 \sigma_M^2 + N \sigma_C^2 (k^2-1)}{6\sigma_M^2 + N\sigma_C^2 (2k^2+3k+1)}
+	\end{align}
+	Our results are shown in Figure \ref{struct-linear}: note that both quantities are monotonically increasing functions of $k_{\mathbf{w}}$, implying that encoding and decoding are enhanced despite the fact that more noise has entered the system. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise \textcolor{red}{[citation]}.
+	
+	
 	
 	\subsection{Unstructured Weights}
 	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from a log-normal distribution \textcolor{red}{[citations]} and thresholded. In this case, we calculate both information theoretic quantities many random draws from the log-normal distribution with a given scale $\sigma_w$.  We show our results in Figure \ref{fig:unstruct_linear} for several network sizes. Thus, we have a common theme: as we increase the heterogeneity of the weights, the network's coding capacity increases (though it eventually asymptotes). 
@@ -264,7 +276,7 @@
 	\end{align}
 	Our immediate goal is to calculate $\mathbf{f}(s)$, the average response of the linear stage, and $\boldsymbol{\Sigma}$, the covariance between the responses. The output of the $i$th neuron after the linear stage is
 	\begin{align}
-		\ell_i &= v_i s + w_i \sigma_C \xi^C + \sigma_M\xi_i^M,
+		\ell_i &= v_i s + w_i \sigma_C \xi_C + \sigma_M\xi_{M,i},
 	\end{align}
 	so that the average response as a function of $s$ is
 	\begin{align}
@@ -277,7 +289,7 @@
 	
 	Meanwhile,
 	\begin{align}
-		\langle \ell_i \ell_j \rangle &= \langle (v_i s + w_i \sigma_C\xi^C + \sigma_M\xi_i^M) (v_j s + w_j \sigma_C\xi^C + \sigma_M\xi_j^M)\rangle \\
+		\langle \ell_i \ell_j \rangle &= \langle (v_i s + w_i \sigma_C\xi_C + \sigma_M\xi_{M,i}) (v_j s + w_j \sigma_C\xi_C + \sigma_M\xi_{M,j})\rangle \\
 		&= v_i v_j s^2 + w_i w_j \sigma_C^2 + \sigma_M^2 \delta_{ij}
 	\end{align}
 	so that
@@ -299,31 +311,31 @@
 	\end{align}
 	\newpage
 	\section{Calculation of Fisher Information, Quadratic Nonlinearity}
-	We repeat the calculation of the previous section, but after the nonlinear stage. In this case, we consider a quadratic nonlinearity. We calculate the linear Fisher information because it is simpler to do so analytically. 
+	We repeat the calculation of the previous section, but after the nonlinear stage. In this case, we consider a quadratic nonlinearity. We calculate the linear Fisher information because it is simpler to do so analytically. The output of the network is 
 	\begin{align}
-	r_i &= (v_i s + w_i \sigma_I \xi_I + \sigma_G \xi_i)^2 \\
-	&= v_i^2 s^2 + w_i^2 \sigma_I^2 \xi_I^2 +  \sigma_G^2 \xi_i^2 + 2s v_i w_i \sigma_I \xi_I + 2 v_i s \sigma_G \xi_i + w_i \sigma_I \sigma_G \xi_I \xi_i.
+	r_i &= (v_i s + w_i \sigma_C \xi_C + \sigma_M \xi_{M,i})^2 \\
+	&= v_i^2 s^2 + w_i^2 \sigma_C^2 \xi_C^2 +  \sigma_M^2 \xi_{M,i}^2 + 2s v_i w_i \sigma_C \xi_C + 2 sv_i  \sigma_M \xi_{M,i} + 2w_i \sigma_C \sigma_M \xi_{C} \xi_{i,M}.
 	\end{align}
 	Thus, the average becomes 
 	\begin{align}
 	f_i(s) &= \langle r_i \rangle \\
-	&= v_i^2 s^2 + w_i^2 \sigma_I^2 + \sigma_G^2,
+	&= v_i^2 s^2 + w_i^2 \sigma_C^2 + \sigma_M^2,
 	\end{align}
 	which implies 
 	\begin{align}
 	\langle r_i \rangle  \langle r_j \rangle &= (v_i^2 s^2 + w_i^2 \sigma_I^2 + \sigma_G^2)(v_j^2 s^2 + w_j^2 \sigma_I^2 + \sigma_G^2)\\
-	&= \sigma_G^4 + s^2 \sigma_G^2 (v_i^2 + v_j^2)  + \sigma_G^2 \sigma_I^2 (w_i^2 + w_j^2) + s^2 \sigma_I^2 (v_i^2 w_j^2 + v_j^2 w_i^2 ) + s^4 v_i^2 v_j^2+ \sigma_I^4 w_i^2 w_j^2
+	&= \sigma_M^4 + s^2 \sigma_M^2 (v_i^2 + v_j^2)  + \sigma_M^2 \sigma_C^2 (w_i^2 + w_j^2) + s^2 \sigma_C^2 (v_i^2 w_j^2 + v_j^2 w_i^2) + s^4 v_i^2 v_j^2+ \sigma_C^4 w_i^2 w_j^2
 	\end{align}
 	Next, the covariate becomes 
 	\begin{align}
-	\langle r_i r_j \rangle &= \left\langle \left(v_i^2 s^2 + w_i^2 \sigma_I^2 \xi_I^2 +  \sigma_G^2 \xi_i^2 + 2s v_i w_i \sigma_I \xi_I + 2 v_i s \sigma_G \xi_i + w_i \sigma_I \sigma_G \xi_I \xi_i\right) \right. \notag \\
-	& \qquad \left. \left(v_j^2 s^2 + w_j^2 \sigma_I^2 \xi_I^2 +  \sigma_G^2 \xi_j^2 + 2s v_j w_j \sigma_I \xi_I + 2 v_j s \sigma_G \xi_j + w_i \sigma_I \sigma_G \xi_I \xi_i\right)\right\rangle \\
-	&= \sigma_G^4 + s^2 \sigma_G^2 (v_i^2 + v_j^2) + \sigma_G^2 \sigma_I^2 (w_i^2 + w_j^2) + s^2 \sigma_I^2 (v_i^2 w_j^2 + v_j^2 w_i^2) + s^4 v_i^2 v_j^2 + 3\sigma_I^4 w_i^2 w_j^2 \notag \\
-	& \qquad + 4s^2 \sigma_I^2 v_i v_j w_i w_j.
+	\langle r_i r_j \rangle &= \left\langle \left(v_i^2 s^2 + w_i^2 \sigma_C^2 \xi_C^2 +  \sigma_M^2 \xi_{M,i}^2 + 2s v_i w_i \sigma_C \xi_C + 2 sv_i  \sigma_M \xi_{M,i} + 2w_i \sigma_C \sigma_M \xi_{C} \xi_{i,M}\right) \right. \notag \\
+	& \qquad \left. \left(v_j^2 s^2 + w_j^2 \sigma_C^2 \xi_C^2 +  \sigma_M^2 \xi_{M,j}^2 + 2s v_j w_j \sigma_C \xi_C + 2 sv_j  \sigma_M \xi_{M,j} + 2w_j \sigma_C \sigma_M \xi_{C} \xi_{j,M}\right)\right\rangle \\
+	&= \sigma_M^4 + s^2 \sigma_M^2 (v_i^2 + v_j^2) + \sigma_M^2 \sigma_C^2 (w_i^2 + w_j^2) + s^2 \sigma_C^2 (v_i^2 w_j^2 + v_j^2 w_i^2) + s^4 v_i^2 v_j^2 + 3\sigma_C^4 w_i^2 w_j^2 \notag \\
+	& \qquad + 4s^2 \sigma_C^2 v_i v_j w_i w_j.
 	\end{align}
 	And so the off diagonal terms of the covariance matrix are 
 	\begin{align}
-	\langle r_i r_j \rangle - \langle r_i \rangle \langle r_j \rangle &= 2 \sigma_I^4 w_i^2 w_j^2 + 4s^2 \sigma_I^2 v_i v_j w_i w_j.
+	\langle r_i r_j \rangle - \langle r_i \rangle \langle r_j \rangle &= 2 \sigma_C^4 w_i^2 w_j^2 + 4s^2 \sigma_C^2 v_i v_j w_i w_j.
 	\end{align}
 	Lastly, the variance of $r_i$ (the on-diagonal terms in the covariance matrix) is given by 
 	\begin{align}
