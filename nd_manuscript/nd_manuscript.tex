@@ -19,7 +19,7 @@
 \usepackage{times}
 
 \usepackage{setspace} 
-% SI Units in math type
+% si units in latex
 \usepackage{siunitx}
 \usepackage{textcomp} 
 % Change sizes of sections
@@ -33,8 +33,11 @@
 \DeclareMathOperator{\Tr}{Tr}
 \usepackage{graphics}
 
+\usepackage[english]{babel}
+\usepackage{biblatex}
+\addbibresource{nd_manuscript.bib}
+
 \usepackage{tikz}
-%\pgfrealjobname{survey}
 \usetikzlibrary{shapes.geometric, arrows}
 \usepackage{float}
 % title
@@ -57,7 +60,9 @@
 	\begin{align}
 		\ell_i &= v_i s + w_i \sigma_C \xi_C + \sigma_M\xi_{M,i},
 	\end{align}
-	where $\xi_{M,i}$ is the membrane potential noise. Both noise terms are scaled by positive constants $\sigma_C$ and $\sigma_M$ in order to make their variances explicit. The noisy linear combination is passed through a nonlinearity $g_i(\ell_i)$ whose output $r_i$ can be thought of as a firing rate. Thus, the network-wide computation is given by
+	where $\xi_{M,i}$ is the membrane potential noise. Both noise terms are scaled by positive constants $\sigma_C$ and $\sigma_M$ in order to make their variances explicit. The noisy linear combination is passed through a nonlinearity $g_i(\ell_i)$ whose output $r_i$ can be thought of as a firing rate. We consider the cases in which $\mathbf{r}$ alone serves as the network's output and when it acts as the mean for a Poisson firing process.
+	
+	Thus, the network-wide computation is given by
 	\begin{align}
 		\mathbf{r} &= \mathbf{g}(\mathbf{v} s + \mathbf{w} \sigma_C \xi_C +\sigma_M \boldsymbol{\xi}_M)
 	\end{align}
@@ -69,15 +74,15 @@
 				\tikzstyle{main} = [circle, minimum size = 12mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
 				\tikzstyle{main2} = [circle, minimum size = 15mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
 				\node[main, fill = white!100] at (-2, 1.) (s) {$s$};
-				\node[main, fill = white!100] at (-2, -1.) (inj) {$\xi_I$};
+				\node[main, fill = white!100] at (-2, -1.) (common) {$\xi_C$};
 				
-				\node[main2] at (1.,3.0)  (c1) {${\scriptstyle v_1 s + w_1 \xi_I}$};
-				\node[main2] at (1.,0.0)  (c2) {${\scriptstyle v_2 s + w_2 \xi_I}$};
-				\node[main2] at (1,-3.0) (cN) {${\scriptstyle v_N s + w_N \xi_I}$};
+				\node[main2] at (1.,3.0)  (l1) {${\scriptstyle v_1 s + w_1 \xi_C}$};
+				\node[main2] at (1.,0.0)  (l2) {${\scriptstyle v_2 s + w_2 \xi_C}$};
+				\node[main2] at (1,-3.0) (lN) {${\scriptstyle v_N s + w_N \xi_C}$};
 				
-				\node[main2] at (4.,3.0)  (lin1) {$\ell_1$};
-				\node[main2] at (4.,0.0)  (lin2) {$\ell_2$};
-				\node[main2] at (4,-3.0) (linN) {$\ell_{N}$};
+				\node[main2] at (4.,3.0)  (ell1) {$\ell_1$};
+				\node[main2] at (4.,0.0)  (ell2) {$\ell_2$};
+				\node[main2] at (4,-3.0) (ellN) {$\ell_{N}$};
 				
 				\node[main2] at (6, 3.0) (nonlin1) {$g_1(\ell)$};
 				\node[main2] at (6, 0.0) (nonlin2) {$g_2(\ell)$};
@@ -87,113 +92,119 @@
 				\node at (8, 0.0) (r2) {$r_2$};
 				\node at (8, -3.0) (rN) {$r_N$};
 				
-				\node[main] at (2.5, 4.0) (xi1) {$\xi_1^M$};
-				\node[main] at (2.5, 1.0) (xi2) {$\xi_2^M$};
-				\node[main] at (2.5, -2.0) (xiN) {$\xi_N^M$};
+				\node[main] at (2.5, 4.0) (xi1) {$\xi_{M,1}$};
+				\node[main] at (2.5, 1.0) (xi2) {$\xi_{M,2}$};
+				\node[main] at (2.5, -2.0) (xiN) {$\xi_{M,N}$};
 				
-				\draw[->, line width = 0.4mm] (s) -- (c1) node[midway, above left, sloped] {$v_1$};
-				\draw[->, line width = 0.4mm] (s) -- (c2) node[midway, above right, sloped] {$v_2$};
-				\draw[->, line width = 0.4mm] (s) -- (cN) node[midway, above right, sloped] {$v_N$};
+				\draw[->, line width = 0.4mm] (s) -- (l1) node[midway, above left, sloped] {$v_1$};
+				\draw[->, line width = 0.4mm] (s) -- (l2) node[midway, above right, sloped] {$v_2$};
+				\draw[->, line width = 0.4mm] (s) -- (lN) node[midway, above right, sloped] {$v_N$};
 				
-				\draw[->, line width = 0.4mm] (inj) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
-				\draw[->, line width = 0.4mm] (inj) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
-				\draw[->, line width = 0.4mm] (inj) -- (cN) node[midway, above left, sloped] {$w_N$};
+				\draw[->, line width = 0.4mm] (common) -- (l1) node[pos = 0.6, above left, sloped] {$w_1$};
+				\draw[->, line width = 0.4mm] (common) -- (l2) node[pos = 0.8, above left, sloped] {$w_2$};
+				\draw[->, line width = 0.4mm] (common) -- (lN) node[midway, above left, sloped] {$w_N$};
 				
-				\draw[->, line width = 0.4mm] (c1) -- (lin1);
-				\draw[->, line width = 0.4mm] (c2) -- (lin2);
-				\draw[->, line width = 0.4mm] (cN) -- (linN);
+				\draw[->, line width = 0.4mm] (l1) -- (ell1);
+				\draw[->, line width = 0.4mm] (l2) -- (ell2);
+				\draw[->, line width = 0.4mm] (lN) -- (ellN);
 				
-				\draw[->, line width = 0.4mm] (xi1) -- (lin1);
-				\draw[->, line width = 0.4mm] (xi2) -- (lin2);
-				\draw[->, line width = 0.4mm] (xiN) -- (linN);
+				\draw[->, line width = 0.4mm] (xi1) -- (ell1);
+				\draw[->, line width = 0.4mm] (xi2) -- (ell2);
+				\draw[->, line width = 0.4mm] (xiN) -- (ellN);
 				
-				\draw[->, line width = 0.4mm] (lin1) -- (nonlin1);
-				\draw[->, line width = 0.4mm] (lin2) -- (nonlin2);
-				\draw[->, line width = 0.4mm] (linN) -- (nonlinN);
+				\draw[->, line width = 0.4mm] (ell1) -- (nonlin1);
+				\draw[->, line width = 0.4mm] (ell2) -- (nonlin2);
+				\draw[->, line width = 0.4mm] (ellN) -- (nonlinN);
 				
 				\draw[->, line width = 0.4mm] (nonlin1) -- (r1);
 				\draw[->, line width = 0.4mm] (nonlin2) -- (r2);
 				\draw[->, line width = 0.4mm] (nonlinN) -- (rN);
 				
-				\path (c2) -- (cN) node [black, font=\Huge, midway, sloped] {$\dots$};
-				\path (lin2) -- (linN) node [black, font=\Huge, midway, sloped] {$\dots$};
+				\path (l2) -- (lN) node [black, font=\Huge, midway, sloped] {$\dots$};
+				\path (ell2) -- (ellN) node [black, font=\Huge, midway, sloped] {$\dots$};
 				\path (nonlin2) -- (nonlinN) node [black, font=\Huge, midway, sloped] {$\dots$};
 				\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
-			\end{tikzpicture}
-		}\scalebox{0.75}{
-		\begin{tikzpicture}
-			\tikzstyle{main} = [circle, minimum size = 12mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
-			\tikzstyle{main2} = [circle, minimum size = 15mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
-			\node[main, fill = white!100] at (-2, 2.) (s) {$s$};
-			\node[main, fill = white!100] at (-2, 0.) (inj) {$\xi_I$};
-			\node[main, fill = white!100] at (-2, -3.) (ink) {$\xi^I_k$};
-			
-			\node[main2] at (1.,3.0)  (c1) {${\scriptstyle v_1 s + w_1 \xi_I}$};
-			\node[main2] at (1.,0.0)  (c2) {${\scriptstyle v_2 s + w_2 \xi_I}$};
-			\node[main2] at (1,-3.0) (cN) {${\scriptstyle v_N s + w_N \xi_I}$};
-			
-			\node[main2] at (4.,3.0)  (lin1) {$\ell_1$};
-			\node[main2] at (4.,0.0)  (lin2) {$\ell_2$};
-			\node[main2] at (4,-3.0) (linN) {$\ell_{N}$};
-			
-			\node[main2] at (6, 3.0) (nonlin1) {$g_1(\ell)$};
-			\node[main2] at (6, 0.0) (nonlin2) {$g_2(\ell)$};
-			\node[main2] at (6, -3.0) (nonlinN) {$g_N(\ell)$};
-			
-			\node at (8, 3.0) (r1) {$r_1$};
-			\node at (8, 0.0) (r2) {$r_2$};
-			\node at (8, -3.0) (rN) {$r_N$};
-			
-			\node[main] at (2.5, 4.0) (xi1) {$\xi_1^M$};
-			\node[main] at (2.5, 1.0) (xi2) {$\xi_2^M$};
-			\node[main] at (2.5, -2.0) (xiN) {$\xi_N^M$};
-			
-			\draw[->, line width = 0.4mm] (s) -- (c1) node[midway, above left, sloped] {$v_1$};
-			\draw[->, line width = 0.4mm] (s) -- (c2) node[midway, above right, sloped] {$v_2$};
-			\draw[->, line width = 0.4mm] (s) -- (cN) node[midway, above right, sloped] {$v_N$};
-			
-			\draw[->, line width = 0.4mm] (inj) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
-			\draw[->, line width = 0.4mm] (inj) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
-			\draw[->, line width = 0.4mm] (inj) -- (cN) node[midway, above left, sloped] {$w_N$};
-			
-			\draw[->, line width = 0.4mm] (ink) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
-			\draw[->, line width = 0.4mm] (ink) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
-			\draw[->, line width = 0.4mm] (ink) -- (cN) node[midway, above left, sloped] {$w_N$};
-			\draw[->, line width = 0.4mm] (c1) -- (lin1);
-			\draw[->, line width = 0.4mm] (c2) -- (lin2);
-			\draw[->, line width = 0.4mm] (cN) -- (linN);
-			
-			\draw[->, line width = 0.4mm] (xi1) -- (lin1);
-			\draw[->, line width = 0.4mm] (xi2) -- (lin2);
-			\draw[->, line width = 0.4mm] (xiN) -- (linN);
-			
-			\draw[->, line width = 0.4mm] (lin1) -- (nonlin1);
-			\draw[->, line width = 0.4mm] (lin2) -- (nonlin2);
-			\draw[->, line width = 0.4mm] (linN) -- (nonlinN);
-			
-			\draw[->, line width = 0.4mm] (nonlin1) -- (r1);
-			\draw[->, line width = 0.4mm] (nonlin2) -- (r2);
-			\draw[->, line width = 0.4mm] (nonlinN) -- (rN);
-			
-			\path (inj) -- (ink) node [black, font=\Huge, midway, sloped] {$\dots$};
-			\path (c2) -- (cN) node [black, font=\Huge, midway, sloped] {$\dots$};
-			\path (lin2) -- (linN) node [black, font=\Huge, midway, sloped] {$\dots$};
-			\path (nonlin2) -- (nonlinN) node [black, font=\Huge, midway, sloped] {$\dots$};
-			\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
-			\end{tikzpicture}
-		}
-		\caption{Linear-Nonlinear Network Architecture}
+			\end{tikzpicture}}
+%		\scalebox{0.75}{
+%		\begin{tikzpicture}
+%			\tikzstyle{main} = [circle, minimum size = 12mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
+%			\tikzstyle{main2} = [circle, minimum size = 15mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
+%			\node[main, fill = white!100] at (-2, 2.) (s) {$s$};
+%			\node[main, fill = white!100] at (-2, 0.) (inj) {$\xi_I$};
+%			\node[main, fill = white!100] at (-2, -3.) (ink) {$\xi^I_k$};
+%			
+%			\node[main2] at (1.,3.0)  (c1) {${\scriptstyle v_1 s + w_1 \xi_I}$};
+%			\node[main2] at (1.,0.0)  (c2) {${\scriptstyle v_2 s + w_2 \xi_I}$};
+%			\node[main2] at (1,-3.0) (cN) {${\scriptstyle v_N s + w_N \xi_I}$};
+%			
+%			\node[main2] at (4.,3.0)  (lin1) {$\ell_1$};
+%			\node[main2] at (4.,0.0)  (lin2) {$\ell_2$};
+%			\node[main2] at (4,-3.0) (linN) {$\ell_{N}$};
+%			
+%			\node[main2] at (6, 3.0) (nonlin1) {$g_1(\ell)$};
+%			\node[main2] at (6, 0.0) (nonlin2) {$g_2(\ell)$};
+%			\node[main2] at (6, -3.0) (nonlinN) {$g_N(\ell)$};
+%			
+%			\node at (8, 3.0) (r1) {$r_1$};
+%			\node at (8, 0.0) (r2) {$r_2$};
+%			\node at (8, -3.0) (rN) {$r_N$};
+%			
+%			\node[main] at (2.5, 4.0) (xi1) {$\xi_1^M$};
+%			\node[main] at (2.5, 1.0) (xi2) {$\xi_2^M$};
+%			\node[main] at (2.5, -2.0) (xiN) {$\xi_N^M$};
+%			
+%			\draw[->, line width = 0.4mm] (s) -- (c1) node[midway, above left, sloped] {$v_1$};
+%			\draw[->, line width = 0.4mm] (s) -- (c2) node[midway, above right, sloped] {$v_2$};
+%			\draw[->, line width = 0.4mm] (s) -- (cN) node[midway, above right, sloped] {$v_N$};
+%			
+%			\draw[->, line width = 0.4mm] (inj) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
+%			\draw[->, line width = 0.4mm] (inj) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
+%			\draw[->, line width = 0.4mm] (inj) -- (cN) node[midway, above left, sloped] {$w_N$};
+%			
+%			\draw[->, line width = 0.4mm] (ink) -- (c1) node[pos = 0.6, above left, sloped] {$w_1$};
+%			\draw[->, line width = 0.4mm] (ink) -- (c2) node[pos = 0.8, above left, sloped] {$w_2$};
+%			\draw[->, line width = 0.4mm] (ink) -- (cN) node[midway, above left, sloped] {$w_N$};
+%			\draw[->, line width = 0.4mm] (c1) -- (lin1);
+%			\draw[->, line width = 0.4mm] (c2) -- (lin2);
+%			\draw[->, line width = 0.4mm] (cN) -- (linN);
+%			
+%			\draw[->, line width = 0.4mm] (xi1) -- (lin1);
+%			\draw[->, line width = 0.4mm] (xi2) -- (lin2);
+%			\draw[->, line width = 0.4mm] (xiN) -- (linN);
+%			
+%			\draw[->, line width = 0.4mm] (lin1) -- (nonlin1);
+%			\draw[->, line width = 0.4mm] (lin2) -- (nonlin2);
+%			\draw[->, line width = 0.4mm] (linN) -- (nonlinN);
+%			
+%			\draw[->, line width = 0.4mm] (nonlin1) -- (r1);
+%			\draw[->, line width = 0.4mm] (nonlin2) -- (r2);
+%			\draw[->, line width = 0.4mm] (nonlinN) -- (rN);
+%			
+%			\path (inj) -- (ink) node [black, font=\Huge, midway, sloped] {$\dots$};
+%			\path (c2) -- (cN) node [black, font=\Huge, midway, sloped] {$\dots$};
+%			\path (lin2) -- (linN) node [black, font=\Huge, midway, sloped] {$\dots$};
+%			\path (nonlin2) -- (nonlinN) node [black, font=\Huge, midway, sloped] {$\dots$};
+%			\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
+%			\end{tikzpicture}
+%		}
+		\caption{Linear-Nonlinear Network Architecture. The network takes as its inputs a stimulus $s$ and common noise $\xi_C$. A linear combination of these quantities is corrupted by individual membrane potential noise $\xi_{M,i}$. The output of this linear stage is then passed through a nonlinearity $g_i(\ell)$.}
 		\label{architecture}
 	\end{figure}
 	
 	\subsection{Measures of Coding Strength}
-	In order to assess the fidelity of the population code represented by $\mathbf{\ell}$ or $\mathbf{r}$, we turn to the Fisher information and the Shannon mutual information. The former has largely been utilized in the context of sensory decoding and correlated variability \textcolor{red}{[citations]} while the latter has been well studied in the context of efficient coding \textcolor{red}{[citation]}.
+	In order to assess the fidelity of the population code represented by $\boldsymbol{\ell}$ or $\mathbf{r}$, we turn to the Fisher information and the Shannon mutual information. The former has largely been utilized in the context of sensory decoding and correlated variability \cite{2016kohn} while the latter has been well studied in the context of efficient coding. The Fisher information sets a limit by which the readout of a population code can determine the input. Formally, it sets a lower bound to the variance of an estimator. Often, the Fisher information is intractable to calculate analytically; a suitable lower bound is the linear Fisher information:
+	\begin{align}
+		I_F(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}^{-1}(s) \mathbf{f}(s)
+	\end{align}
+	whose corresponding estimator is the locally optimal linear estimator. 
 	\subsection{Structured Weights}
 	To obtain analytic expressions for these quantities, we first consider the case of ``structured weights'' taking on the form
 	\begin{align}
 		c \times \left(\underbrace{1 \cdots 1}_{N/k \text{ times}}  \ \underbrace{2 \cdots 2}_{N/k \text{ times}} \ \cdots \ \underbrace{k \cdots k}_{N/k \text{ times}}   \right)^T.
 	\end{align}
-	Specifically, the structured weight vectors are parameterized by an integer $k$ which divides the $N$ weights into $k$ homogeneous groups. The weights across the groups span the positive integers up to $k$, and we allow for a final scaling factor $c$. Importantly,  larger $k$ will only increase the weights in the vector. Thus, in the above scheme, increased ``diversity'' can only be achieved through an increase through the parameter $k$, which will invariably result in an amplification of the signal to which the weight vector is applied. In the case that $k$ does not evenly divide $N$, the last group is repeated $N\mod k$ times.
+	Specifically, the structured weight vectors are parameterized by an integer $k$ which divides the $N$ weights into $k$ homogeneous groups. The weights across the groups span the positive integers up to $k$, and we allow for a final scaling factor $c$. 
+	
+	Importantly,  larger $k$ will only increase the weights in the vector. Thus, in the above scheme, increased ``diversity'' can only be achieved through an increase through the parameter $k$, which will invariably result in an amplification of the signal to which the weight vector is applied. In the case that $k$ does not evenly divide $N$, the last group is repeated $N\text{mod }k$ times.
 	
 	\subsection{Unstructured Weights}
 	
@@ -201,12 +212,16 @@
 	\begin{align}
 		\mathbf{v} \sim p(\mathbf{v}; \theta_{\mathbf{v}}); \ \mathbf{w} \sim p(\mathbf{w}; \theta_{\mathbf{w}}).
 	\end{align}
-	Thus, we  calculate both information theoretic quantities over many random draws from these distributions. We then observe how the quantities behave as some subset of the parameters $\theta$ are varied.
+	Thus, we  calculate both information theoretic quantities over many random draws from these distributions. We then observe how the quantities behave as some subset of the parameters $\theta$ are varied. In particular, we will focus on the lognormal distribution, which has been observed to describe the distribution of synaptic weights well in slice electrophysiology \textcolor{red}{[citation]}. Specifically, we examine 
+	\begin{align}
+		\mathbf{w}\sim \text{Lognormal}(\mu - \Delta, \sigma)
+	\end{align}
+	where $\Delta$ sets a lower bound for the weights. Here, increased ``diversity'' in the sense of the structured weights is achieved by increasing $\mu$, which increases the mean, median, and mode of the lognormal distribution. This is in contrast with increasing $\sigma$, which will decrease the mode of the distribution.
 	\newpage
 	
 	\section{Results}
-	We consider the network's coding ability after both the linear stage $(\boldsymbol{\ell})$ and the nonlinear stage $(\mathbf{r})$. We examine these measures in 
-	\subsection{Structured Weights}
+	We consider the network's coding ability after both the linear stage $(\boldsymbol{\ell})$ and the nonlinear stage $(\mathbf{r})$. The linear stage can be considered the output of the network assuming the functions $\mathbf{g}$ are simply the identity. Furthermore, the qualitative conclusions we obtain from the linear stage should be  We consider both the structured and unstructured cases.
+	\subsection{Linear Stage}
 	The Fisher information in the linear representation is calculated in Appendix \ref{fisher-linear} as 
 	\begin{align}
 		I_F(s) &= \frac{\sigma_M^2 |\mathbf{v}|^2 + \sigma_C^2 \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{\sigma_M^2 (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)}. \label{eqn:fisher-linear}
@@ -217,15 +232,7 @@
 	\end{align}
 	In the case of mutual information, we have assumed the stimulus prior is Gaussian with zero mean and standard deviation $\sigma_S$. For structured weights, equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} can be explored by varying the choice of $k$ for both $\mathbf{v}$ and $\mathbf{w}$ (call them $k_{\mathbf{v}}$ and $k_{\mathbf{w}}$, respectively).
 	
-	It is simplest to examine these quantities with $k_{\mathbf{v}}=1$ while allowing $k_{\mathbf{w}}$ to vary, as amplifying and diversifying $\mathbf{v}$ will increase coding ability (which our results corroborate) \textcolor{red}{[citation]}. On the other hand, while increasing $k_{\mathbf{w}}$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. 
-	
-	\begin{figure}[b!]
-		\label{struct-linear}
-		\centering
-		\scalebox{0.32}{\includegraphics{img/fisher_linear.pdf}}
-		\scalebox{0.32}{\includegraphics{img/mutual_linear.pdf}}
-		\caption{\textcolor{red}{insert caption here}}
-	\end{figure}
+	It is simplest to examine these quantities with $k_{\mathbf{v}}=1$ while allowing $k_{\mathbf{w}}$ to vary, as amplifying and diversifying $\mathbf{v}$ will increase coding ability (which our results corroborate) \textcolor{red}{[citation]}. On the other hand, while increasing $k_{\mathbf{w}}$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. Thus, while we might expect that more noise in the system would hinder coding, the direction to which the noise is projected is important. 
 	
 	We first consider how the Fisher information and mutual information are impacted by the choice of $k_{\mathbf{w}}$. In the structured regime, we have 
 	\begin{align}
@@ -235,42 +242,45 @@
 	\end{align}
 	which allows us to write equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} as 
 	\begin{align}
-		I_F(s) = I_F &= \frac{N}{2\sigma_M^2} \frac{12 \sigma_M^2 + N \sigma_C^2 (k^2-1)}{6\sigma_M^2 + N\sigma_C^2 (2k^2+3k+1)}
+		I_F(s) = I_F &= \frac{N}{2\sigma_M^2} \frac{12 \sigma_M^2 + N \sigma_C^2 (k^2-1)}{6\sigma_M^2 + N\sigma_C^2 (2k^2+3k+1)} \\
+		I[s, \boldsymbol{\ell}] &= \frac{1}{2} \log\left[1 + \frac{\sigma_S^2}{\sigma_M^2} N - \frac{3N^2(k+1)^2\sigma_C^2 \sigma_S^2}{2\sigma_M^2 \left(N\sigma_C^2(k+1)(2k+1) + 6 \sigma_M^2\right)}\right]
 	\end{align}
-	Our results are shown in Figure \ref{struct-linear}: note that both quantities are monotonically increasing functions of $k_{\mathbf{w}}$, implying that encoding and decoding are enhanced despite the fact that more noise has entered the system. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise \textcolor{red}{[citation]}.
+	The structured regime analytically reveals the asymptotic behavior of the information quantities. Both quantities saturate as a function of $N$  only in the case of $k_{\mathbf{w}}=1$ (Figure \ref{fig:struct-linear}A, B); otherwise, they increase without bound. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, both quantities are monotonically increasing functions of $k_{\mathbf{w}}$ (Figure \ref{fig:struct-linear}C, D), implying that encoding and decoding are enhanced despite the fact that the common noise is magnified for larger $k_{\mathbf{w}}$. Our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise \textcolor{red}{[citation]}. These qualitative results hold for any choice of $(\sigma_S, \sigma_M, \sigma_C)$.
 	
+	In the case of $k_{\mathbf{w}}=1$, the signal and noise are aligned perfectly in the neural representation, which results in the saturation of both Fisher and mutual informations as a function of the neural population. Such saturation implies the existence of differential correlations, consistent with the observation that information-limiting correlations occur under the presence of shared input noise \textcolor{red}{[citation]}. 
 	
+	\begin{figure}[t]
+		\centering
+		\scalebox{0.35}{\includegraphics{img/figure2-part1.pdf}}
+		\scalebox{0.35}{\includegraphics{img/figure2-part2.pdf}}
+		\caption{The performance of the Fisher and mutual informations after the linear stage of the network. Here, we take $\sigma_M = \sigma_C=1$. Note that the Fisher information is independent of $s$. \textbf{(A)}, \textbf{(B)} Structured weights. Both informations saturate as a function of the number of neurons in the case of uniform noise weights ($k_{\mathbf{w}}=1$). Once $k_{\mathbf{w}}$ is increased, the informations are unbounded with respect to population size. \textbf{(C)}, \textbf{(D)} Same aforementioned network, but plotted with respect to heterogeneity for various network sizes. Increasing heterogeneity improves coding performance. \textbf{(E)}, \textbf{(F)} Unstructured weights calculated over 2000 draws from lognormal distributions. Inset shows the distribution of weights for various choices of $\mu$. Increasing $\mu$ shifts the distribution to the right, increasing heterogeneity. Means are indicated by solid lines while shaded region indicates one standard deviation.} 
+		\label{fig:struct-linear}
+	\end{figure}
 	
-	\subsection{Unstructured Weights}
-	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from a log-normal distribution \textcolor{red}{[citations]} and thresholded. In this case, we calculate both information theoretic quantities many random draws from the log-normal distribution with a given scale $\sigma_w$.  We show our results in Figure \ref{fig:unstruct_linear} for several network sizes. Thus, we have a common theme: as we increase the heterogeneity of the weights, the network's coding capacity increases (though it eventually asymptotes). 
-	
-%	\begin{figure}[t]
-%		\centering
-%		\scalebox{0.32}{\includegraphics{img/fisher_unstruct_linear.pdf}}
-%		\scalebox{0.32}{\includegraphics{img/mutual_unstruct_linear.pdf}}
-%		\caption{\textcolor{red}{insert caption here}}
-%		\label{fig:unstruct_linear}
-%	\end{figure}
+	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to the case of ``unstructured weights,'' in which the synaptic weights are drawn from a shifted lognormal distribution \textcolor{red}{[citations]}. In this case, we calculate both information theoretic quantities over many random draws according to $w_i \sim \text{Lognormal}(\mu - \Delta, \sigma^2)$. We are primarily concerned with varying $\mu$, as increasing this quantity uniformly increases the mean, median, and mode. We show our results in Figure \ref{fig:struct-linear}E, D for several network sizes. Thus, we have a common theme: as we increase the heterogeneity of the weights, the network's coding capacity increases.
 
-
-%	\begin{figure}[H]
-%		\centering
-%		\scalebox{0.32}{\includegraphics{img/fisher_squared_struct.pdf}}
-%		\scalebox{0.32}{\includegraphics{img/fisher_squared_unstruct.pdf}}
-%		\caption{\textcolor{red}{insert caption here}}
-%		\label{fig:unstruct_linear}
-%	\end{figure}
+\begin{figure}[t]
+	\centering
+	\scalebox{0.27}{\includegraphics{img/figure3.pdf}}
+	\caption{Fisher information in the network after a squared nonlinearity for structured weights. \textbf{(A)} When the membrane noise variance is equal to the common noise variance, we observe saturating behavior for $k=1$ and $k=2$. Increasing $k$ results in unbounded growth. At the extreme end of heterogeneity, where $k$ scales as $N$, the Fisher information saturates. \textbf{(B)} This qualitative behavior depends on the choice of $\sigma_M$. Increasing the membrane noise variance requires a much larger neural population to see the benefits of larger heterogeneity. \textbf{(C)} The Fisher information is normalized across all values of $\sigma_M/\sigma_C$ for a choice of $k$. The behavior of the Fisher information exhibits several phase transitions. This qualitative behavior may change as $N$ is increased.}
+\end{figure}
+	
 	
 	\subsection{Noise Correlations}
 	
 
 	\newpage
 	\section{Discussion}
-	\appendix
+	
 	\newpage
+	\printbibliography
+
+	\newpage
+	
+	\appendix
 	\section{Calculation of  Fisher Information, Linear Stage}
 	\label{fisher-linear}
-	All variability after the linear stage is Gaussian; thus, the Fisher information can be expressed in the form \textcolor{red}{[citation]}.
+	All variability after the linear stage is Gaussian; thus, the Fisher information can be expressed in the form \cite{1999abbott_dayan, 1993kay}:
 	\begin{align}
 		I_{F}(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}^{-1} (s) \mathbf{f}'(s) + \frac{1}{2}\Tr\left[\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\right]. \label{IF-gaussian}
 	\end{align}
@@ -298,7 +308,7 @@
 		&= \sigma_M^2 \delta_{ij} + w_i w_j \sigma_C^2 \\
 		\Rightarrow \boldsymbol{\Sigma} &= \sigma_M^2 \mathbf{I} + \sigma_C^2\mathbf{ww}^T.
 	\end{align}
-	Notice that the covariance matrix does not depend on $s$, so the second term in equation \eqref{IF-gaussian} will vanish. We do, however, need the inverse covariance matrix for the first term \textcolor{red}{[citation]}:
+	Notice that the covariance matrix does not depend on $s$, so the second term in equation \eqref{IF-gaussian} will vanish. We do, however, need the inverse covariance matrix for the first:
 	\begin{align}
 		\boldsymbol{\Sigma}^{-1} &= \frac{1}{\sigma_M^2} \mathbf{I} - \frac{\sigma_C^2}{\sigma_M^4} \frac{\mathbf{ww}^T}{1+\frac{\sigma_C^2}{\sigma_M^2}||\mathbf{w}||^2}\\
 		&= \frac{1}{\sigma_M^2}\left(\mathbf{I} - \frac{\sigma_C^2}{\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2}\mathbf{ww}^T\right).
@@ -340,17 +350,23 @@
 	Lastly, the variance of $r_i$ (the on-diagonal terms in the covariance matrix) is given by 
 	\begin{align}
 	\text{Var}(r_i) &= \langle r_i^2 \rangle - \langle r_i\rangle^2 \\
-	&= 3\sigma_G^4 + 6s^2\sigma_G^2  v_i^2  +6 \sigma_G^2 \sigma_I^2  w_i^2+  6s^2 \sigma_I^2 v_i^2 w_i^2+ s^4 v_i^4 + 3\sigma_I^4 w_i^4 \notag \\ 
-	& \qquad -\left(v_i^2 s^2 + w_i^2 \sigma_I^2 + \sigma_G^2\right)^2 \\
-	&= 2\sigma_I^4 w_i^4 + 4s^2 \sigma_I^2 v_i^2 w_i^2 + 2\sigma_G^4 + 4s^2 \sigma_G^2 v_i^2  + 4\sigma_G^2\sigma_I^2 w_i^2.
+	&= 3\sigma_M^4 + 6s^2\sigma_M^2  v_i^2  +6 \sigma_M^2 \sigma_C^2  w_i^2+  6s^2 \sigma_C^2 v_i^2 w_i^2+ s^4 v_i^4 + 3\sigma_C^4 w_i^4 \notag \\ 
+	& \qquad -\left(v_i^2 s^2 + w_i^2 \sigma_C^2 + \sigma_M^2\right)^2 \\
+	&= 2\sigma_C^4 w_i^4 + 4s^2 \sigma_C^2 v_i^2 w_i^2 + 2\sigma_M^4 + 4s^2 \sigma_M^2 v_i^2  + 4\sigma_M^2\sigma_C^2 w_i^2.
 	\end{align}
 	Thus, the total covariance, which takes the variance into consideration, is 
 	\begin{align}
-	\Sigma_{ij} &= 4 s^2 \sigma_I^2 v_i v_j w_i w_j + 2 \sigma_I^4 w_i^2 w_j^2 + \delta_{ij} \left(2 \sigma_G^4 + 4\sigma_G^2 (s^2 v_i^2 + \sigma_I^2 w_i^2)\right).
+	\Sigma_{ij} &= 4 s^2 \sigma_C^2 v_i v_j w_i w_j + 2 \sigma_C^4 w_i^2 w_j^2 + \delta_{ij} \left(2 \sigma_M^4 + 4\sigma_M^2 (s^2 v_i^2 + \sigma_C^2 w_i^2)\right).
 	\end{align}
 	In vector notation, this is 
 	\begin{align}
-	\boldsymbol{\Sigma} &= 2\sigma_G^4 \mathbf{I} +4\sigma_G^2 s^2 \text{diag}(\mathbf{V}) + 4\sigma_G^2 \sigma_I^2 \text{diag}(\mathbf{W}) + 4s^2 \sigma_I^2 \mathbf{X}\mathbf{X}^T + 2 \sigma_I^4 \mathbf{W}\mathbf{W}^T.
+	\boldsymbol{\Sigma} &= 2\sigma_M^4 \mathbf{I} +4\sigma_M^2 s^2 \text{diag}(\mathbf{V}) + 4\sigma_M^2 \sigma_C^2 \text{diag}(\mathbf{W}) + 4s^2 \sigma_C^2 \mathbf{X}\mathbf{X}^T + 2 \sigma_C^4 \mathbf{W}\mathbf{W}^T
+	\end{align}
+	where
+	\begin{align}
+		\mathbf{V} &= \mathbf{v} \odot \mathbf{v}\\
+		\mathbf{W} &= \mathbf{w} \odot \mathbf{w}\\
+		\mathbf{X} &= \mathbf{v} \odot \mathbf{w}.
 	\end{align}
 	We now proceed to the linear Fisher information:
 	\begin{align}
@@ -358,21 +374,21 @@
 	\end{align}
 	for which we need the inverse of the covariance matrix. We will obtain this by repeated applications of the Sherman-Morrison formula. First, note that 
 	\begin{align}
-	\left(2\sigma_G^4 \mathbf{I} +4\sigma_G^2 s^2 \text{diag}(\mathbf{V}) + 4\sigma_G^2 \sigma_I^2 \text{diag}(\mathbf{W})\right)^{-1} &= \left(2\sigma_G^4 + 4\sigma_G^2 s^2 v_i^2 + 4\sigma_G^2 \sigma_I^2 w_i^2\right)^{-1}\delta_{ij}.
+	\left(2\sigma_M^4 \mathbf{I} +4\sigma_M^2 s^2 \text{diag}(\mathbf{V}) + 4\sigma_M^2 \sigma_C^2 \text{diag}(\mathbf{W})\right)^{-1} &= \left(2\sigma_M^4 + 4\sigma_M^2 s^2 v_i^2 + 4\sigma_M^2 \sigma_C^2 w_i^2\right)^{-1}\delta_{ij}.
 	\end{align}
 	Thus,
 	\begin{align}
-	\mathbf{M}^{-1} &\equiv \left(2\sigma_G^4 \mathbf{I} +4\sigma_G^2 s^2 \text{diag}(\mathbf{V}) + 4\sigma_G^2 \sigma_I^2 \text{diag}(\mathbf{W}) + 4s^2 \sigma_I^2 \mathbf{X}\mathbf{X}^T\right)^{-1} \\
-	&= \left(2\sigma_G^4 + 4\sigma_G^2 s^2 v_i^2 + 4\sigma_G^2 \sigma_I^2 w_i^2\right)^{-1}\delta_{ij} \notag \\
-	& - \frac{1}{1 + \sum_i\frac{4s^2\sigma_I^2 v_i^2 w_i^2}{2\sigma_G^4 + 4\sigma_G^2 s^2 v_i^2 + 4\sigma_G^2 \sigma_I^2 w_i^2}}\frac{(4s^2 \sigma_I^2 v_i v_j w_i w_j)}{\left(2\sigma_G^4 + 4\sigma_G^2 s^2 v_i^2 + 4\sigma_G^2 \sigma_I^2 w_i^2\right)\left(2\sigma_G^4 + 4\sigma_G^2 s^2 v_j^2 + 4\sigma_G^2 \sigma_I^2 w_j^2\right)}\notag \\
-	&= \left(2\sigma_G^4 + 4\sigma_G^2 s^2 v_i^2 + 4\sigma_G^2 \sigma_I^2 w_i^2\right)^{-1}\delta_{ij} \notag \\
-	 - &\frac{s^2\sigma_I^2}{\sigma_G^4 +2s^2\sigma_I^2 \sigma_G^2\displaystyle\sum_i\frac{v_i^2 w_i^2}{\sigma_G^2+ 2s^2 v_i^2 + 2 \sigma_I^2 w_i^2}} \frac{ v_i v_j w_i w_j}{\left(\sigma_G^2 + 2s^2 v_i^2 + 2 \sigma_I^2 w_i^2\right)\left(\sigma_G^2 + 2 s^2 v_j^2 + 2\sigma_I^2 w_j^2\right)}.
+	\mathbf{M}^{-1} &\equiv \left(2\sigma_M^4 \mathbf{I} +4\sigma_M^2 s^2 \text{diag}(\mathbf{V}) + 4\sigma_M^2 \sigma_C^2 \text{diag}(\mathbf{W}) + 4s^2 \sigma_C^2 \mathbf{X}\mathbf{X}^T\right)^{-1} \\
+	&= \left(2\sigma_M^4 + 4\sigma_M^2 s^2 v_i^2 + 4\sigma_M^2 \sigma_C^2 w_i^2\right)^{-1}\delta_{ij} \notag \\
+	& - \frac{1}{1 + \sum_i\frac{4s^2\sigma_C^2 v_i^2 w_i^2}{2\sigma_M^4 + 4\sigma_M^2 s^2 v_i^2 + 4\sigma_M^2 \sigma_C^2 w_i^2}}\frac{(4s^2 \sigma_C^2 v_i v_j w_i w_j)}{\left(2\sigma_M^4 + 4\sigma_M^2 s^2 v_i^2 + 4\sigma_M^2 \sigma_C^2 w_i^2\right)\left(2\sigma_M^4 + 4\sigma_M^2 s^2 v_j^2 + 4\sigma_M^2 \sigma_C^2 w_j^2\right)}\notag \\
+	&=  \left(2\sigma_M^4 + 4\sigma_M^2 s^2 v_i^2 + 4\sigma_M^2 \sigma_C^2 w_i^2\right)^{-1}\delta_{ij} \notag \\
+	 - &\frac{s^2\sigma_C^2}{\sigma_M^4 +2s^2\sigma_C^2 \sigma_M^2\displaystyle\sum_i\frac{v_i^2 w_i^2}{\sigma_M^2+ 2s^2 v_i^2 + 2 \sigma_C^2 w_i^2}} \frac{ v_i v_j w_i w_j}{\left(\sigma_M^2 + 2s^2 v_i^2 + 2 \sigma_C^2 w_i^2\right)\left(\sigma_M^2 + 2 s^2 v_j^2 + 2\sigma_C^2 w_j^2\right)}.
 	\end{align}
 	Lastly, we have 
 	\begin{align}
-	\boldsymbol{\Sigma}^{-1} &= (\mathbf{M} + 2\sigma_I^4 \mathbf{W}\mathbf{W}^T)^{-1} \\
-	&= \mathbf{M}^{-1} - \frac{\mathbf{M}^{-1} (2\sigma_I^4 \mathbf{W}\mathbf{W}^T) \mathbf{M}^{-1}}{1 + 2\sigma_I^4 \mathbf{W}^T\mathbf{M}^{-1}\mathbf{W}} \\
-	&= \mathbf{M}^{-1} - \frac{2\sigma_I^4}{1 + 2\sigma_I^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \mathbf{M}^{-1}\mathbf{W}\mathbf{W}^T\mathbf{M}^{-1}.
+	\boldsymbol{\Sigma}^{-1} &= (\mathbf{M} + 2\sigma_C^4 \mathbf{W}\mathbf{W}^T)^{-1} \\
+	&= \mathbf{M}^{-1} - \frac{\mathbf{M}^{-1} (2\sigma_C^4 \mathbf{W}\mathbf{W}^T) \mathbf{M}^{-1}}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1}\mathbf{W}} \\
+	&= \mathbf{M}^{-1} - \frac{2\sigma_C^4}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \mathbf{M}^{-1}\mathbf{W}\mathbf{W}^T\mathbf{M}^{-1}.
 	\end{align}
 	Note that
 	\begin{align}
@@ -380,101 +396,106 @@
 	\end{align}
 	so the Fisher information is
 	\begin{align}
-	I_F(s) &= 4s^2 \left(\mathbf{V}^T \mathbf{M}^{-1} \mathbf{V} - \frac{2\sigma_I^4}{1 + 2\sigma_I^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \mathbf{V}^T \mathbf{M}^{-1} \mathbf{W} \mathbf{W}^T \mathbf{M}^{-1}\mathbf{V}\right) \\
-	&= 4s^2 \left(\mathbf{V}^T \mathbf{M}^{-1} \mathbf{V}-  \frac{2\sigma_I^4}{1 + 2\sigma_I^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \left(\mathbf{V}^T\mathbf{M}^{-1} \mathbf{W}\right)^{2}\right).
+	I_F(s) &= 4s^2 \left(\mathbf{V}^T \mathbf{M}^{-1} \mathbf{V} - \frac{2\sigma_C^4}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \mathbf{V}^T \mathbf{M}^{-1} \mathbf{W} \mathbf{W}^T \mathbf{M}^{-1}\mathbf{V}\right) \\
+	&= 4s^2 \left(\mathbf{V}^T \mathbf{M}^{-1} \mathbf{V}-  \frac{2\sigma_C^4}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \left(\mathbf{V}^T\mathbf{M}^{-1} \mathbf{W}\right)^{2}\right).
 	\end{align}
 	Before we proceed, we'll define the notation 
 	\begin{align}
-	\left\{v, w\right\}_{m,n} &= \sum_i \frac{v_i^m w_i^n}{\sigma_G^2 + 2s^2 v_i^2 + 2\sigma_I^2 w_i^2}.
+	\left\{v, w\right\}_{m,n} &= \sum_i \frac{v_i^m w_i^n}{\sigma_M^2 + 2s^2 v_i^2 + 2\sigma_C^2 w_i^2}.
 	\end{align}
 	Thus,
 	\begin{align}
-	\mathbf{V}^T \mathbf{M}^{-1}\mathbf{V} &= \frac{1}{2\sigma_G^2}\sum_i \frac{v_i^4}{\sigma_G^2 + 2s^2 v_i^2  +2\sigma_I^2 w_i^2} \notag \\
-	&- \frac{s^2\sigma_I^2}{\sigma_G^4 + 2s^2 \sigma_I^2 \sigma_G^2 \left\{v,w\right\}_{2,2}} \left(\sum_i\frac{v_i^3 w_i}{\sigma_G^2 + 2s^2 v_i^2 + 2 \sigma_I^2 w_i^2}\right)^2 \\
-	&= \frac{1}{2\sigma_G^2}\left\{v,w\right\}_{4,0} - \frac{s^2 \sigma_I^2}{\sigma_G^4 + 2s^2 \sigma_I^2 \sigma_G^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{3,1}^2.
+	\mathbf{V}^T \mathbf{M}^{-1}\mathbf{V} &= \frac{1}{2\sigma_M^2}\sum_i \frac{v_i^4}{\sigma_M^2 + 2s^2 v_i^2  +2\sigma_C^2 w_i^2} \notag \\
+	&- \frac{s^2\sigma_C^2}{\sigma_M^4 + 2s^2 \sigma_C^2 \sigma_M^2 \left\{v,w\right\}_{2,2}} \left(\sum_i\frac{v_i^3 w_i}{\sigma_M^2 + 2s^2 v_i^2 + 2 \sigma_C^2 w_i^2}\right)^2 \\
+	&= \frac{1}{2\sigma_M^2}\left\{v,w\right\}_{4,0} - \frac{s^2 \sigma_C^2}{\sigma_M^4 + 2s^2 \sigma_C^2 \sigma_M^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{3,1}^2.
 	\end{align}
 	Furthermore,
 	\begin{align}
-	\mathbf{W}^T \mathbf{M}^{-1}\mathbf{W}  &= \frac{1}{2\sigma_G^2}\left\{v,w\right\}_{0,4} - \frac{s^2\sigma_I^2}{\sigma_G^4 + 2s^2 \sigma_I^2 \sigma_G^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{1,3}^2
+	\mathbf{W}^T \mathbf{M}^{-1}\mathbf{W}  &= \frac{1}{2\sigma_M^2}\left\{v,w\right\}_{0,4} - \frac{s^2\sigma_C^2}{\sigma_M^4 + 2s^2 \sigma_C^2 \sigma_M^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{1,3}^2
 	\end{align}
 	and lastly
 	\begin{align}
-	\mathbf{V}^T \mathbf{M}^{-1} \mathbf{W} &= \frac{1}{2\sigma_G^2}\left\{v,w\right\}_{2,2} - \frac{s^2\sigma_I^2}{\sigma_G^4 + 2s^2\sigma_I^2 \sigma_G^2\left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{1,3}\left\{v,w\right\}_{3,1}.
+	\mathbf{V}^T \mathbf{M}^{-1} \mathbf{W} &= \frac{1}{2\sigma_M^2}\left\{v,w\right\}_{2,2} - \frac{s^2\sigma_C^2}{\sigma_M^4 + 2s^2\sigma_C^2 \sigma_M^2\left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{1,3}\left\{v,w\right\}_{3,1}.
 	\end{align}
 	Thus, the Fisher information is 
 	\begin{align}
-	I_F(s) &= 4s^2 \left(\frac{1}{\sigma_G^2}\left\{v, w\right\}_{4,0} - \frac{2s^2 \sigma_I^2}{\sigma_G^2 + 2s^2 \sigma_G^2 \sigma_I^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{3,1}^2  \right. \notag \\
-	&\left. + \frac{\sigma_G^2 \sigma_I^4 \left\{v,w\right\}_{2,2} + 2s^2 \sigma_I^6 (\left\{v,w\right\}_{2,2} - 2 \left\{v,w\right\}_{1,3} \left\{v,w\right\}_{3,1})}{\sigma_G^4  + \sigma_G^2 (\sigma_I^4 \left\{v,w\right\}_{0,4} + 2s^2 \sigma_I^2 \left\{v,w\right\}_{2,2}) + 2s^2 \sigma_I^6 (\left\{v,w\right\}_{0,4} \left\{v,w\right\}_{2,2} - 2 \left\{v,w\right\}_{1,3}^2)}\right)
+	I_F(s) &= 4s^2 \left(\frac{1}{\sigma_M^2}\left\{v, w\right\}_{4,0} - \frac{2s^2 \sigma_C^2}{\sigma_M^2 + 2s^2 \sigma_M^2 \sigma_C^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{3,1}^2  \right. \notag \\
+	&\left. + \frac{\sigma_M^2 \sigma_C^4 \left\{v,w\right\}_{2,2} + 2s^2 \sigma_C^6 (\left\{v,w\right\}_{2,2} - 2 \left\{v,w\right\}_{1,3} \left\{v,w\right\}_{3,1})}{\sigma_M^4  + \sigma_M^2 (\sigma_C^4 \left\{v,w\right\}_{0,4} + 2s^2 \sigma_C^2 \left\{v,w\right\}_{2,2}) + 2s^2 \sigma_C^6 (\left\{v,w\right\}_{0,4} \left\{v,w\right\}_{2,2} - 2 \left\{v,w\right\}_{1,3}^2)}\right)
+	\end{align}
+	
+	\begin{align}
+		&I_F(s) = \frac{2s^2}{\sigma_M^2} \times \\
+		&  \frac{{[\sigma_M^4 \left\{v,w\right\}_{4,0} - \sigma_C^4 \sigma_M^2 \left(\left\{v, w\right\}_{2,2}^2 - \left\{v, w\right\}_{0,4} \left\{v, w\right\}_{4,0}\right) -2s^2 \sigma_C^2 \sigma_M^2 \left(\left\{v, w\right\}_{3,1}^2 - \left\{v,w\right\}_{2,2} \left\{v,w\right\}_{4,0}\right) \atop - 2s^2 \sigma_C^6 \left(\left\{v,w\right\}_{2,2}^3 + \left\{v, w\right\}_{0,4} \left\{v, w\right\}_{3,1}^2 + \left\{v, w\right\}_{1,3}^2 \left\{v, w\right\}_{4,0} - \left\{v,w\right\}_{2,2} (2 \left\{v, w\right\}_{1,3} \left\{v, w\right\}_{3,1} + \left\{v,w\right\}_{0,4} \left\{v,w\right\}_{4,0}) \right)]}}{\sigma_M^4 + \sigma_M^2\left(\sigma_C^4\left\{v, w\right\}_{0,4} + 2 s^2 \sigma_C^2 \left\{v, w\right\}_{2,2}\right) - 2 s^2 \sigma_C^6 \left(\left\{v,w\right\}_{1,3}^2 - \left\{v, w\right\}_{0,4} \left\{v, w\right\}_{2,2}\right)}.
 	\end{align}
 	\newpage
-	\section{Calculation of Conditional and Marginal Probability Distributions}
-	We present the calculation of the conditional and marginal probability distributions after the linear stage of computation. Recall that the output of the $i$th neuron in the linear stage can be written as
-	\begin{align}
-		\ell_i &= v_i s + w_i \sigma_I \xi_I + \sigma_G\xi_i
-	\end{align}
-	and thus the overall population can be written as 
-	\begin{align}
-		\boldsymbol{\ell} &= \mathbf{v} s + \mathbf{w} \sigma_I \xi_I + \sigma_G \boldsymbol{\xi}.
-	\end{align}
-	
-	\subsection{Conditional Distribution $P[\boldsymbol{\ell}|s]$}
-	Conditioning on the stimulus and injected noise value establishes independence between the neural activity $\ell_i$. Thus, we obtain $P[\boldsymbol{\ell}|s]$ by marginalizing the distribution $P[\boldsymbol{\ell}|s,\xi_I]$ over the injected noise $\xi_I$:
-	\begin{align}
-	P[\boldsymbol{\ell}|s] &= \int P[\boldsymbol{\ell}|s, \xi_I] P[\xi_I]d\xi_I \\
-	&= \int d\xi_I  \frac{1}{\sqrt{2\pi}} \exp(-\xi_I^2/2) \prod_{i=1}^N P[\ell_i|s,\xi_I] \\
-	&=  \frac{1}{\sqrt{2\pi}} \int d\xi_I   \exp(-\xi_I^2/2) \prod_{i=1}^N \frac{1}{\sqrt{2\pi \sigma_G^2}} \exp\left(-\frac{\left(\ell_i - (v_i s + \sigma_I w_i \xi_I)\right)^2}{2\sigma_G^2}\right) \\
-	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \left(\ell_i - (v_i s + \sigma_I w_i \xi_I)\right)^2\right) \\
-	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \notag \\
-	& \qquad \times \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2 -2\ell_i (v_i s + \sigma_I w_i \xi_I) + (v_i s + \sigma_I w_i \xi_I)^2\right) \\
-	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 |\mathbf{v}|^2\right) \notag \\
-	&\times \int d\xi_I\exp\left[-\frac{1}{2}\left(1+\frac{\sigma_I^2}{\sigma_G^2} |\mathbf{w}|^2\right)\xi_I^2 +\frac{\sigma_I}{\sigma_G^2}\left( \sum_{i=1}^N \ell_i w_i - s v_i w_i\right)\xi_I \right] \\
-	&=  \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N}\exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 |\mathbf{v}|^2\right) \notag \\
-	&\qquad \times \frac{\sqrt{2\pi \sigma_G^2}}{\sqrt{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}}\exp\left[\frac{\sigma_I^2\left(\displaystyle\sum_{i=1}^N \ell_i w_i - s  v_i w_i \right)^2}{2 \sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right],
-	\end{align}
-	which we can write concisely as
-	\begin{align}
-		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \exp\left[-\frac{1}{2\sigma_G^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right].
-	\end{align}
-	\subsection{Marginal Distribution $P[\boldsymbol{\ell}]$}
-	We can calculate the marginal distribution either by summing the three Gaussians $\mathbf{v}s$, $\mathbf{w} \sigma_I \xi_I$, and $\sigma_G\boldsymbol{\xi}$, or by marginalizing the conditional probability distribution. 
-	
-	The marginal distribution is 
-	\begin{align}
-		 P[\boldsymbol{\ell}] = \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} &\exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T  \left(\mathbf{I} -\frac{\sigma_I^2 (\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2)}{\kappa} \mathbf{ww}^T + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T \right. \right. \notag \\
-		&\left. \left. \qquad \qquad \qquad \qquad  + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T- \frac{\sigma_S^2 (\sigma_G^2 +\sigma_I^2 |\mathbf{w}|^2)}{\kappa} \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-1}
-	\end{align}
-	where we note that 
-	\begin{align}
-		\kappa &= (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
-	\end{align}
-	We can write the marginal compactly as 
-	\begin{align}
-		P[\boldsymbol{\ell}] &= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 (\mathbf{wv}^T +\mathbf{vw}^T) + A_3 \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-2}\\
-		&= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right]
-	\end{align}
-	where
-	\begin{align}
-		A_1 &= -\frac{\sigma_I^2 (\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2)}{\kappa} \\
-		A_2 &= \frac{2 \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa} \\
-		A_3 &= -\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}{\kappa}.
-	\end{align}
-	Noting, however, that the marginal is effectively a multivariate Gaussian, we know that
-	\begin{align}
-		P[\boldsymbol{\ell}] &= \frac{1}{\sqrt{(2\pi)^N \det\boldsymbol{\Sigma}}} \exp\left[-\frac{1}{2} \boldsymbol{\ell}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{\ell}\right]
-	\end{align}
-	where 
-	\begin{align}
-		\boldsymbol{\Sigma}&= \sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T,
-	\end{align}
-	or the covariance matrix comprised from summing the random variables $\mathbf{v}s+\mathbf{w}\sigma_I\xi_I + \sigma_G\boldsymbol{\xi}$. This implies that 
-	\begin{align}
-		\mathbf{A} &= \frac{1}{2} \boldsymbol{\Sigma}^{-1} \\
-		\Rightarrow \mathbf{A}^{-1} &= 2 \boldsymbol{\Sigma} = 2\left(\sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T\right).
-	\end{align}
-	Furthermore, 
-	\begin{align}
-		\det \mathbf{\mathbf{A}} &= \frac{1}{2^N} \det \boldsymbol{\Sigma}^{-1} = \frac{1}{2^N \sigma_G^{2N-4} \kappa}.
-	\end{align}
+%	\section{Calculation of Conditional and Marginal Probability Distributions}
+%	We present the calculation of the conditional and marginal probability distributions after the linear stage of computation. Recall that the output of the $i$th neuron in the linear stage can be written as
+%	\begin{align}
+%		\ell_i &= v_i s + w_i \sigma_I \xi_I + \sigma_G\xi_i
+%	\end{align}
+%	and thus the overall population can be written as 
+%	\begin{align}
+%		\boldsymbol{\ell} &= \mathbf{v} s + \mathbf{w} \sigma_I \xi_I + \sigma_G \boldsymbol{\xi}.
+%	\end{align}
+%	
+%	\subsection{Conditional Distribution $P[\boldsymbol{\ell}|s]$}
+%	Conditioning on the stimulus and injected noise value establishes independence between the neural activity $\ell_i$. Thus, we obtain $P[\boldsymbol{\ell}|s]$ by marginalizing the distribution $P[\boldsymbol{\ell}|s,\xi_I]$ over the injected noise $\xi_I$:
+%	\begin{align}
+%	P[\boldsymbol{\ell}|s] &= \int P[\boldsymbol{\ell}|s, \xi_I] P[\xi_I]d\xi_I \\
+%	&= \int d\xi_I  \frac{1}{\sqrt{2\pi}} \exp(-\xi_I^2/2) \prod_{i=1}^N P[\ell_i|s,\xi_I] \\
+%	&=  \frac{1}{\sqrt{2\pi}} \int d\xi_I   \exp(-\xi_I^2/2) \prod_{i=1}^N \frac{1}{\sqrt{2\pi \sigma_G^2}} \exp\left(-\frac{\left(\ell_i - (v_i s + \sigma_I w_i \xi_I)\right)^2}{2\sigma_G^2}\right) \\
+%	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \left(\ell_i - (v_i s + \sigma_I w_i \xi_I)\right)^2\right) \\
+%	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \int d\xi_I \exp(-\xi_I^2/2) \notag \\
+%	& \qquad \times \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2 -2\ell_i (v_i s + \sigma_I w_i \xi_I) + (v_i s + \sigma_I w_i \xi_I)^2\right) \\
+%	&= \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N} \exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 |\mathbf{v}|^2\right) \notag \\
+%	&\times \int d\xi_I\exp\left[-\frac{1}{2}\left(1+\frac{\sigma_I^2}{\sigma_G^2} |\mathbf{w}|^2\right)\xi_I^2 +\frac{\sigma_I}{\sigma_G^2}\left( \sum_{i=1}^N \ell_i w_i - s v_i w_i\right)\xi_I \right] \\
+%	&=  \frac{1}{(2\pi)^{(N+1)/2}\sigma_G^N}\exp\left(-\frac{1}{2\sigma_G^2}\sum_{i=1}^N \ell_i^2\right)\exp\left(\frac{s}{\sigma_G^2}\sum_{i=1}^N \ell_i v_i \right)\exp\left(-\frac{1}{2\sigma_G^2}s^2 |\mathbf{v}|^2\right) \notag \\
+%	&\qquad \times \frac{\sqrt{2\pi \sigma_G^2}}{\sqrt{\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2}}\exp\left[\frac{\sigma_I^2\left(\displaystyle\sum_{i=1}^N \ell_i w_i - s  v_i w_i \right)^2}{2 \sigma_G^2 (\sigma_G^2 + \sigma_I^2 \left\{w\right\}_2)}\right],
+%	\end{align}
+%	which we can write concisely as
+%	\begin{align}
+%		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \exp\left[-\frac{1}{2\sigma_G^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right].
+%	\end{align}
+%	\subsection{Marginal Distribution $P[\boldsymbol{\ell}]$}
+%	We can calculate the marginal distribution either by summing the three Gaussians $\mathbf{v}s$, $\mathbf{w} \sigma_I \xi_I$, and $\sigma_G\boldsymbol{\xi}$, or by marginalizing the conditional probability distribution. 
+%	
+%	The marginal distribution is 
+%	\begin{align}
+%		 P[\boldsymbol{\ell}] = \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} &\exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T  \left(\mathbf{I} -\frac{\sigma_I^2 (\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2)}{\kappa} \mathbf{ww}^T + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T \right. \right. \notag \\
+%		&\left. \left. \qquad \qquad \qquad \qquad  + \frac{\sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa}\mathbf{wv}^T- \frac{\sigma_S^2 (\sigma_G^2 +\sigma_I^2 |\mathbf{w}|^2)}{\kappa} \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-1}
+%	\end{align}
+%	where we note that 
+%	\begin{align}
+%		\kappa &= (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
+%	\end{align}
+%	We can write the marginal compactly as 
+%	\begin{align}
+%		P[\boldsymbol{\ell}] &= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\frac{1}{2\sigma_G^2} \boldsymbol{\ell}^T \left(\mathbf{I} + A_1 \mathbf{ww}^T + A_2 (\mathbf{wv}^T +\mathbf{vw}^T) + A_3 \mathbf{vv}^T\right) \boldsymbol{\ell}\right], \label{marginal-2}\\
+%		&= \frac{1}{\sigma_G^{N-2} \sqrt{(2\pi)^N \kappa}} \exp\left[-\boldsymbol{\ell}^T \mathbf{A} \boldsymbol{\ell}\right]
+%	\end{align}
+%	where
+%	\begin{align}
+%		A_1 &= -\frac{\sigma_I^2 (\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2)}{\kappa} \\
+%		A_2 &= \frac{2 \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})}{\kappa} \\
+%		A_3 &= -\frac{\sigma_S^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}{\kappa}.
+%	\end{align}
+%	Noting, however, that the marginal is effectively a multivariate Gaussian, we know that
+%	\begin{align}
+%		P[\boldsymbol{\ell}] &= \frac{1}{\sqrt{(2\pi)^N \det\boldsymbol{\Sigma}}} \exp\left[-\frac{1}{2} \boldsymbol{\ell}^T \boldsymbol{\Sigma}^{-1} \boldsymbol{\ell}\right]
+%	\end{align}
+%	where 
+%	\begin{align}
+%		\boldsymbol{\Sigma}&= \sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T,
+%	\end{align}
+%	or the covariance matrix comprised from summing the random variables $\mathbf{v}s+\mathbf{w}\sigma_I\xi_I + \sigma_G\boldsymbol{\xi}$. This implies that 
+%	\begin{align}
+%		\mathbf{A} &= \frac{1}{2} \boldsymbol{\Sigma}^{-1} \\
+%		\Rightarrow \mathbf{A}^{-1} &= 2 \boldsymbol{\Sigma} = 2\left(\sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T\right).
+%	\end{align}
+%	Furthermore, 
+%	\begin{align}
+%		\det \mathbf{\mathbf{A}} &= \frac{1}{2^N} \det \boldsymbol{\Sigma}^{-1} = \frac{1}{2^N \sigma_G^{2N-4} \kappa}.
+%	\end{align}
 	\newpage
 	
 	\section{Calculation of Mutual Information, Linear Stage}
@@ -486,33 +507,34 @@
 		I[s, \boldsymbol{\ell}] &= \int d\boldsymbol{\ell} ds  P[s] P[\boldsymbol{\ell}|s]\log \frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]} \\
 		&= H[\boldsymbol{\ell}] + \int ds P[s] \int d\boldsymbol{\ell} P[\boldsymbol{\ell}|s] \log P[\boldsymbol{\ell}|s].
 	\end{align}
-	Note that $P[\boldsymbol{\ell}]$ and $P[\boldsymbol{\ell}|s]$ are both multivariate Gaussians. The entropy of a multivariate Gaussian $X$ with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$ is given by 
+	Note that $P[\boldsymbol{\ell}]$ and $P[\boldsymbol{\ell}|s]$ are both multivariate Gaussians. The (differential) entropy of a multivariate Gaussian random variable $X$ with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$ is given by \textcolor{red}{[citation]}
 	\begin{align}
 		H[X] &= \frac{1}{2} \log \left(\det\boldsymbol{\Sigma}\right) + \frac{N}{2} (1 + \log(2\pi)).
 	\end{align}
 	Note that, by the Gaussianity of the involved distributions, 
 	\begin{align}
-		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_G^{N-1} \sqrt{(2\pi)^N(\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}} \exp\left[-\frac{1}{2\sigma_G^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_I^2 \mathbf{ww}^T}{\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right] \\
-		P[\boldsymbol{\ell}] &= \frac{1}{ \sqrt{(2\pi)^N \sigma_G^{2N-4}\kappa}} \exp\left[-\frac{1}{2}\boldsymbol{\ell}^T \left(\sigma_G^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_I^2 \mathbf{ww}^T\right)^{-1} \boldsymbol{\ell}\right].
+		P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_M^{N-1} \sqrt{(2\pi)^N(\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)}} \exp\left[-\frac{1}{2\sigma_M^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_C^2 \mathbf{ww}^T}{\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right] \\
+		P[\boldsymbol{\ell}] &= \frac{1}{ \sqrt{(2\pi)^N \sigma_M^{2N-4}\kappa}} \exp\left[-\frac{1}{2}\boldsymbol{\ell}^T \left(\sigma_M^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_C^2 \mathbf{ww}^T\right)^{-1} \boldsymbol{\ell}\right].
 	\end{align}
 	where 
 	\begin{align}
-		\kappa &= (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
+		\kappa &= (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)(\sigma_M^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_C^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
 	\end{align}
 	Thus,
 	\begin{align}
-		H[\boldsymbol{\ell}] &= \frac{1}{2}\log( \sigma_G^{2N-4} \kappa) + \frac{N}{2}(1 + \log(2\pi)).
+		H[\boldsymbol{\ell}] &= \frac{1}{2}\log( \sigma_M^{2N-4} \kappa) + \frac{N}{2}(1 + \log(2\pi)).
 	\end{align}
 	and 
 	\begin{align}
-		\int d\boldsymbol{\ell} P[\boldsymbol{\ell}|s] \log P[\boldsymbol{\ell}|s] &= -\frac{1}{2}\log(\sigma_G^{2N-2} (\sigma_G^2 +\sigma_I^2 ||\mathbf{w}||^2)) - \frac{N}{2} (1+\log(2\pi)),
+		\int d\boldsymbol{\ell} P[\boldsymbol{\ell}|s] \log P[\boldsymbol{\ell}|s] &= -\frac{1}{2}\log(\sigma_M^{2N-2} (\sigma_M^2 +\sigma_C^2 |\mathbf{w}|^2)) - \frac{N}{2} (1+\log(2\pi)),
 	\end{align}
 	which is notably independent of $s$. Thus, the integral over $s$ will marginalize away. We are left with
 	\begin{align}
-		I[s,\boldsymbol{\ell}] &= \frac{1}{2}\log\left(\frac{\kappa}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 ||\mathbf{w}||^2)}\right) \\
-		&= \frac{1}{2} \log \left(\frac{ (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)(\sigma_G^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_I^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 (\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2)}\right) \\
-		&= \frac{1}{2} \log \left(1 + \frac{\sigma_S^2}{\sigma_G^2} |\mathbf{v}|^2 - \frac{\sigma_I^2 \sigma_S^2}{\sigma_G^2} \frac{(\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right)
+		I[s,\boldsymbol{\ell}] &= \frac{1}{2}\log\left(\frac{\kappa}{\sigma_M^2 (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)}\right) \\
+		&= \frac{1}{2} \log \left(\frac{ (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)(\sigma_M^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_C^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_M^2 (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)}\right) \\
+		&= \frac{1}{2} \log \left(1 + \frac{\sigma_S^2}{\sigma_M^2} |\mathbf{v}|^2 - \frac{\sigma_C^2 \sigma_S^2}{\sigma_M^2} \frac{(\mathbf{v}\cdot\mathbf{w})^2}{\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2}\right)
 	\end{align}
+
 
 
 %	\subsection{Setting up the Mutual Information Integral}
