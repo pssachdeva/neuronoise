@@ -2,14 +2,20 @@ import numpy as np
 from scipy.stats import truncnorm
 
 class LNN:
-	def __init__(self, v = None, w = None, N = None, sigmaS = 1., sigmaC = 1., sigmaM = 1., nonlinearity = None, thres = None):
+	def __init__(self, v=None, w=None, kv=None, kw=None, N=None, sigmaS=1., sigmaC=1., sigmaM=1., nonlinearity=None, thres=None):
 		if v is None:
-			self.v = self.struct_weight_maker(N, 1)
+			if kv is None:
+				self.v = self.struct_weight_maker(N, 1)
+			else:
+				self.v = self.struct_weight_maker(N, kv)
 		else:
 			self.v = v
 		
 		if w is None:
-			self.w = self.struct_weight_maker(N, 1)
+			if kw is None:
+				self.w = self.struct_weight_maker(N, 1)
+			else:
+				self.w = self.struct_weight_maker(N, kw)
 		else:
 			self.w = w
 		
@@ -46,7 +52,7 @@ class LNN:
 		return weights
 	
 	@staticmethod
-	def unstruct_weight_maker(N, dist, loc = 0., scale = 1., a = None):
+	def unstruct_weight_maker(N, dist, loc=0., scale=1., a=None):
 		if dist == 'normal':
 			weights = np.random.normal(loc = loc, scale = scale, size = N)
 		elif dist == 'lognormal':
@@ -142,6 +148,22 @@ class LNN:
 		X = self.v*self.w
 		covar = 2 * self.sigmaM**4 * np.identity(self.N) + 4 * self.sigmaM**2 * s**2 * np.diag(V) + 4 * self.sigmaM**2 * self.sigmaC**2 * np.diag(W) + 4 * s**2 * self.sigmaC**2 * np.outer(X, X) + 2 * self.sigmaC**4 * np.outer(W,W)
 		return covar 
+
+	def covar_lin_stim(self):
+		covar = self.sigmaM**2 * np.identity(self.N) + self.sigmaC**2 * np.outer(self.w, self.w) + self.sigmaS**2 * np.outer(self.v, self.v)
+		return covar
+		
+	def correlation_matrix(self, s):
+		if self.nonlinearity_name == 'identity':
+			return
+		elif self.nonlinearity_name == 'squared':
+			V = self.v**2
+			W = self.w**2
+			X = self.v*self.w
+			covar = 2 * self.sigmaM**4 * np.identity(self.N) + 4 * self.sigmaM**2 * s**2 * np.diag(V) + 4 * self.sigmaM**2 * self.sigmaC**2 * np.diag(W) + 4 * s**2 * self.sigmaC**2 * np.outer(X, X) + 2 * self.sigmaC**4 * np.outer(W, W)
+			inv_diag = np.diag(np.sqrt(1./np.diag(covar)))
+			corr = np.dot(inv_diag, np.dot(covar, inv_diag))
+		return corr
 
 	def MI_linear_stage(self):
 		v2 = np.sum(self.v**2)
