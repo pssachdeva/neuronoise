@@ -78,6 +78,14 @@ class LNN:
 		else:
 			return x**2
 
+	def simulate_noise_linear(self, s, trials):
+		xiC = np.random.normal(loc=0, scale=self.sigmaC, size=(1, trials))
+		xiM = np.random.normal(loc=0, scale=self.sigmaM, size=(self.N, trials))
+		l = np.repeat(np.reshape(self.v * s, (self.N, 1)), trials, axis=1) \
+			+ np.outer(self.w, xiC) \
+			+ xiM
+		return l
+
 	def simulate(self, trials):
 		s = np.random.normal(loc = 0., scale = self.sigmaM, size = trials)
 		xiI = np.random.normal(loc = 0., scale = self.sigmaC, size = trials)

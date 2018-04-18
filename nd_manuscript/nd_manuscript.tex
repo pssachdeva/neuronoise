@@ -56,7 +56,7 @@
 	
 	\section{Methods}
 	\subsection{Network Architecture}
-	We consider the linear-nonlinear architecture depicted in Figure \ref{architecture}. The inputs to the network consist of a stimulus $s$ along with common (Gaussian) noise $\xi_C$. The $N$ neurons to the network take a linear combination of the inputs which is then corrupted by i.i.d. ``membrane potential'' Gaussian noise. Thus, the output of the linear stage for the $i$th neuron is 
+	We consider the linear-nonlinear architecture depicted in Figure \ref{architecture}. The inputs to the network consist of a stimulus $s$ along with common (Gaussian) noise $\xi_C$. The $N$ neurons in the network take a linear combination of the inputs which is then corrupted by i.i.d. ``membrane potential'' Gaussian noise. Thus, the output of the linear stage for the $i$th neuron is 
 	\begin{align}
 		\ell_i &= v_i s + w_i \sigma_C \xi_C + \sigma_M\xi_{M,i},
 	\end{align}
@@ -272,6 +272,19 @@
 	\newpage
 	\section{Discussion}
 	
+	\begin{figure}[t]
+		\centering
+		\scalebox{0.27}{\includegraphics{img/figure4.pdf}}
+		\caption{} 
+		\label{fig:struct-linear}
+	\end{figure}
+
+	\begin{figure}[t]
+		\centering
+		\scalebox{0.27}{\includegraphics{img/figure5.pdf}}
+		\caption{} 
+		\label{fig:struct-linear}
+	\end{figure}	
 	\newpage
 	\printbibliography
 
