@@ -87,7 +87,7 @@ class LNN:
 		return l
 
 	def simulate(self, trials):
-		s = np.random.normal(loc = 0., scale = self.sigmaM, size = trials)
+		s = np.random.normal(loc = 0., scale = self.sigmaS, size = trials)
 		xiI = np.random.normal(loc = 0., scale = self.sigmaC, size = trials)
 		private_noise = np.random.normal(loc = 0., scale = self.sigmaM, size = (self.N, trials))
 		l = np.outer(self.v, s) + np.outer(self.w, xiI) + private_noise
