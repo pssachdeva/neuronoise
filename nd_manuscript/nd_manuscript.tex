@@ -17,7 +17,6 @@
 \usepackage[labelfont=bf,textfont=md]{caption}
 % Time New Roman font
 \usepackage{times}
-
 \usepackage{setspace} 
 % si units in latex
 \usepackage{siunitx}
@@ -33,13 +32,13 @@
 \DeclareMathOperator{\Tr}{Tr}
 \usepackage{graphics}
 
-\usepackage[english]{babel}
 \usepackage{biblatex}
-\addbibresource{nd_manuscript.bib}
+\addbibresource{ndbib.bib}
 
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows}
 \usepackage{float}
+
 % title
 \title{Heterogeneous synaptic weighting enhances encoding and decoding in the presence of common noise}
 \date{}
@@ -49,7 +48,9 @@
 	\section{Introduction}
 	Variability is a prominent feature of neural systems: neural responses to external stimuli will vary trial-to-trial even when the stimuli are constant. In particular, neural variability exhibits pairwise correlations: these ``noise correlations'' have been observed throughout the cortex. They have long been of theoretical interest because their presence has strong implications for neural coding.
 	
-	From a population coding perspective, a neural population must produce a representation of relevant quantities for their computation. One advantage of population coding is that variability unique to each neuron, or private variability, can be averaged out. If some variability is shared, Such theoretical work has demonstrated that the relationship between the tuning properties . Lastly, any variability that an incoming stimulus possess would also introduce variability in the population. Such shared input noise is particularly detrimental to the fidelity of a population code \cite{Moreno-Bote2014, Kanitscheider2015}.
+	From a population coding perspective, a neural population must produce a faithful lorepresentation of relevant quantities for their computation. One advantage of population coding is that variability unique to each neuron, or private variability, can be averaged out. If some variability is shared across neurons, i.e. we have noise correlations, larger populations of neurons cannot naively average out the variability. An abundance of theoretical work has explored how shared variability, therefore, can be both detrimental or beneficial to the fidelity of a population code depending on its structure. A  general conclusion of this theoretical work highlights that the relationship between the signal correlations .
+	
+	Private and shared variability  Lastly, any variability that an incoming stimulus possess would also introduce variability in the population. Such shared input noise is particularly detrimental to the fidelity of a population code \cite{Moreno-Bote2014, Kanitscheider2015}.
 	
 	\begin{figure}[b]
 		\centering
@@ -229,11 +230,11 @@
 	\subsection{Linear Stage}
 	The Fisher information in the linear representation is calculated in Appendix \ref{app:fisher-linear} as 
 	\begin{align}
-		I_F(s) &= \frac{\sigma_M^2 |\mathbf{v}|^2 + \sigma_C^2 \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{\sigma_M^2 (\sigma_M^2 + \sigma_C^2 |\mathbf{w}|^2)}. \label{eqn:fisher-linear}
+		I_F(s) &= \frac{1}{\sigma_M^2}\frac{\left(\sigma_M^2/\sigma_C^2\right) |\mathbf{v}|^2 +  \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{(\sigma_M^2/\sigma_C^2)+ |\mathbf{w}|^2}. \label{eqn:fisher-linear}
 	\end{align}
 	while the mutual information is calculated in Appendix \ref{mutual-linear} as
 	\begin{align}
-		I[s, \boldsymbol{\ell}] &= \frac{1}{2} \log \left(1 + \frac{\sigma_S^2}{\sigma_M^2} |\mathbf{v}|^2 - \frac{\sigma_C^2 \sigma_S^2}{\sigma_M^2} \frac{(\mathbf{v}\cdot\mathbf{w})^2}{\sigma_G^2 + \sigma_I^2 |\mathbf{w}|^2}\right). \label{eqn:mutual-linear}
+		I[s, \boldsymbol{\ell}] &= \frac{1}{2} \log \left(1 + \frac{\sigma_S^2}{\sigma_M^2} |\mathbf{v}|^2 - \frac{\sigma_S^2}{\sigma_M^2} \frac{(\mathbf{v}\cdot\mathbf{w})^2}{(\sigma_M^2/\sigma_C^2) + |\mathbf{w}|^2}\right). \label{eqn:mutual-linear}
 	\end{align}
 	In the case of mutual information, we have assumed the stimulus prior is Gaussian with zero mean and standard deviation $\sigma_S$. For structured weights, equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} can be explored by varying the choice of $k$ for both $\mathbf{v}$ and $\mathbf{w}$ (call them $k_{\mathbf{v}}$ and $k_{\mathbf{w}}$, respectively).
 	
@@ -248,7 +249,7 @@
 	which allows us to write equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} as 
 	\begin{align}
 		I_F(s) = I_F &= \frac{N}{2\sigma_M^2} \frac{12 (\sigma_M^2/\sigma_C^2) + N  (k^2-1)}{6(\sigma_M^2/\sigma_C^2)+ N(2k^2+3k+1)} \\
-		I[s, \boldsymbol{\ell}] &= \frac{1}{2} \log\left[1 + \frac{\sigma_S^2}{\sigma_M^2} N - \frac{3N^2(k+1)^2\sigma_C^2 \sigma_S^2}{2\sigma_M^2 \left(N\sigma_C^2(k+1)(2k+1) + 6 \sigma_M^2\right)}\right]
+		I[s, \boldsymbol{\ell}] &= \frac{1}{2} \log\left[1 + \frac{\sigma_S^2}{\sigma_M^2} N - \frac{\sigma_S^2}{\sigma_M^2}\frac{3N^2(k+1)^2}{2\sigma_M^2 \left(N\sigma_C^2(k+1)(2k+1) + 6 \sigma_M^2\right)}\right]
 	\end{align}
 	The structured regime analytically reveals the asymptotic behavior of the information quantities. Both quantities saturate as a function of $N$  only in the case of $k_{\mathbf{w}}=1$ (Figure \ref{fig:struct-linear}A, B); otherwise, they increase without bound. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, both quantities are monotonically increasing functions of $k_{\mathbf{w}}$ (Figure \ref{fig:struct-linear}C, D), implying that encoding and decoding are enhanced despite the fact that the common noise is magnified for larger $k_{\mathbf{w}}$. Our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise \cite{Brunel1998}. These qualitative results hold for any choice of $(\sigma_S, \sigma_M, \sigma_C)$.
 	
@@ -283,7 +284,7 @@
 	
 	The results shown in Figure \ref{fig:fisher-quadratic}A, B imply that there is an interesting relationship between the network's decoding ability, its private variability, and its synaptic weight heterogeneity $k_{\mathbf{w}}$. To explore this further, we examined the behavior of the Fisher information at a finite network size ($N=1000$) as a function of both $\sigma_M$ and $k_{\mathbf{w}}$ (Figure \ref{fig:fisher-quadratic}C).  To account for the fact that an increase in private variability will decrease the Fisher information, we plot the \textit{normalized} Fisher information: for a given choice of $\sigma_M$, each Fisher information is divided by the maximum across a range of $k_{\mathbf{w}}$. Thus, Figure \ref{fig:fisher-quadratic}C allows us to examine what level of synaptic weight heterogeneity maximizes the Fisher information, given a private variability $\sigma_M$.
 	
-	Figure \ref{fig:fisher-quadratic} highlights several interesting regimes  When the private variability is small, the network benefits from larger weight heterogeneity. But as it is increased, the . When the private variability is large, we are better off having less heterogeneous weights, despite the threat of differential correlations: 
+	Figure \ref{fig:fisher-quadratic} highlights several interesting regimes. When the private variability is small, the network benefits from larger weight heterogeneity. But as it is increased, the . When the private variability is large, we are better off having less heterogeneous weights, despite the threat of differential correlations: 
 	
 	Lastly, we validated the asymptotic behavior of the Fisher information as a function of the private noise by examining the coefficient of $N$ in its asymptotic series (Figure \ref{fig:fisher-quadratic}F). For $k_{\mathbf{v}}=1,2$, the coefficient is zero for any choice of $\sigma_M$, implying that the Fisher information always saturates. Increasing the heterogeneity allows the network to escape the differential correlations and achieve linear asymptotic growth. But if $k_{\mathbf{w}}$ becomes too large, the linear asymptotic growth begins to decrease. When $k_{\mathbf{w}}\sim O(N)$, the asymptotic series is always sublinear (not shown in Figure \ref{fig:fisher-quadratic}F).
 	
@@ -293,9 +294,9 @@
 		\caption{The behavior of the linear Fisher information for unstructured weights under the presence of a quadratic linearity. \textbf{(A)} } 
 	\end{figure}
 	\subsubsection{Unstructured Weights}
-	
+	We reproduced the above analysis with the unstructured weights, once again taking 3000 random draws from a shifted lognormal distribution. 
 	\subsection{The benefits of increased heterogeneity}
-	Why are we afforded improved encoding and decoding . An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability changes 
+	Why are we afforded improved encoding and decoding despite the . An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability changes 
 	
 	The network effective
 
@@ -309,6 +310,7 @@
 	
 
 	\newpage
+	%%% BIBLIOGRAPHY %%%
 	\printbibliography
 
 	\newpage
