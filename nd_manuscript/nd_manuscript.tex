@@ -52,6 +52,7 @@
 	
 	Private and shared variability  Lastly, any variability that an incoming stimulus possess would also introduce variability in the population. Such shared input noise is particularly detrimental to the fidelity of a population code \cite{Moreno-Bote2014, Kanitscheider2015}.
 	
+	To examine how the interplay between shared and private variability may impact 
 	\begin{figure}[b]
 		\centering
 		\scalebox{0.50}{\includegraphics{img/figure1.png}}
@@ -75,7 +76,7 @@
 	where vector notation denotes the weights, noises, and nonlinearities across the neuronal population. In this scheme the correlational structure of the network is dictated by the choice of weight vectors $\mathbf{v}$, $\mathbf{w}$ along with the array of nonlinearities $\mathbf{g}$. 
 	\begin{figure}[ht]
 		\centering
-		\scalebox{0.75}{
+		\scalebox{1.0}{
 			\begin{tikzpicture}
 				\tikzstyle{main} = [circle, minimum size = 12mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
 				\tikzstyle{main2} = [circle, minimum size = 15mm, line width = 0.4mm, draw=black!80, node distance = 16mm]
@@ -276,7 +277,7 @@
 	We next consider the performance of the network after a quadratic nonlinearity $g_i(x) = x^2$ for all neurons $i$. While the true Fisher information is analytically intractable, the linear Fisher information is feasible; it is calculated in Appendix \ref{app:fisher-quadratic}. Its analytic form is too complicated to be restated here, but we can examine its behavior in both the structured and unstructured cases.
 	
 	\subsubsection{Structured Weights}
-	Let us turn to the structured weights with $k_{\mathbf{v}}=1$ and varying $k_{\mathbf{w}}$ as before. In this case, the qualitative behavior of the Fisher information is dependent on magnitude of the shared ($\sigma_C$) and private ($\sigma_M$) variabilities. For example, consider $\sigma_M = \sigma_C=1$ (Figure \ref{fig:fisher-quadratic}A): here, we see that the Fisher information saturates for both $k_{\mathbf{w}}=1$ and $k_{\mathbf{w}}=2$, but increases without bound for larger $k_{\mathbf{w}}$. We can also consider the other extreme, where $k_{\mathbf{w}}$ increases with the network size; in this case the Fisher information drastically decreases and  appears to saturate (Figure \ref{fig:fisher-quadratic}A, dashed lines).
+	Let us turn to the structured weights with $k_{\mathbf{v}}=1$ and varying $k_{\mathbf{w}}$ as before. In this case, the qualitative behavior of the Fisher information is dependent on magnitude of the 4shared ($\sigma_C$) and private ($\sigma_M$) variabilities. For example, consider $\sigma_M = \sigma_C=1$ (Figure \ref{fig:fisher-quadratic}A): here, we see that the Fisher information saturates for both $k_{\mathbf{w}}=1$ and $k_{\mathbf{w}}=2$, but increases without bound for larger $k_{\mathbf{w}}$. We can also consider the other extreme, where $k_{\mathbf{w}}$ increases with the network size; in this case the Fisher information drastically decreases and  appears to saturate (Figure \ref{fig:fisher-quadratic}A, dashed lines).
 	
 	Increasing the private variability results in qualitatively different finite network behavior ($\sigma_M=5$, Figure \ref{fig:fisher-quadratic}B). At $N=1000$, we see that $k_{\mathbf{w}}=1$ and $k_{\mathbf{w}}=2$ exhibit much better performance compared to higher values. Meanwhile, for $k_{\mathbf{w}} \sim O(N)$, the Fisher information quickly saturates. We note here that the increase in private variability has decreased \textit{all} Fisher informations compared to $\sigma_M=1$ (compare the scales of Figure \ref{fig:fisher-quadratic}A, B). Furthermore, it is important to point out that Figure \ref{fig:fisher-quadratic} only highlights finite network behavior; indeed, as we will see, the asymptotic behavior is consistent no matter the choice of $\sigma_M$.
 	
@@ -295,8 +296,13 @@
 	\end{figure}
 	\subsubsection{Unstructured Weights}
 	We reproduced the above analysis with the unstructured weights, once again taking 3000 random draws from a shifted lognormal distribution. 
+	
+	\subsubsection{Mutual Information}
+	Lastly, we examine the mutual information. For a quadratic nonlinearity, the mutual information is also analytically intractable. Thus, we use an 
 	\subsection{The benefits of increased heterogeneity}
-	Why are we afforded improved encoding and decoding despite the . An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability changes 
+	Why are we afforded improved encoding and decoding as the common noise is amplified for certain neurons in the network? An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability induced by the common noise changes with increased heterogeneity. 
+	
+	At the linear stage, the answer appears to be clear: an increase in heterogeneity
 	
 	The network effective
 
