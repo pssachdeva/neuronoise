@@ -92,8 +92,8 @@ We sought out to explore how shared and private sources of neural variability in
 We consider a simple linear-nonlinear architecture and explore how its high-dimensional neural representation is impacted by a common noise source, which acts as an input, and private noise variability across all neurons. We chose the simple architecture as it allowed us to analytically assess coding ability through the Fisher and mutual informations. We found surprising cases where synaptic weighting that introduced more noise into our network via the common noise resulted in improved coding performance. Lastly, we found that the amount of private and common variance was vitally important for what types of synaptic weighting resulted in the best performance for the network.
 \begin{figure}[t]
 	\centering
-	\scalebox{0.50}{\includegraphics{img/figure1.png}}
-	\caption{Shared and private variability. \textbf{(A)} The variability of a neural population contain both private components (e.g. synaptic vesicle release, channel noise, thermal noise, etc.) and shared components (e.g. variability of presynaptic spike trains). Shared variability can be induced by the private variability of afferent connections (which is shared across a postsynaptic population) or inherited from the stimulus itself. \textbf{(B)}} Estimates of the private variability contributions to the total variability of neurons $(N=28)$ recorded from auditory cortex of anesthetized rats. Diagonal line indicates the identity line. Figure reproduced from \cite{deweese2004}.
+	\scalebox{0.46}{\includegraphics{img/figure1.pdf}}
+	\caption{Shared and private variability. \textbf{(A)} The variability of a neural population contains both private components (e.g. synaptic vesicle release, channel noise, thermal noise, etc.) and shared components (e.g. variability of presynaptic spike trains). Shared variability can be induced by the private variability of afferent connections (which is shared across a postsynaptic population) or inherited from the stimulus itself. \textbf{(B)}} Estimates of the private variability contributions to the total variability of neurons $(N=28)$ recorded from auditory cortex of anesthetized rats. Diagonal line indicates the identity. Figure reproduced from \cite{deweese2004}. 
 	\label{fig:private-shared}
 \end{figure}
 
@@ -136,9 +136,9 @@ where vector notation denotes the weights, noises, and nonlinearities across the
 		\node at (8, 0.0) (r2) {$r_2$};
 		\node at (8, -3.0) (rN) {$r_N$};
 		
-		\node[main] at (2.5, 4.0) (xi1) {$\xi_{M,1}$};
-		\node[main] at (2.5, 1.0) (xi2) {$\xi_{M,2}$};
-		\node[main] at (2.5, -2.0) (xiN) {$\xi_{M,N}$};
+		\node[main] at (2.5, 4.0) (xi1) {$\xi_{P,1}$};
+		\node[main] at (2.5, 1.0) (xi2) {$\xi_{P,2}$};
+		\node[main] at (2.5, -2.0) (xiN) {$\xi_{P,N}$};
 		
 		\draw[->, line width = 0.4mm] (s) -- (l1) node[midway, above left, sloped] {$v_1$};
 		\draw[->, line width = 0.4mm] (s) -- (l2) node[midway, above right, sloped] {$v_2$};
@@ -208,7 +208,7 @@ Thus, we  calculate both information theoretic quantities over many random draws
 We consider the network's coding ability after both the linear stage $(\boldsymbol{\ell})$ and the nonlinear stage $(\mathbf{r})$. The linear stage can be considered the output of the network assuming the functions $\mathbf{g}$ are simply the identity. Furthermore, the qualitative conclusions we obtain from the linear stage should apply for any one-to-one nonlinearity. 
 	
 \subsection{Linear Stage}
-\begin{figure}[t]
+\begin{figure}[h]
 	\centering
 	\scalebox{0.31}{\includegraphics{img/figure2-part1.pdf}}
 	\scalebox{0.31}{\includegraphics{img/figure2-part2.pdf}}
@@ -282,10 +282,23 @@ We consider the network's coding ability after both the linear stage $(\boldsymb
 	
 	To summarize these results, we once again plot the normalized Fisher information (this time, normalized across choices of $\mu$ and averaged over 1000 samples from the lognormal distribution) for a range of private variabilities (Figure \ref{fig:unstructured-quadratic-fisher}C).  The heat map exhibits a similar ``phase transition'' at a specific private variability. At this phase transition, a wide range of $\mu$'s provide the network with similar decoding ability. For smaller $\sigma_M$, we see behavior comparable to Figure \ref{fig:unstructured-quadratic-fisher}A, where there exists a regime of improved Fisher information. Beyond the phase transition, the network prefers less diverse synaptic weighting (though it becomes less stringent as $\sigma_M$ increases). The behavior exhibited by this heat map is similar to Figure \ref{fig:fisher-quadratic}C, but less complicated. 
 	
-	\subsection{Mutual Information}
-	When the network possesses a quadratic nonlinearity, the mutual information $I[s,\mathbf{r}]$ is not analytically tractable. Therefore, we calculated the mutual information numerically on data simulated from the network, using an estimator built on $k$-nearest neighbor statistics \cite{kraskov}. We refer to this estimator as the KSG estimator. 
+	\subsubsection{Mutual Information}
+	When the network possesses a quadratic nonlinearity, the mutual information $I[s,\mathbf{r}]$ is not analytically tractable. Therefore, we calculated the mutual information numerically on data simulated from the network, using an estimator built on $k$-nearest neighbor statistics \citep{kraskov2004}. We refer to this estimator as the KSG estimator. 
 	
-	We applied the KSG estimator to 100 unique datasets, each containing 100,000 samples drawn from the linear-nonlinear network. We then estimated the mutual information by averaging across each of the 100 estimators. The computational bottleneck for the KSG estimator lies in finding nearest neighbors in a kd-tree, which becomes prohibitive for large dimensions (around 20), so we considered much smaller network sizes than in the case of Fisher information. Furthermore, our estimator encountered difficulties when samples became too noisy, so we limited ourselves to smaller values of $(\sigma_M, \sigma_C)$.
+	We applied the KSG estimator to 100 unique datasets, each containing 100,000 samples drawn from the linear-nonlinear network. We then estimated the mutual information by averaging across each of the 100 estimators. The computational bottleneck for the KSG estimator lies in finding nearest neighbors in a $kd$-tree, which becomes prohibitive for large dimensions (around 20), so we considered much smaller network sizes than in the case of Fisher information. Furthermore, our estimator encountered difficulties when samples became too noisy, so we limited ourselves to smaller values of $(\sigma_M, \sigma_C)$. Due to these constraints, we are unable to empirically assess the asymptotic behavior of the mutual information.
+	
+	Our results for the structured weights are shown in Figure \ref{fig:mi_squared_struct}. Observe that, as before, the mutual information increases with larger weight heterogeneity ($k_{\mathbf{w}}$, Figure \ref{fig:mi_squared_struct}A). A smaller network more readily preserves information between the stimulus and neural representation for small $k_{\mathbf{w}}$. As $k_{\mathbf{w}}$ increases, though, larger networks are preferred. This behavior is due to the fact that adding more noisy neurons (each with their own private variability) will only hurt the encoding when the network is constrained by differential correlations. Once the network has escaped the differential correlations ($k_{\mathbf{w}} > 1$), this effect becomes less pronounced.
+	
+	Unsurprisingly, decreasing the private variability increases mutual information (Figure \ref{fig:mi_squared_struct}B). However, the network sees a greater increase in information with diverse weighting when $\sigma_M$ is small. This is consistent with the small $\sigma_M$ regime highlighted in Figure \ref{fig:fisher-quadratic}C: the smaller the private variability, the more it benefits from larger synaptic weight heterogeneity. 
+	
+	Similarly, decreasing the common variability increases mutual information (Figure \ref{fig:mi_squared_struct}C). If the common variability is small enough (for example, $\sigma_C=1$), then larger $k_{\mathbf{w}}$ harms the encoding. Thus, when the common noise is small enough, the amplification of noise that results when $k_{\mathbf{w}}$ is increased truly harms the network's encoding. It is only when the common variability begins to dominate that the diversification provided by larger $k_{\mathbf{w}}$ improves the mutual information. 
+
+	\begin{figure}[t]
+		\centering
+		\scalebox{0.23}{\includegraphics{img/figure6.pdf}}
+		\caption{Mutual information computed by applying the KSG estimator on data simulated from the network with quadratic nonlinearity. Here, we examine the network under the presence of structured weights. The estimates consist of averages over 100 datasets, each containing 100,000 samples. Standard error barrs are smaller than the size of the markers. \textbf{(A)} Mutual information for various choice of $N$. We consider smaller $N$ than before as computation time becomes prohibitive for larger dimensionalities. Here, $\sigma_M =\sigma_C=0.5$. \textbf{(B)} Behavior of mutual information for various choices of $\sigma_M$, while $\sigma_C=0.5$. When $\sigma_M$ is smaller, the mutual information increases more substantially for larger $k_{\mathbf{w}}$.  \textbf{(C)}  Behavior of mutual information for various choices of $\sigma_C$, while $\sigma_M=0.5$. If $\sigma_C$ is small, the mutual information decreases with larger $k_{\mathbf{w}}$. As it increases, the mutual information begins to increase with larger $k_{\mathbf{w}}$.}  
+		\label{fig:mi_squared_struct}
+	\end{figure}
 	
 	\subsection{The benefits of increased heterogeneity}
 	Why are we afforded improved encoding and decoding as the common noise is amplified for certain neurons in the network? An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability induced by the common noise changes with increased heterogeneity. 
@@ -298,13 +311,13 @@ where $\Delta$ sets a lower bound for the weights. Here, increased ``diversity''
 
 
 
-\section*{Conclusion}
+\section{Discussion}
 We have illustrated the basic format to the manuscript that you consider to submit to Neural Computation. We hope this is helpful to the authors.
 
 \subsection*{Acknowledgments}
 
 
-\section*{Appendix}
+\section{Appendix}
 
 \subsection{Calculation of  Fisher Information, Linear Stage}
 All variability after the linear stage is Gaussian; thus, the Fisher information can be expressed in the form \citep{abbott1999, kay1993}:
@@ -367,6 +380,12 @@ DeWeese, M. R., \& Zador, A. M. (2004).
 Kay, S. M. (1993).
 \newblock Fundamentals of Statistical Signal Processing, Volume I: Estimation Theory.
 \newblock \emph{Prentice-Hall}.
+
+\bibitem[{Kraskov et~al.(2004)}]{kraskov2004}
+Kraskov, A., St{\"o}gbauer H., \& Grassberger P. (2004)
+\newblock Estimating mutual information.
+\newblock \emph{Physical Review E},
+\emph{69}, 066138.
 
 \bibitem[{Authors et~al.(2008)Author1, Author2, \&
   Author3}]{Ref2008}

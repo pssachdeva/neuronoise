@@ -1,0 +1,11 @@
+.DS_Store
+*.aux
+*.xml
+*.log
+*.synctex.gz
+*.pyc
+*.ipynb_checkpoints
+*.pdf
+*.blg
+*.bcf
+*.bbl
