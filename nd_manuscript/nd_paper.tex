@@ -66,7 +66,7 @@
 %
 
 %\ \\[-2mm]
-{\bf Keywords:} neural variability, noise correlations, shared and private noise, synaptic weighting
+{\bf Keywords:} neural variability, noise correlations, shared noise, private noise, synaptic weighting
 
 \thispagestyle{empty}
 \markboth{}{NC instructions}
@@ -79,7 +79,7 @@ This documentation briefly describes the formats required by Neural Computation.
 %%%%%%%%%%%
 
 \section{Introduction}
-Variability is a prominent feature of neural systems: neural responses to external stimuli will vary trial-to-trial even when the stimuli are constant. Furthermore, neural variability exhibits pairwise correlations: these ``noise correlations'' have been observed throughout the cortex. They have long been of theoretical interest because their presence has strong implications for neural coding.
+Variability is a prominent feature of neural systems: neural responses to external stimuli will vary trial-to-trial even when the stimuli are constant. Furthermore, neural variability exhibits pairwise correlations: these ``noise correlations'' have been observed throughout the cortex \citep{averbeck2006, cohen2011}. They have long been of theoretical interest because their presence has strong implications for neural coding.
 
 From a population coding perspective, a neural population must produce a faithful representation of relevant quantities, such as a stimulus, for their computation. One advantage of population coding is that variability unique to each neuron, or private variability, can be averaged out. If some variability is shared across neurons, i.e. we have noise correlations, larger populations of neurons cannot naively average out the variability. An abundance of theoretical work has explored how shared variability, therefore, can be both detrimental or beneficial to the fidelity of a population code depending on its structure. A  general conclusion of this theoretical work highlights the importance of the geometric relationship between the signal and noise correlations (both of which are stimulus-dependent).
 
@@ -89,18 +89,18 @@ In prior work, we examined private and shared variability in the auditory cortex
 
 We sought out to explore how shared and private sources of neural variability interact to influence neural coding. As mentioned before, work by Moreno-Bote et al. demonstrated that shared input noise is detrimental to the fidelity of a population code. Here, we instead turn to sources of shared variability which are not carried by stimulus and thus can be manipulated by features of neural computation such as synaptic weighting. We refer to these noise sources as ``common noise'' to distinguish them from the special case of ``shared input noise.'' For example, a common noise source could include an upstream neuron whose action potentials are ``noisy'' in the sense that they are unimportant for the computation of the current stimulus.
 
-We consider a simple linear-nonlinear architecture and explore how its high-dimensional neural representation is impacted by a common noise source, which acts as an input, and private noise variability across all neurons. We chose the simple architecture as it allowed us to analytically assess coding ability through the Fisher and mutual informations. We found surprising cases where synaptic weighting that introduced more noise into our network via the common noise resulted in improved coding performance. Lastly, we found that the amount of private and common variance was vitally important for what types of synaptic weighting resulted in the best performance for the network.
-\begin{figure}[t]
+We consider a simple linear-nonlinear architecture and explore how its high-dimensional neural representation is impacted by a common noise source, which acts as an input, and private noise variability across all neurons. We chose this simple architecture as it allowed us to analytically assess coding ability through the Fisher and mutual informations. We found surprising cases where synaptic weighting that introduced more noise into our network via the common noise resulted in improved coding performance. Lastly, we found that the amount of private and common variance was vitally important for what types of synaptic weighting resulted in the network's optimal performance.
+\begin{figure}[b]
 	\centering
 	\scalebox{0.46}{\includegraphics{img/figure1.pdf}}
-	\caption{Shared and private variability. \textbf{(A)} The variability of a neural population contains both private components (e.g. synaptic vesicle release, channel noise, thermal noise, etc.) and shared components (e.g. variability of presynaptic spike trains). Shared variability can be induced by the private variability of afferent connections (which is shared across a postsynaptic population) or inherited from the stimulus itself. \textbf{(B)}} Estimates of the private variability contributions to the total variability of neurons $(N=28)$ recorded from auditory cortex of anesthetized rats. Diagonal line indicates the identity. Figure reproduced from \cite{deweese2004}. 
+	\caption{Shared and private variability. \textbf{(A)} The variability of a neural population contains both private components (e.g. synaptic vesicle release, channel noise, thermal noise, etc.) and shared components (e.g. variability of presynaptic spike trains, shared input noise). Shared variability can be induced by the variability of afferent connections (which is shared across a postsynaptic population) or inherited from the stimulus itself.  \textbf{(B)} Estimates of the private variability contributions to the total variability of neurons $(N=28)$ recorded from auditory cortex of anesthetized rats. Diagonal line indicates the identity. Figure reproduced from \cite{deweese2004}.}
 	\label{fig:private-shared}
 \end{figure}
 
 \section{Methods}
 
 \subsection{Network Architecture}
-We consider the linear-nonlinear architecture depicted in Figure \ref{architecture}. The inputs to the network consist of a stimulus $s$ along with common (Gaussian) noise $\xi_C$. The $N$ neurons in the network take a linear combination of the inputs which is then corrupted by i.i.d. private Gaussian noise. Thus, the output of the linear stage for the $i$th neuron is 
+We consider the linear-nonlinear architecture depicted in Figure \ref{architecture}. The inputs to the network consist of a stimulus $s$ along with common (Gaussian) noise $\xi_C$. The $N$ neurons in the network take a linear combination of the inputs and are further corrupted by i.i.d. private Gaussian noise. Thus, the output of the linear stage for the $i$th neuron is 
 \begin{align}
 \ell_i &= v_i s + w_i \sigma_C \xi_C + \sigma_P\xi_{P,i},
 \end{align}
@@ -110,7 +110,7 @@ Thus, the network-wide computation is given by
 \begin{align}
 \mathbf{r} &= \mathbf{g}(\mathbf{v} s + \mathbf{w} \sigma_C \xi_C +\sigma_P \boldsymbol{\xi}_P)
 \end{align}
-where vector notation denotes the weights, noises, and nonlinearities across the neuronal population. In this scheme the correlational structure of the network is dictated by the choice of weight vectors $\mathbf{v}$, $\mathbf{w}$ along with the array of nonlinearities $\mathbf{g}$. 
+where vector notation denotes the weights ($\mathbf{v}$ and $\mathbf{w}$), private noise ($\boldsymbol{\xi}_P$), and nonlinearities ($\mathbf{g}$) across the neuronal population. In this scheme the correlational structure of the network is dictated by the choice of weight vectors $\mathbf{v}$, $\mathbf{w}$ along with the array of nonlinearities $\mathbf{g}$. 
 \begin{figure}[ht]
 	\centering
 	\scalebox{1.0}{
@@ -170,20 +170,20 @@ where vector notation denotes the weights, noises, and nonlinearities across the
 		\path (r2) -- (rN) node [black, font=\Huge, midway, sloped] {$\dots$};	
 		\end{tikzpicture}}
 	
-	\caption{Linear-Nonlinear Network Architecture. The network takes as its inputs a stimulus $s$ and common noise $\xi_C$. A linear combination of these quantities is corrupted by individual membrane potential noise $\xi_{P,i}$. The output of this linear stage is then passed through a nonlinearity $g_i(\ell)$.}
+	\caption{Linear-Nonlinear Network Architecture. The network takes as its inputs a stimulus $s$ and common noise $\xi_C$. A linear combination of these quantities is corrupted by individual membrane potential noise $\xi_{P,i}$. The output of this linear stage is then passed through a nonlinearity $g_i(\ell)$ to produce a ``firing rate'' $r_i$. The weights for the linear stage of the network, $v_i$ and $w_i$, can be thought of as synaptic weighting. Importantly, the common noise is distinct from  shared input noise because it is manipulated by the synaptic weighting.}
 	\label{architecture}
 \end{figure}
 
 \subsection{Measures of Coding Strength}
 In order to assess the fidelity of the population code represented by $\boldsymbol{\ell}$ or $\mathbf{r}$, we turn to the Fisher information and the Shannon mutual information. The former has largely been utilized in the context of sensory decoding and correlated variability \citep{abbott1999} while the latter has been well studied in the context of efficient coding. 
 
-The Fisher information sets a limit by which the readout of a population code can determine the value of the stimulus. Formally, it sets a lower bound to the variance of an unbiased estimator for the stimulus. Often, the Fisher information is intractable to calculate analytically; a suitable lower bound is the linear Fisher information:
+The Fisher information sets a limit by which the readout of a population code can determine the value of the stimulus. Formally, it sets a lower bound to the variance of an unbiased estimator for the stimulus. In terms of our network architecture, the Fisher information of the representation $\mathbf{r}$ (or $\boldsymbol{\ell}$) quantifies how well we can decode $s$ given the representation. Often, the Fisher information is intractable to calculate analytically; a suitable lower bound is the linear Fisher information:
 \begin{align}
 I_F(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}^{-1}(s) \mathbf{f}(s)
 \end{align}
 whose corresponding estimator is the locally optimal linear estimator. 
 
-The Shannon mutual information quantifies the reduction in uncertainty of one random variable given knowledge of another. In the context of Figure \ref{architecture}, we are interested in the mutual information between the neural representation $\mathbf{r}$ and the stimulus $s$, i.e. $I[s, \mathbf{r}]$. As with the Fisher information, the mutual information is often not analytically tractable. Thus, we turn to the abundance of work devoted to formulating estimators of the mutual information from data. Specifically, we will utilize the nearest-neighbor estimator developed by Kraskov et al. 
+The Shannon mutual information quantifies the reduction in uncertainty of one random variable given knowledge of another. In the context of Figure \ref{architecture}, we are interested in the mutual information between the neural representation $\mathbf{r}$ and the stimulus $s$, i.e. $I[s, \mathbf{r}]$. As with the Fisher information, the mutual information is often not analytically tractable. Thus, we turn to the abundance of work devoted to formulating estimators of the mutual information from data. Specifically, we will employ the estimator developed by Kraskov et al. which utilizes entropy estimates from $k$-nearest neighbor distances.
 \subsection{Structured Weights}
 To obtain analytic expressions for these quantities, we first consider the case of ``structured weights'' taking on the form
 \begin{align}
@@ -200,119 +200,137 @@ While the structured weights provide us analytic results, they possess an unreal
 \begin{align}
 \mathbf{v} \sim p(\mathbf{v}; \theta_{\mathbf{v}}); \ \mathbf{w} \sim p(\mathbf{w}; \theta_{\mathbf{w}}).
 \end{align}
-Thus, we  calculate both information theoretic quantities over many random draws from these distributions. We then observe how the quantities behave as some subset of the parameters $\theta$ are varied. In particular, we will focus on the lognormal distribution, which has been observed to describe the distribution of synaptic weights well in slice electrophysiology \textcolor{red}{[citation]}. Specifically, we examine 
+Thus, we  calculate both information theoretic quantities over many random draws from these distributions. We then observe how the quantities behave as some subset of the parameters $\theta$ are varied. In particular, we will focus on the lognormal distribution, which has been observed to describe the distribution of synaptic weights well in slice electrophysiology. Specifically, we examine 
 \begin{align}
-\mathbf{w}\sim \text{Lognormal}(\mu - \Delta, \sigma)
+\mathbf{w}\sim \Delta + \text{Lognormal}(\mu, \sigma).
 \end{align}
+For a lognormal distribution, an increase in $\mu$ will increase the distribution's mean, median, and mode. Thus, $\mu$ as a parameter acts similarly to $k$ for the structured weights in that increased weight diversity must be accompanied by an increase in their magnitude.
+
 \section{Results}
 We consider the network's coding ability after both the linear stage $(\boldsymbol{\ell})$ and the nonlinear stage $(\mathbf{r})$. The linear stage can be considered the output of the network assuming the functions $\mathbf{g}$ are simply the identity. Furthermore, the qualitative conclusions we obtain from the linear stage should apply for any one-to-one nonlinearity. 
 	
 \subsection{Linear Stage}
 \begin{figure}[h]
 	\centering
-	\scalebox{0.31}{\includegraphics{img/figure2-part1.pdf}}
-	\scalebox{0.31}{\includegraphics{img/figure2-part2.pdf}}
-	\caption{The performance of the Fisher and mutual informations after the linear stage of the network. Here, we take $\sigma_P = \sigma_C=1$. Note that the Fisher information is independent of $s$. \textbf{(A)}, \textbf{(C)} Structured weights. Both quantities saturate as a function of the number of neurons in the case of uniform noise weights ($k_{\mathbf{w}}=1$). Once $k_{\mathbf{w}}$ is increased, they are unbounded with respect to population size. \textbf{(B)}, \textbf{(D)} Same aforementioned network, but plotted with respect to weight heterogeneity for various network sizes. \textbf{(E)}, \textbf{(F)} Unstructured weights calculated over 2000 draws from lognormal distributions. Inset shows the distribution of weights for various choices of $\mu$. Increasing $\mu$ shifts the distribution to the right, increasing heterogeneity. Solid lines depict the means while the shaded region indicate one standard deviation across samples.}\label{fig:struct-linear}
+	\scalebox{0.31}{\includegraphics{img/figure3-part1.pdf}}
+	\scalebox{0.31}{\includegraphics{img/figure3-part2.pdf}}
+	\caption{Network performance with linear stage representation. Here, we take $\sigma_P = \sigma_C=1$. Fisher informations are plotted on the top row while mutual informations are plotted on the bottom row. \textbf{(A)}, \textbf{(B)} Structured weights. Both information quantities saturate as a function of the number of neurons in the case of uniform noise weights ($k_{\mathbf{w}}=1$). Once $k_{\mathbf{w}}$ is increased, they increase unbounded with respect to population size. \textbf{(C)}, \textbf{(D)} Same aforementioned network, but informations are plotted with respect to weight heterogeneity for various network sizes. \textbf{(E)}, \textbf{(F)} Fisher information vs. mean of lognormal distribution used to draw common noise synaptic weights.  Solid lines depict the means while the shaded region indicate one standard deviation across the 2000 samples. Inset: the distribution of weights for various choices of $\mu$. Increasing $\mu$ shifts the distribution to the right, increasing heterogeneity.}\label{fig:struct-linear}
 \end{figure}
 	
-	The Fisher information in the linear representation is calculated in Appendix \ref{app:fisher-linear} as 
-	\begin{align}
+The Fisher information in the linear representation is calculated in Appendix \ref{app:fisher-linear} as 
+\begin{align}
 	I_F(s) &= \frac{1}{\sigma_P^2}\frac{\left(\sigma_P^2/\sigma_C^2\right) |\mathbf{v}|^2 +  \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{(\sigma_P^2/\sigma_C^2)+ |\mathbf{w}|^2}. \label{eqn:fisher-linear}
-	\end{align}
-	while the mutual information is calculated in Appendix \ref{mutual-linear} as
-	\begin{align}
+\end{align}
+while the mutual information is calculated in Appendix \ref{mutual-linear} as
+\begin{align}
 	I[s, \boldsymbol{\ell}] &= \frac{1}{2} \log \left[1 + \sigma_S^2 I_F(s)\right]. \label{eqn:mutual-linear}
-	\end{align}
-	In the case of mutual information, we have assumed the stimulus prior is Gaussian with zero mean and variance $\sigma_S^2$. For structured weights, equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} can be explored by varying the choice of $k$ for both $\mathbf{v}$ and $\mathbf{w}$ (call them $k_{\mathbf{v}}$ and $k_{\mathbf{w}}$, respectively).
+\end{align}
+In the case of mutual information, we have assumed the stimulus prior is Gaussian with zero mean and variance $\sigma_S^2$. For structured weights, equations \ref{eqn:fisher-linear} and \ref{eqn:mutual-linear} can be explored by varying the choice of $k$ for both $\mathbf{v}$ and $\mathbf{w}$ (call them $k_{\mathbf{v}}$ and $k_{\mathbf{w}}$, respectively).
 	
-	It is simplest to examine these quantities with $k_{\mathbf{v}}=1$ while allowing $k_{\mathbf{w}}$ to vary, as amplifying and diversifying $\mathbf{v}$ will increase coding ability (which our results corroborate) \cite{Ecker2011}. On the other hand, while increasing $k_{\mathbf{w}}$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. Thus, while we might expect that more noise in the system would hinder coding, the direction to which the noise is projected is important. 
+It is simplest to examine these quantities with $k_{\mathbf{v}}=1$ while allowing $k_{\mathbf{w}}$ to vary, as amplifying and diversifying $\mathbf{v}$ will increase coding ability (which our results corroborate). On the other hand, while increasing $k_{\mathbf{w}}$ will boost the overall noise added into the neural population, it also changes the direction that the noise is projected into the higher-dimensional neural space. Thus, while we might expect that more noise in the system would hinder coding, the direction to which the noise is projected is important. 
 	
-	We first consider how the Fisher information and mutual information are impacted by the choice of $k_{\mathbf{w}}$. In the structured regime, we have 
-	\begin{align}
+We first consider how the Fisher information and mutual information are impacted by the choice of $k_{\mathbf{w}}$. In the structured regime, we have 
+\begin{align}
 	|\mathbf{v}|^2 &= N \\
 	\mathbf{v}\cdot\mathbf{w} &= \frac{N}{k} \sum_{i=1}^k i = \frac{N(k+1)}{2} \\
 	|\mathbf{w}|^2 &= \frac{N}{k}\sum_{i=1}^k i^2 = \frac{N(k+1)(2k+1)}{6},
-	\end{align}
-	which allows us to rewrite equation \ref{eqn:fisher-linear} as
-	\begin{align}
+\end{align}
+which allows us to rewrite equation \ref{eqn:fisher-linear} as
+\begin{align}
 	I_F(s) = I_F &= \frac{N}{2\sigma_P^2} \frac{12 (\sigma_P^2/\sigma_C^2) + N  (k^2-1)}{6(\sigma_P^2/\sigma_C^2)+ N(2k^2+3k+1)}.
-	\end{align}
-	The form of the mutual information follows directly from equation \ref{eqn:mutual-linear}. The structured regime analytically reveals the asymptotic behavior of the information quantities. Both quantities saturate as a function of $N$  only in the case of $k_{\mathbf{w}}=1$ (Figure \ref{fig:struct-linear}A, C); otherwise, they increase without bound. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, both quantities are monotonically increasing functions of $k_{\mathbf{w}}$ (Figure \ref{fig:struct-linear}B, D), implying that encoding and decoding are enhanced despite the fact that the common noise is magnified for larger $k_{\mathbf{w}}$. Our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise \cite{Brunel1998}. These qualitative results hold for any choice of $(\sigma_S, \sigma_P, \sigma_C)$.
+\end{align}
+The form of the mutual information follows directly from equation \ref{eqn:mutual-linear}. 
 	
-	In the case of $k_{\mathbf{w}}=1$, the signal and common noise are aligned perfectly in the neural representation. Thus, the common noise becomes equivalent in form to shared input noise. As a consequence, we observe the saturation of both Fisher and mutual informations as a function of the neural population. Such saturation implies the existence of differential correlations, consistent with the observation that information-limiting correlations occur under the presence of shared input noise \cite{Moreno-Bote2014}. This does not imply that weight heterogeneity prevents differential correlations, as the common noise in this model is manipulated by synaptic weighting, in contrast with true shared input noise. It does, however, imply that weight heterogeneity can prevent the harmful effects of \textit{additional} information-limiting correlations induced by common noise mimicking shared input noise.
+The structured regime analytically reveals the asymptotic behavior of the information quantities. Both quantities saturate as a function of $N$  only in the case of $k_{\mathbf{w}}=1$ (Figure \ref{fig:struct-linear}A, B); otherwise, they increase without bound. As expected, increasing the population of the system also enhances coding fidelity. Furthermore, both quantities are monotonically increasing functions of $k_{\mathbf{w}}$ (Figure \ref{fig:struct-linear}C, D), implying that encoding and decoding are enhanced despite the fact that the common noise is magnified for larger $k_{\mathbf{w}}$. Our analytic results ensure linear and logarithmic growth for the Fisher and mutual information, respectively, as one might expect in the case of Gaussian noise. These qualitative results hold for any choice of $(\sigma_S, \sigma_P, \sigma_C)$.
 	
-	While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to ``unstructured weights,'' in which the synaptic weights are drawn from a shifted lognormal distribution. In this case, we calculate both information theoretic quantities over many random draws according to $w_i \sim \Delta + \text{Lognormal}(\mu, \sigma^2)$. We are primarily concerned with varying $\mu$, as an increase in this quantity uniformly increases the mean, median, and mode of the lognormal distribution (Figure  \ref{fig:struct-linear}E, inset), akin to increasing $k_{\mathbf{w}}$ for the structured weights. 
+In the case of $k_{\mathbf{w}}=1$, the signal and common noise are aligned perfectly in the neural representation. Thus, the common noise becomes equivalent in form to shared input noise. As a consequence, we observe the saturation of both Fisher and mutual informations as a function of the neural population. Such saturation implies the existence of differential correlations, consistent with the observation that information-limiting correlations occur under the presence of shared input noise. Our results do not imply that weight heterogeneity prevents differential correlations, as the common noise in this model is manipulated by synaptic weighting, in contrast with true shared input noise. It does, however, imply that weight heterogeneity can prevent the harmful effects of \textit{additional} information-limiting correlations induced by common noise mimicking shared input noise.
 	
-	Our numerical analysis demonstrates that increasing $\mu$ will increase the average Fisher information and average mutual information for multiple network sizes (Figure \ref{fig:struct-linear}E, F: bold lines). In addition, the benefits of larger weight diversity are felt more strongly by larger populations (Figure \ref{fig:struct-linear}E, F: shaded region). Thus, we once again observe that larger heterogeneity affords the network improved coding performance, despite the increased noise present in the system.
+While the structured weights provide us analytic results, they possess an unrealistic distribution of synaptic weighting. Thus, we turn to ``unstructured weights,'' in which the synaptic weights are drawn from a shifted lognormal distribution. In this case, we calculate both information theoretic quantities over many random draws according to $w_i \sim \Delta + \text{Lognormal}(\mu, \sigma^2)$. We are primarily concerned with varying $\mu$, as an increase in this quantity uniformly increases the mean, median, and mode of the lognormal distribution (Figure  \ref{fig:struct-linear}E, inset), akin to increasing $k_{\mathbf{w}}$ for the structured weights. 
 	
-	\subsection{Quadratic Nonlinearity}
-	We next consider the performance of the network after a quadratic nonlinearity $g_i(x) = x^2$ for all neurons $i$. In this case, both the Fisher information and mutual information are analytically intractable. Thus, we will instead turn to the linear Fisher information (which is feasible) and approximate the mutual information numerically.
+Our numerical analysis demonstrates that increasing $\mu$ will increase the average Fisher information and average mutual information for multiple network sizes (Figure \ref{fig:struct-linear}E, F: bold lines). In addition, the benefits of larger weight diversity are felt more strongly by larger populations (Figure \ref{fig:struct-linear}E, F: shaded region). Thus, we once again observe that larger heterogeneity affords the network improved coding performance, despite the increased noise present in the system.
 	
-	\begin{figure}[t]
-		\centering
-		\scalebox{0.23}{\includegraphics{img/figure3.pdf}}
-		\caption{Fisher information in the network after a squared nonlinearity for structured weights. \textbf{(A)} When the membrane noise variance is equal to the common noise variance, we observe saturating behavior for $k=1$ and $k=2$. Increasing $k$ results in unbounded growth. At the extreme end of heterogeneity, where $k$ scales as $N$, the Fisher information saturates. \textbf{(B)} This qualitative behavior depends on the choice of $\sigma_P$. Increasing the membrane noise variance requires a much larger neural population to see the benefits of larger heterogeneity. \textbf{(C)} The Fisher information is normalized across all values of $\sigma_P/\sigma_C$ for a choice of $k$. The behavior of the Fisher information exhibits several phase transitions. This qualitative behavior may change as $N$ is increased.}
-		\label{fig:fisher-quadratic}
-	\end{figure}
+\subsection{Quadratic Nonlinearity}
+We next consider the performance of the network after a quadratic nonlinearity $g_i(x) = x^2$ for all neurons $i$. In this case, both the Fisher information and mutual information are analytically intractable. Thus, we will instead turn to the linear Fisher information (which is feasible) and approximate the mutual information numerically.
 	
-	\subsubsection{Fisher Information}
-	An analytic expression of the linear Fisher information is calculated in Appendix \ref{app:fisher-quadratic}. Its analytic form is too complicated to be restated here, but we will examine it numerically for both the structured and unstructured weights. The qualitative behavior of the Fisher information is dependent on the magnitude of the common ($\sigma_C$) and private ($\sigma_P$) variabilities, though not through their ratio $\sigma_C/\sigma_P$ (as in the linear stage). Thus, we separately consider how common and private variability impact coding efficacy under various synaptic weight structures.
+\begin{figure}[t]
+	\centering
+	\scalebox{0.22}{\includegraphics{img/figure4.pdf}}
+	\caption{Fisher information after quadratic nonlinearity, structured weights. \textbf{(A)} Fisher information vs. population size when $\sigma_P=\sigma_C =1$, i.e. private and common noise have equal variances. Solid lines denote constant $k$ while dashed lines denote $k$ scaling with population size. The Fisher information saturates for $k=1,2$ and all $k$ that scale with $N$. \textbf{(B)} Same as (A), but for a network where private variance dominates ($\sigma_P =5, \sigma_C =1$). \textbf{(C)} Normalized fisher information: for a choice of $\sigma_P$, the Fisher information is calculated for a variety of $k_{\mathbf{w}}$ ($y$-axis) and divided by the maximum Fisher information (across the $k_{\mathbf{w}}$, for the choice of $\sigma_P$). Thus, for a given $\sigma_P$, the normalized Fisher information is equal to one at the value of $k_{\mathbf{w}}$ which maximizes decoding performance. \textbf{(D)} Behavior of the Fisher information vs. synaptic weight heterogeneity for various population sizes ($\sigma_P=\sigma_C=1$). \textbf{(E)} Same as (D), but for networks where private variance dominates $(\sigma_P=5, \sigma_C=1)$. \textbf{(F)} The coefficient of the linear term in the asymptotic series of the Fisher information at different levels of private variability. At $k_{\mathbf{w}}=1,2$, the coefficient of $N$ is exactly zero.}
+	\label{fig:fisher-quadratic}
+\end{figure}
 	
-	As before, we first turn to the structured weights with $k_{\mathbf{v}}=1$ and varying $k_{\mathbf{w}}$. First, consider $\sigma_P= \sigma_C=1$ (Figure \ref{fig:fisher-quadratic}A): here, the Fisher information saturates for both $k_{\mathbf{w}}=1$ and $k_{\mathbf{w}}=2$, but increases without bound for larger $k_{\mathbf{w}}$. We can also consider the other extreme, where $k_{\mathbf{w}}\sim O(N)$; in this case the Fisher information drastically decreases and  appears to saturate (Figure \ref{fig:fisher-quadratic}A, dashed lines). 
+\subsubsection{Fisher Information}
+An analytic expression of the linear Fisher information is calculated in Appendix \ref{app:fisher-quadratic}. Its analytic form is too complicated to be restated here, but we will examine it numerically for both the structured and unstructured weights. The qualitative behavior of the Fisher information is dependent on the magnitude of the common ($\sigma_C$) and private ($\sigma_P$) variabilities, though not through their ratio $\sigma_C/\sigma_P$ (as in the linear stage). Thus, we separately consider how common and private variability impact coding efficacy under various synaptic weight structures.
 	
-	At the extreme where private variability dominates, we see qualitatively different finite network behavior ($\sigma_P=5$, Figure \ref{fig:fisher-quadratic}B). For  $N=1000$,  both $k_{\mathbf{w}}=1$ and $k_{\mathbf{w}}=2$ exhibit better performance relative to larger values of $k_{\mathbf{w}}$ (meanwhile, $k_{\mathbf{w}} \sim O(N)$  quickly saturates). We note that, unsurprisingly, the increase in private variability has decreased \textit{all} Fisher informations compared to $\sigma_P=1$ (compare the scales of Figure \ref{fig:fisher-quadratic}A, B): our main interest is highlighting the optimal synaptic weighting \textit{given} some amount of private and common variability. Lastly, it is important to point out that Figure \ref{fig:fisher-quadratic} only highlights finite network behavior; indeed, as we will see, the asymptotic behavior is consistent no matter the choice of $\sigma_P$.
+As before, we first turn to the structured weights with $k_{\mathbf{v}}=1$ and varying $k_{\mathbf{w}}$. First, consider $\sigma_P= \sigma_C=1$ (i.e. equal private and common noise variance): here, the Fisher information saturates for both $k_{\mathbf{w}}=1$ and $k_{\mathbf{w}}=2$, but increases without bound for larger $k_{\mathbf{w}}$ (Figure \ref{fig:fisher-quadratic}A). We can also consider the other extreme, where $k_{\mathbf{w}}\sim O(N)$; in this case the Fisher information drastically decreases and  appears to saturate (Figure \ref{fig:fisher-quadratic}A, dashed lines). 
 	
-	Thus, the introduction of the squared nonlinearity produces qualitatively different behavior at the finite network level: in contrast with Figure \ref{fig:struct-linear}, increased heterogeneity does not automatically imply improved decoding. Indeed, there is a regime in which increased heterogeneity improves Fisher information, beyond which we see a reduction in decoding performance (Figure \ref{fig:fisher-quadratic}D). If the private variability increases, this regime shrinks or becomes nonexistent, depending on the network size (Figure \ref{fig:fisher-quadratic}E). Furthermore, entering this regime for higher private variability requires smaller $k_{\mathbf{w}}$. 
+When private variability dominates, we see qualitatively different finite network behavior ($\sigma_P=5$, Figure \ref{fig:fisher-quadratic}B). For  $N=1000$,  both $k_{\mathbf{w}}=1$ and $k_{\mathbf{w}}=2$ exhibit better performance relative to larger values of $k_{\mathbf{w}}$ (meanwhile, $k_{\mathbf{w}} \sim O(N)$  quickly saturates). We note that, unsurprisingly, the increase in private variability has decreased \textit{all} Fisher informations compared to $\sigma_P=1$ (compare the scales of Figure \ref{fig:fisher-quadratic}A, B). Our main interest, however, is highlighting the optimal synaptic weighting \textit{given} some amount of private and common variability. Lastly, it is important to point out that Figure \ref{fig:fisher-quadratic} only highlights finite network behavior; indeed, as we will see, the asymptotic behavior is consistent no matter the choice of $\sigma_P$.
 	
-	The results shown in Figure \ref{fig:fisher-quadratic}D, E imply that there exists an interesting relationship between the network's decoding ability, its private variability, and its synaptic weight heterogeneity $k_{\mathbf{w}}$. To explore this further, we examined the behavior of the Fisher information at a finite network size ($N=1000$) as a function of both $\sigma_P$ and $k_{\mathbf{w}}$ (Figure \ref{fig:fisher-quadratic}C).  To account for the fact that an increase in private variability will always decrease the Fisher information, we calculate the \textit{normalized} Fisher information: for a given choice of $\sigma_P$, each Fisher information is divided by the maximum across a range of $k_{\mathbf{w}}$. Thus, a normalized Fisher information allows us to determine what level of synaptic weight heterogeneity maximizes coding fidelity, given a private variability $\sigma_P$.
+Thus, the introduction of the squared nonlinearity produces qualitatively different behavior at the finite network level: in contrast with Figure \ref{fig:struct-linear}, increased heterogeneity does not automatically imply improved decoding. Indeed, there is a regime in which increased heterogeneity improves Fisher information, beyond which we see a reduction in decoding performance (Figure \ref{fig:fisher-quadratic}D). If the private variability increases, this regime shrinks or becomes nonexistent, depending on the network size (Figure \ref{fig:fisher-quadratic}E). Furthermore, entering this regime for higher private variability requires smaller $k_{\mathbf{w}}$ (i.e. less weight heterogeneity). 
 	
-	Figure \ref{fig:fisher-quadratic}C highlights three interesting regimes. When the private variability is small, the network benefits from larger weight heterogeneity on the common noise. But as our neurons become more noisy, the ``Goldilocks zone'' for which our network can leverage larger noise weights becomes constrained. When the private variability is large, our network is better off having less heterogeneous weights, despite the threat of induced differential correlations from the common noise. Between these regimes, there are transitions for which many choices of $k_{\mathbf{w}}$ result in equally good decoding performance.
+The results shown in Figures \ref{fig:fisher-quadratic}D and  \ref{fig:fisher-quadratic}E imply that there exists an interesting relationship between the network's decoding ability, its private variability, and its synaptic weight heterogeneity $k_{\mathbf{w}}$. To explore this further, we examined the behavior of the Fisher information at a finite network size ($N=1000$) as a function of both $\sigma_P$ and $k_{\mathbf{w}}$ (Figure \ref{fig:fisher-quadratic}C).  To account for the fact that an increase in private variability will always decrease the Fisher information, we calculate the \textit{normalized} Fisher information: for a given choice of $\sigma_P$, each Fisher information is divided by the maximum across a range of $k_{\mathbf{w}}$. Thus, a normalized Fisher information allows us to determine what level of synaptic weight heterogeneity maximizes coding fidelity, given a private variability $\sigma_P$. 
 	
-	Lastly, we validated the asymptotic behavior of the Fisher information as a function of the private noise by examining the coefficient of $N$ in its asymptotic series (Figure \ref{fig:fisher-quadratic}F). For $k_{\mathbf{v}}=1,2$, the coefficient is zero for any choice of $\sigma_P$, implying that the Fisher information always saturates. In addition, when $k_{\mathbf{w}}\sim O(N)$, the asymptotic series is always sublinear (not shown in Figure \ref{fig:fisher-quadratic}F). Thus, there are multiple cases in which the structure of synaptic weighting can induce differential correlations in the presence of common noise. Increasing the heterogeneity allows the network to escape these induced differential correlations and achieve linear asymptotic growth. If $k_{\mathbf{w}}$ becomes too large, however, the linear asymptotic growth begins to decrease; once $k_{\mathbf{w}}$ scales as the population science, differential correlations are once again induced.
+Figure \ref{fig:fisher-quadratic}C highlights three interesting regimes. When the private variability is small, the network benefits from larger weight heterogeneity on the common noise. But as our neurons become more noisy, the ``Goldilocks zone'' for which our network can leverage larger noise weights becomes constrained. When the private variability is large, our network is better off having less heterogeneous weights, despite the threat of induced differential correlations from the common noise. Between these regimes, there are transitions for which many choices of $k_{\mathbf{w}}$ result in equally good decoding performance.
 	
-	\begin{figure}[t]
-		\centering
-		\scalebox{0.23}{\includegraphics{img/figure4.pdf}}
-		\caption{Linear Fisher information for unstructured weights under the presence of a quadratic linearity. \textbf{(A),(B)} } 
-		\label{fig:unstructured-quadratic-fisher}
-	\end{figure}
+Lastly, we validated the asymptotic behavior of the Fisher information as a function of the private noise by examining its asymptotic series (Figure \ref{fig:fisher-quadratic}F). For $k_{\mathbf{v}}=1,2$, the coefficient of the linear term is zero for any choice of $\sigma_P$, implying that the Fisher information always saturates. In addition, when $k_{\mathbf{w}}\sim O(N)$, the asymptotic series is always sublinear (not shown in Figure \ref{fig:fisher-quadratic}F). Thus, there are multiple cases in which the structure of synaptic weighting can induce differential correlations in the presence of common noise. Increasing the heterogeneity allows the network to escape these induced differential correlations and achieve linear asymptotic growth. If $k_{\mathbf{w}}$ becomes too large, however, the linear asymptotic growth begins to decrease; once $k_{\mathbf{w}}$ scales as the population size, differential correlations are once again induced.
 	
-	\subsubsection{Unstructured Weights}
-	We reproduced the above analysis with unstructured weights. As before, we drew   1000 samples of common noise weights from a shifted lognormal distribution with varying $\mu$. The behavior of the average (linear) Fisher information is qualitatively similar to that of the structured weights. There exists a regime for which larger weight heterogeneity improves the decoding performance, after which coding fidelity decreases (Figure \ref{fig:unstructured-quadratic-fisher}A). If the private noise variance dominates, this regime begins to disappear for smaller networks (Figure \ref{fig:unstructured-quadratic-fisher}B). Thus, when private noise dominates, the network is better off having less heterogeneous (and therefore, smaller) weights.
+\begin{figure}[t]
+	\centering
+	\scalebox{0.225}{\includegraphics{img/figure5.pdf}}
+	\caption{Fisher information after quadratic nonlinearity, unstructured weights. \textbf{(A)} Fisher information vs. mean $\mu$ of lognormal distribution used to draw the common noise synaptic weights. Solid lines indicate means while shaded regions denote one standard deviation across the 1000 drawings of weights from the lognormal distribution. \textbf{(B)} Same as (A), but for networks in which private variability dominates ($\sigma_P = 5$, $\sigma_C=1$) \textbf{(C)} Normalized Fisher information. Same plot as Figure \ref{fig:fisher-quadratic}C, but the average Fisher information across the 1000 samples is normalized across $\mu$ (akin to normalizing across $k_{\mathbf{w}}$).} 
+	\label{fig:unstructured-quadratic-fisher}
+\end{figure}
 	
-	To summarize these results, we once again plot the normalized Fisher information (this time, normalized across choices of $\mu$ and averaged over 1000 samples from the lognormal distribution) for a range of private variabilities (Figure \ref{fig:unstructured-quadratic-fisher}C).  The heat map exhibits a similar ``phase transition'' at a specific private variability. At this phase transition, a wide range of $\mu$'s provide the network with similar decoding ability. For smaller $\sigma_M$, we see behavior comparable to Figure \ref{fig:unstructured-quadratic-fisher}A, where there exists a regime of improved Fisher information. Beyond the phase transition, the network prefers less diverse synaptic weighting (though it becomes less stringent as $\sigma_M$ increases). The behavior exhibited by this heat map is similar to Figure \ref{fig:fisher-quadratic}C, but less complicated. 
+Next, we reproduced the above analysis with unstructured weights. As before, we drew 1000 samples of common noise weights from a shifted lognormal distribution with varying $\mu$. The behavior of the average (linear) Fisher information is qualitatively similar to that of the structured weights (Figure \ref{fig:unstructured-quadratic-fisher}). There exists a regime for which larger weight heterogeneity improves the decoding performance, after which coding fidelity decreases (Figure \ref{fig:unstructured-quadratic-fisher}A). If the private noise variance dominates, this regime begins to disappear for smaller networks (Figure \ref{fig:unstructured-quadratic-fisher}B). Thus, with very noisy neurons, the network is better off having less heterogeneous (and therefore, smaller) weights.
 	
-	\subsubsection{Mutual Information}
-	When the network possesses a quadratic nonlinearity, the mutual information $I[s,\mathbf{r}]$ is not analytically tractable. Therefore, we calculated the mutual information numerically on data simulated from the network, using an estimator built on $k$-nearest neighbor statistics \citep{kraskov2004}. We refer to this estimator as the KSG estimator. 
-	
-	We applied the KSG estimator to 100 unique datasets, each containing 100,000 samples drawn from the linear-nonlinear network. We then estimated the mutual information by averaging across each of the 100 estimators. The computational bottleneck for the KSG estimator lies in finding nearest neighbors in a $kd$-tree, which becomes prohibitive for large dimensions (around 20), so we considered much smaller network sizes than in the case of Fisher information. Furthermore, our estimator encountered difficulties when samples became too noisy, so we limited ourselves to smaller values of $(\sigma_M, \sigma_C)$. Due to these constraints, we are unable to empirically assess the asymptotic behavior of the mutual information.
-	
-	Our results for the structured weights are shown in Figure \ref{fig:mi_squared_struct}. Observe that, as before, the mutual information increases with larger weight heterogeneity ($k_{\mathbf{w}}$, Figure \ref{fig:mi_squared_struct}A). A smaller network more readily preserves information between the stimulus and neural representation for small $k_{\mathbf{w}}$. As $k_{\mathbf{w}}$ increases, though, larger networks are preferred. This behavior is due to the fact that adding more noisy neurons (each with their own private variability) will only hurt the encoding when the network is constrained by differential correlations. Once the network has escaped the differential correlations ($k_{\mathbf{w}} > 1$), this effect becomes less pronounced.
-	
-	Unsurprisingly, decreasing the private variability increases mutual information (Figure \ref{fig:mi_squared_struct}B). However, the network sees a greater increase in information with diverse weighting when $\sigma_M$ is small. This is consistent with the small $\sigma_M$ regime highlighted in Figure \ref{fig:fisher-quadratic}C: the smaller the private variability, the more it benefits from larger synaptic weight heterogeneity. 
-	
-	Similarly, decreasing the common variability increases mutual information (Figure \ref{fig:mi_squared_struct}C). If the common variability is small enough (for example, $\sigma_C=1$), then larger $k_{\mathbf{w}}$ harms the encoding. Thus, when the common noise is small enough, the amplification of noise that results when $k_{\mathbf{w}}$ is increased truly harms the network's encoding. It is only when the common variability begins to dominate that the diversification provided by larger $k_{\mathbf{w}}$ improves the mutual information. 
+To summarize these results, we once again plot the normalized Fisher information (this time, normalized across choices of $\mu$ and averaged over 1000 samples from the lognormal distribution) for a range of private variabilities (Figure \ref{fig:unstructured-quadratic-fisher}C).  The heat map exhibits a similar ``phase transition'' at a specific private variability. At this phase transition, a wide range of $\mu$'s provide the network with similar decoding ability. For smaller $\sigma_P$, we see behavior comparable to Figure \ref{fig:unstructured-quadratic-fisher}A, where there exists a regime of improved Fisher information. Beyond the phase transition, the network prefers less diverse synaptic weighting (though it becomes less stringent as $\sigma_P$ increases). The behavior exhibited by this heat map is similar to Figure \ref{fig:fisher-quadratic}C, but contains less uniquely identifiable regions. This may imply that we must enforce much smaller private variability to encounter the leftmost region of Figure \ref{fig:fisher-quadratic}C, or that this region is an artifact of the structured weights.
 
-	\begin{figure}[t]
-		\centering
-		\scalebox{0.23}{\includegraphics{img/figure6.pdf}}
-		\caption{Mutual information computed by applying the KSG estimator on data simulated from the network with quadratic nonlinearity. Here, we examine the network under the presence of structured weights. The estimates consist of averages over 100 datasets, each containing 100,000 samples. Standard error barrs are smaller than the size of the markers. \textbf{(A)} Mutual information for various choice of $N$. We consider smaller $N$ than before as computation time becomes prohibitive for larger dimensionalities. Here, $\sigma_M =\sigma_C=0.5$. \textbf{(B)} Behavior of mutual information for various choices of $\sigma_M$, while $\sigma_C=0.5$. When $\sigma_M$ is smaller, the mutual information increases more substantially for larger $k_{\mathbf{w}}$.  \textbf{(C)}  Behavior of mutual information for various choices of $\sigma_C$, while $\sigma_M=0.5$. If $\sigma_C$ is small, the mutual information decreases with larger $k_{\mathbf{w}}$. As it increases, the mutual information begins to increase with larger $k_{\mathbf{w}}$.}  
-		\label{fig:mi_squared_struct}
-	\end{figure}
+\textcolor{red}{[common noise, Figure 6]}
+
+\begin{figure}[t]
+	\centering
+	\scalebox{0.25}{\includegraphics{img/figure6.pdf}}
+	\caption{Linear Fisher information for unstructured weights under the presence of a quadratic linearity. \textbf{(A),(B)} } 
+	\label{fig:fisher-quadratic-common}
+\end{figure}
 	
-	\subsection{The benefits of increased heterogeneity}
+\subsubsection{Mutual Information}
+When the network possesses a quadratic nonlinearity, the mutual information $I[s,\mathbf{r}]$ is not analytically tractable. Therefore, we calculated the mutual information numerically on data simulated from the network, using an estimator built on $k$-nearest neighbor statistics \citep{kraskov2004}. We refer to this estimator as the KSG estimator. 
+	
+We applied the KSG estimator to 100 unique datasets, each containing 100,000 samples drawn from the linear-nonlinear network. We then estimated the mutual information by averaging across each of the 100 estimators. The computational bottleneck for the KSG estimator lies in finding nearest neighbors in a $kd$-tree, which becomes prohibitive for large dimensions (around 20), so we considered much smaller network sizes than in the case of Fisher information. Furthermore, our estimator encountered difficulties when samples became too noisy, so we limited ourselves to smaller values of $(\sigma_P, \sigma_C)$. Due to these constraints, we are unable to empirically assess the asymptotic behavior of the mutual information.
+	
+Our results for the structured weights are shown in Figure \ref{fig:mi_squared_struct}. Observe that, as before, the mutual information increases with larger weight heterogeneity ($k_{\mathbf{w}}$, Figure \ref{fig:mi_squared_struct}A). A smaller network more readily preserves information between the stimulus and neural representation for small $k_{\mathbf{w}}$. As $k_{\mathbf{w}}$ increases, though, larger networks are preferred. This behavior is due to the fact that adding more noisy neurons (each with their own private variability) will only hurt the encoding when the network is constrained by differential correlations. Once the network has escaped the differential correlations ($k_{\mathbf{w}} > 1$), this effect becomes less pronounced.
+	
+Unsurprisingly, decreasing the private variability increases mutual information (Figure \ref{fig:mi_squared_struct}B). However, the network sees a greater increase in information with diverse weighting when $\sigma_P$ is small. This is consistent with the small $\sigma_P$ regime highlighted in Figure \ref{fig:fisher-quadratic}C: the smaller the private variability, the more it benefits from larger synaptic weight heterogeneity. 
+	
+Similarly, decreasing the common variability increases mutual information (Figure \ref{fig:mi_squared_struct}C). If the common variability is small enough (for example, $\sigma_C=1$), then larger $k_{\mathbf{w}}$ harms the encoding. Thus, when the common noise is small enough, the amplification of noise that results when $k_{\mathbf{w}}$ is increased truly harms the network's encoding. It is only when the common variability begins to dominate that the diversification provided by larger $k_{\mathbf{w}}$ improves the mutual information. 
+
+\textcolor{red}{common noise, Figure 8}
+\begin{figure}[t]
+	\centering
+	\scalebox{0.22}{\includegraphics{img/figure7.pdf}}
+	\caption{Mutual information computed by applying the KSG estimator on data simulated from the network with quadratic nonlinearity and structured weights. The estimates consist of averages over 100 datasets, each containing 100,000 samples. Standard error barrs are smaller than the size of the markers. \textbf{(A)} Mutual information vs. common noise weight heterogeneity for various choice of $N$. We consider smaller $N$ than before as computation time becomes prohibitive for larger dimensionalities. Here, $\sigma_P =\sigma_C=0.5$. \textbf{(B)} Behavior of mutual information for various choices of $\sigma_P$, while $\sigma_C=0.5$. When $\sigma_P$ is smaller, the mutual information increases more substantially for larger $k_{\mathbf{w}}$.  \textbf{(C)}  Behavior of mutual information for various choices of $\sigma_C$, while $\sigma_P=0.5$. If $\sigma_C$ is small, the mutual information decreases with larger $k_{\mathbf{w}}$. As it increases, the mutual information begins to increase with larger $k_{\mathbf{w}}$.}  
+	\label{fig:mi_squared_struct}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\scalebox{0.30}{\includegraphics{img/figure8.pdf}}
+	\caption{}  
+\end{figure}
+	
+\subsection{The benefits of increased heterogeneity}
 	Why are we afforded improved encoding and decoding as the common noise is amplified for certain neurons in the network? An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability induced by the common noise changes with increased heterogeneity. 
 	
 	At the linear stage, the answer appears to be clear: an increase in heterogeneity
 	
-	The network effective
-where $\Delta$ sets a lower bound for the weights. Here, increased ``diversity'' in the sense of the structured weights is achieved by increasing $\mu$, which increases the mean, median, and mode of the lognormal distribution. This is in contrast with increasing $\sigma$, which will decrease the mode of the distribution.
-
+\textcolor{red}{[figure 9]}
 
 
 
 \section{Discussion}
-We have illustrated the basic format to the manuscript that you consider to submit to Neural Computation. We hope this is helpful to the authors.
+
+\textcolor{red}{[do this]}
 
 \subsection*{Acknowledgments}
 
@@ -320,6 +338,7 @@ We have illustrated the basic format to the manuscript that you consider to subm
 \section{Appendix}
 
 \subsection{Calculation of  Fisher Information, Linear Stage}
+\label{app:fisher-linear}
 All variability after the linear stage is Gaussian; thus, the Fisher information can be expressed in the form \citep{abbott1999, kay1993}:
 \begin{align}
 	I_{F}(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}^{-1} (s) \mathbf{f}'(s) + \frac{1}{2}\Tr\left[\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\boldsymbol{\Sigma}'(s) \boldsymbol{\Sigma}^{-1}(s)\right]. \label{IF-gaussian}
@@ -337,28 +356,157 @@ Thus,
 	\mathbf{f}(s) = \mathbf{v}s \Rightarrow \mathbf{f}'(s) = \mathbf{v}.
 \end{align}
 Meanwhile,
-	\begin{align}
+\begin{align}
 	\langle \ell_i \ell_j \rangle &= \langle (v_i s + w_i \sigma_C\xi_C + \sigma_P\xi_{P,i}) (v_j s + w_j \sigma_C\xi_C + \sigma_P\xi_{P,j})\rangle \\
 	&= v_i v_j s^2 + w_i w_j \sigma_C^2 + \sigma_P^2 \delta_{ij}
-	\end{align}
+\end{align}
 	so that
-	\begin{align}
-	\Sigma_{ij} &= v_i v_j s^2 + w_i w_j \sigma_C^2 + \sigma_P^2 \delta_{ij} - v_i v_j s^2 \\
+\begin{align}
+	\Sigma_{ij} &= \langle \ell_i \ell_j \rangle - \langle \ell_i \rangle \langle \ell_j \rangle \\
 	&= \sigma_P^2 \delta_{ij} + w_i w_j \sigma_C^2 \\
 	\Rightarrow \boldsymbol{\Sigma} &= \sigma_P^2 \mathbf{I} + \sigma_C^2\mathbf{ww}^T.
-	\end{align}
-	Notice that the covariance matrix does not depend on $s$, so the second term in equation \eqref{IF-gaussian} will vanish. We do, however, need the inverse covariance matrix for the first:
-	\begin{align}
-	\boldsymbol{\Sigma}^{-1} &= \frac{1}{\sigma_P^2} \mathbf{I} - \frac{\sigma_C^2}{\sigma_P^4} \frac{\mathbf{ww}^T}{1+\frac{\sigma_C^2}{\sigma_P^2}||\mathbf{w}||^2}\\
-	&= \frac{1}{\sigma_P^2}\left(\mathbf{I} - \frac{\sigma_C^2}{\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2}\mathbf{ww}^T\right).
-	\end{align}
+\end{align}
+Notice that the covariance matrix does not depend on $s$, so the second term in equation \eqref{IF-gaussian} will vanish. We do, however, need the inverse covariance matrix for the first:
+\begin{align}
+	\boldsymbol{\Sigma}^{-1} &= \frac{1}{\sigma_P^2}\left(\mathbf{I} - \frac{\sigma_C^2}{\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2}\mathbf{ww}^T\right).
+\end{align}
 	Hence, the Fisher information is
-	\begin{align}
+\begin{align}
 	I_{F}(s) &= \frac{1}{\sigma_P^2}\mathbf{v}^T \left(\mathbf{I} - \frac{\sigma_C^2}{\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2}\mathbf{ww}^T\right) \mathbf{v} \\
-	&= \frac{1}{\sigma_P^2} \left(|\mathbf{v}|^2 - \frac{\sigma_C^2 (\mathbf{v}\cdot\mathbf{w})^2}{\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2}\right) \\
 	&= \frac{1}{\sigma_P^2}\frac{\left(\sigma_P^2/\sigma_C^2\right) |\mathbf{v}|^2 +  \left(|\mathbf{v}|^2|\mathbf{w}|^2 - (\mathbf{v}\cdot\mathbf{w})^2\right)}{(\sigma_P^2/\sigma_C^2)+ |\mathbf{w}|^2}.
-	\end{align}
+\end{align}
 
+\subsection{Calculation of Mutual Information, Linear Stage}
+\label{mutual-linear}
+The mutual information is given by 
+	\begin{align}
+	I[s, \boldsymbol{\ell}] &= \int d\boldsymbol{\ell} ds  P[s] P[\boldsymbol{\ell}|s]\log \frac{P[\boldsymbol{\ell}|s]}{P[\boldsymbol{\ell}]} \\
+	&= H[\boldsymbol{\ell}] + \int ds P[s] \int d\boldsymbol{\ell} P[\boldsymbol{\ell}|s] \log P[\boldsymbol{\ell}|s].
+\end{align}
+Note that $P[\boldsymbol{\ell}]$ and $P[\boldsymbol{\ell}|s]$ are both multivariate Gaussians. The (differential) entropy of a multivariate Gaussian random variable $X$ with mean $\boldsymbol{\mu}$ and covariance $\boldsymbol{\Sigma}$ is given by
+\begin{align}
+	H[X] &= \frac{1}{2} \log \left(\det\boldsymbol{\Sigma}\right) + \frac{N}{2} (1 + \log(2\pi)).
+\end{align}
+Therefore, by the Gaussianity of the involved distributions, 
+\begin{align}
+	P[\boldsymbol{\ell}|s] &= \frac{1}{\sigma_P^{N-1} \sqrt{(2\pi)^N(\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2)}} \notag \\
+	& \times \exp\left[-\frac{1}{2\sigma_P^2} (\boldsymbol{\ell} - \mathbf{v}s)^T\left(\mathbf{I} - \frac{\sigma_C^2 \mathbf{ww}^T}{\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2}\right) (\boldsymbol{\ell} - \mathbf{v}s) \right] \\
+	P[\boldsymbol{\ell}] &= \frac{1}{ \sqrt{(2\pi)^N \sigma_P^{2N-4}\kappa}} \exp\left[-\frac{1}{2}\boldsymbol{\ell}^T \left(\sigma_P^2 \mathbf{I} + \sigma_S^2 \mathbf{vv}^T + \sigma_C^2 \mathbf{ww}^T\right)^{-1} \boldsymbol{\ell}\right].
+\end{align}
+where 
+\begin{align}
+	\kappa &= (\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2)(\sigma_P^2 + \sigma_S^2 |\mathbf{v}|^2) - \sigma_C^2 \sigma_S^2 (\mathbf{v}\cdot\mathbf{w})^2.
+\end{align}
+Thus,
+\begin{align}
+	H[\boldsymbol{\ell}] &= \frac{1}{2}\log\left( \sigma_P^{2N-4} \kappa\right) + \frac{N}{2}(1 + \log(2\pi)).
+\end{align}
+and 
+\begin{align}
+	\int d\boldsymbol{\ell} P[\boldsymbol{\ell}|s] \log P[\boldsymbol{\ell}|s] &= -\frac{1}{2}\log(\sigma_P^{2N-2} (\sigma_P^2 +\sigma_C^2 |\mathbf{w}|^2)) - \frac{N}{2} (1+\log(2\pi)),
+\end{align}
+which is notably independent of $s$. Thus, the integral over $s$ will marginalize away. We are left with
+\begin{align}
+	I[s,\boldsymbol{\ell}] &= \frac{1}{2}\log\left(\frac{\kappa}{\sigma_P^2 (\sigma_P^2 + \sigma_C^2 |\mathbf{w}|^2)}\right) \\
+	&= \frac{1}{2} \log \left(1 + \sigma_S^2 I_F(s)\right).
+\end{align}
+
+\subsection{Calculation of Fisher Information, Quadratic Nonlinearity}\label{app:fisher-quadratic}
+We repeat the calculation of the first section, but after the nonlinear stage. In this case, we consider a quadratic nonlinearity. Instead of the Fisher information, we calculate the linear Fisher information (since it is feasible analytically). The output of the network is 
+\begin{align}
+	r_i &= (v_i s + w_i \sigma_C \xi_C + \sigma_P \xi_{P,i})^2 \\
+	&= v_i^2 s^2 + w_i^2 \sigma_C^2 \xi_C^2 +  \sigma_P^2 \xi_{P,i}^2 + 2s v_i w_i \sigma_C \xi_C + 2 sv_i  \sigma_P \xi_{P,i} + 2w_i \sigma_C \sigma_P \xi_{C} \xi_{P,i}.
+\end{align}
+Thus, the average becomes 
+\begin{align}
+	f_i(s) &= \langle r_i \rangle = v_i^2 s^2 + w_i^2 \sigma_C^2 + \sigma_P^2,
+\end{align}
+	which implies 
+\begin{align}
+	\langle r_i \rangle  \langle r_j \rangle &= (v_i^2 s^2 + w_i^2 \sigma_C^2 + \sigma_P^2)(v_j^2 s^2 + w_j^2 \sigma_C^2 + \sigma_P^2)\\
+	&= \sigma_P^4 + s^2 \sigma_P^2 (v_i^2 + v_j^2)  + \sigma_P^2 \sigma_C^2 (w_i^2 + w_j^2) \notag \\
+	& \qquad + s^2 \sigma_C^2 (v_i^2 w_j^2 + v_j^2 w_i^2) + s^4 v_i^2 v_j^2+ \sigma_C^4 w_i^2 w_j^2
+\end{align}
+Next, the covariate is 
+\begin{align}
+	\langle r_i r_j \rangle &=  \sigma_P^4 + s^2 \sigma_P^2 (v_i^2 + v_j^2) + \sigma_P^2 \sigma_C^2 (w_i^2 + w_j^2) + s^2 \sigma_C^2 (v_i^2 w_j^2 + v_j^2 w_i^2) \notag \\
+	& \qquad + s^4 v_i^2 v_j^2 + 3\sigma_C^4 w_i^2 w_j^2 + 4s^2 \sigma_C^2 v_i v_j w_i w_j.
+\end{align}
+So the off diagonal terms of the covariance matrix are 	
+\begin{align}
+	\langle r_i r_j \rangle - \langle r_i \rangle \langle r_j \rangle &= 2 \sigma_C^4 w_i^2 w_j^2 + 4s^2 \sigma_C^2 v_i v_j w_i w_j.
+\end{align}
+Lastly, the variance of $r_i$ (the on-diagonal terms in the covariance matrix) is given by 
+\begin{align}
+	\text{Var}(r_i) &= \langle r_i^2 \rangle - \langle r_i\rangle^2 \\
+	&= 3\sigma_P^4 + 6s^2\sigma_P^2  v_i^2  +6 \sigma_P^2 \sigma_C^2  w_i^2+  6s^2 \sigma_C^2 v_i^2 w_i^2+ s^4 v_i^4 + 3\sigma_C^4 w_i^4 \notag \\ 
+	& \qquad -\left(v_i^2 s^2 + w_i^2 \sigma_C^2 + \sigma_P^2\right)^2 \\
+	&= 2\sigma_C^4 w_i^4 + 4s^2 \sigma_C^2 v_i^2 w_i^2 + 2\sigma_P^4 + 4s^2 \sigma_P^2 v_i^2  + 4\sigma_P^2\sigma_C^2 w_i^2.
+\end{align}
+Thus, the total covariance, which takes the variance into consideration, is 
+\begin{align}
+	\Sigma_{ij} &= \delta_{ij} \left(2 \sigma_P^4 + 4\sigma_P^2 (s^2 v_i^2 + \sigma_C^2 w_i^2)\right) + 4 s^2 \sigma_C^2 v_i v_j w_i w_j + 2 \sigma_C^4 w_i^2 w_j^2.
+\end{align}
+In vector notation, this is 
+\begin{align}
+	\boldsymbol{\Sigma} &= 2\sigma_P^4 \mathbf{I} +4\sigma_P^2 s^2 \text{diag}(\mathbf{V}) + 4\sigma_P^2 \sigma_C^2 \text{diag}(\mathbf{W}) + 4s^2 \sigma_C^2 \mathbf{X}\mathbf{X}^T + 2 \sigma_C^4 \mathbf{W}\mathbf{W}^T
+\end{align}
+where
+\begin{align}
+	\mathbf{V} &= \mathbf{v} \odot \mathbf{v}\\
+	\mathbf{W} &= \mathbf{w} \odot \mathbf{w}\\
+	\mathbf{X} &= \mathbf{v} \odot \mathbf{w}.
+\end{align}
+We now proceed to the linear Fisher information:
+\begin{align}
+	I_F(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}(s)^{-1} \mathbf{f}'(s).
+\end{align}
+We start by calculating the inverse covariance matrix, which we will achieve with repeated applications of the Sherman-Morrison formula. We can write 
+\begin{align}
+	\boldsymbol{\Sigma}^{-1} &= (\mathbf{M} + 2\sigma_C^4 \mathbf{W}\mathbf{W}^T)^{-1} \\
+	&= \mathbf{M}^{-1} - \frac{\mathbf{M}^{-1} (2\sigma_C^4 \mathbf{W}\mathbf{W}^T) \mathbf{M}^{-1}}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1}\mathbf{W}} \\
+	&= \mathbf{M}^{-1} - \frac{2\sigma_C^4}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \mathbf{M}^{-1}\mathbf{W}\mathbf{W}^T\mathbf{M}^{-1}.
+\end{align}
+Where
+\begin{align}
+\mathbf{M}^{-1} &\equiv  \left(2\sigma_P^4 + 4\sigma_P^2 s^2 v_i^2 + 4\sigma_P^2 \sigma_C^2 w_i^2\right)^{-1}\delta_{ij} \notag \\
+&- \frac{s^2\sigma_C^2}{\sigma_P^4 +2s^2\sigma_C^2 \sigma_P^2\displaystyle\sum_i\frac{v_i^2 w_i^2}{\sigma_P^2+ 2s^2 v_i^2 + 2 \sigma_C^2 w_i^2}} \notag \\
+&\times  \frac{v_i v_j w_i w_j}{\left(\sigma_P^2 + 2s^2 v_i^2 + 2 \sigma_C^2 w_i^2\right)\left(\sigma_P^2 + 2 s^2 v_j^2 + 2\sigma_C^2 w_j^2\right)}.
+\end{align}
+Note that
+\begin{align}
+	\mathbf{f}'(s) &= 2 s \mathbf{V},
+\end{align}
+so the Fisher information is
+\begin{align}
+	I_F(s) &= 4s^2 \left(\mathbf{V}^T \mathbf{M}^{-1} \mathbf{V} - \frac{2\sigma_C^4}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \mathbf{V}^T \mathbf{M}^{-1} \mathbf{W} \mathbf{W}^T \mathbf{M}^{-1}\mathbf{V}\right) \\
+	&= 4s^2 \left(\mathbf{V}^T \mathbf{M}^{-1} \mathbf{V}-  \frac{2\sigma_C^4}{1 + 2\sigma_C^4 \mathbf{W}^T\mathbf{M}^{-1} \mathbf{W}} \left(\mathbf{V}^T\mathbf{M}^{-1} \mathbf{W}\right)^{2}\right). \label{eqn:fisher-info-midway}
+\end{align}
+To facilitate the matrix multiplications, we'll define the following notation
+\begin{align}
+	\left\{v, w\right\}_{m,n} &= \sum_i \frac{v_i^m w_i^n}{\sigma_P^2 + 2s^2 v_i^2 + 2\sigma_C^2 w_i^2}.
+\end{align}
+Thus,
+\begin{align}
+	\mathbf{V}^T \mathbf{M}^{-1}\mathbf{V} &= \frac{1}{2\sigma_P^2}\sum_i \frac{v_i^4}{\sigma_P^2 + 2s^2 v_i^2  +2\sigma_C^2 w_i^2} \notag \\
+	&- \frac{s^2\sigma_C^2}{\sigma_P^4 + 2s^2 \sigma_C^2 \sigma_P^2 \left\{v,w\right\}_{2,2}} \left(\sum_i\frac{v_i^3 w_i}{\sigma_P^2 + 2s^2 v_i^2 + 2 \sigma_C^2 w_i^2}\right)^2 \\
+	&= \frac{1}{2\sigma_P^2}\left\{v,w\right\}_{4,0} - \frac{s^2 \sigma_C^2}{\sigma_P^4 + 2s^2 \sigma_C^2 \sigma_P^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{3,1}^2.
+\end{align}
+Furthermore,
+\begin{align}
+	\mathbf{W}^T \mathbf{M}^{-1}\mathbf{W}  &= \frac{1}{2\sigma_P^2}\left\{v,w\right\}_{0,4} - \frac{s^2\sigma_C^2}{\sigma_P^4 + 2s^2 \sigma_C^2 \sigma_P^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{1,3}^2
+\end{align}
+and lastly
+\begin{align}
+	\mathbf{V}^T \mathbf{M}^{-1} \mathbf{W} &= \frac{1}{2\sigma_P^2}\left\{v,w\right\}_{2,2} - \frac{s^2\sigma_C^2}{\sigma_P^4 + 2s^2\sigma_C^2 \sigma_P^2\left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{1,3}\left\{v,w\right\}_{3,1}.
+\end{align}
+Placing this expression into equation \ref{eqn:fisher-info-midway} and simplifying, we can write the Fisher information as 
+\begin{align}
+	I_F(s) &= 4s^2 \left(\frac{1}{\sigma_P^2}\left\{v, w\right\}_{4,0} - \frac{2s^2 \sigma_C^2}{\sigma_P^2 + 2s^2 \sigma_P^2 \sigma_C^2 \left\{v,w\right\}_{2,2}} \left\{v,w\right\}_{3,1}^2  \right. \notag \\
+	&\left. \hspace{-30pt}+ \frac{\sigma_P^2 \sigma_C^4 \left\{v,w\right\}_{2,2} + 2s^2 \sigma_C^6 (\left\{v,w\right\}_{2,2} - 2 \left\{v,w\right\}_{1,3} \left\{v,w\right\}_{3,1})}{\sigma_P^4  + \sigma_P^2 (\sigma_C^4 \left\{v,w\right\}_{0,4} + 2s^2 \sigma_C^2 \left\{v,w\right\}_{2,2}) + 2s^2 \sigma_C^6 (\left\{v,w\right\}_{0,4} \left\{v,w\right\}_{2,2} - 2 \left\{v,w\right\}_{1,3}^2)}\right)
+\end{align}
+
+\newpage
 \begin{thebibliography}{100}
 \providecommand{\natexlab}[1]{#1}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -366,26 +514,85 @@ Meanwhile,
   \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
+
 \bibitem[{Abbott \& Dayan(1999)}]{abbott1999}
 Abbott, L. F., \& Dayan, P. (1999).
 \newblock The Effect of Correlated Variability on the Accuracy of a Population Code.
 \newblock \emph{Neural Computation}, \emph{1}, 91--101.
+
+\bibitem[{Averbeck et~al.(2006)}]{averbeck2006}
+Averbeck, B. B., Latham, P. E., \& Pouget, A. (2006).
+\newblock Neural Correlations, population coding, and computation.
+\newblock \emph{Nature Reviews Neuroscience}, \emph{7}, 358--366.
+
+\bibitem[{Cohen \& Kohn(2011)}]{cohen2011}
+Cohen, M. R. \& Kohn, A. (2011).
+\newblock Measuring and interpreting neuronal correlations.
+\newblock \emph{Nature Reviews Neuroscience}, \emph{14}, 811--819.
+
+\bibitem[{Cover \& Thomas(2006)}]{cover2006}
+Cover, T. M. \& Thomas, J. A. (2006).
+\newblock Elements of Information Theory.
+\newblock \emph{John Wiley \& Sons, Inc.}
 
 \bibitem[{DeWeese \& Zador(2004)}]{deweese2004}
 DeWeese, M. R., \& Zador, A. M. (2004).
 \newblock Shared and Private Variability in the Auditory Cortex.
 \newblock \emph{J. Neurophysiol.}, \emph{92}, 1840--1855.
 
+\bibitem[{Faisal et~al.(2008)}]{faisal2008}
+Faisal, A. A., Selen, L. P. J., \& Wolpert, D. M. (2008).
+\newblock Noise in the nervous system.
+\newblock \emph{Nat. Rev. Neurosci.}, \emph{9}, 292--303.
+
+\bibitem[{Franke et~al.(2016)}]{franke2016}
+Franke, F., Fiscella, M., Sevelev, M., Roska, B., Hierlemann, A., Azeredo da Silveira, R. (2016).
+\newblock Structures of Neural Correlation and How They Favor Coding.
+\newblock \emph{Neuron}, \emph{89}, 409--422.
+
+\bibitem[{Kanitscheider et~al.(2015)}]{kanitscheider2015}
+Kanitscheider, I., Coen-Cagli, R., Pouget, A. (2015).
+\newblock Origin of information-limiting noise correlations.
+\newblock \emph{Proc. Natl. Acad. Sci.}, \emph{112}, 6973--6982.
+
+\bibitem[{Karklin \& Simoncelli(2011)}]{karklin2011}
+Karklin, Y. \& Simoncelli, E. P. (2011).
+\newblock Efficient coding of natural images with a population of noisy
+Linear-Nonlinear neurons.
+\newblock \emph{Adv. Neural Inf. Process. Syst.}, \emph{24}, 999--1007.
+
 \bibitem[{Kay(1993)}]{kay1993}
 Kay, S. M. (1993).
 \newblock Fundamentals of Statistical Signal Processing, Volume I: Estimation Theory.
 \newblock \emph{Prentice-Hall}.
+
+\bibitem[{Kohn et~al.(2016)}]{kohn2016}
+Kohn, A., Coen-Cagli, R., Kanitscheider, I., Pouget, A. (2016).
+\newblock Correlations and Neuronal Population Information.
+\newblock \emph{Annu. Rev. Neurosci.}, \emph{39}, 237--256.
 
 \bibitem[{Kraskov et~al.(2004)}]{kraskov2004}
 Kraskov, A., St{\"o}gbauer H., \& Grassberger P. (2004)
 \newblock Estimating mutual information.
 \newblock \emph{Physical Review E},
 \emph{69}, 066138.
+
+\bibitem[{Litwin-Kumar et~al.(2017)}]{litwin-kumar2017}
+Litwin-Kumar, A., Harris K. D., Axel, R., Sompolinsky, H., \& Abbott, L. F. (2017).
+\newblock Optimal Degrees of Synaptic Connectivity.
+\newblock \emph{Neuron}, \emph{93}, 1153--1164.
+
+\bibitem[{Moreno-Bote et~al.(2014)}]{morenobote2014}
+Moreno-Bote, R., Beck, J., Kanitscheider, I., Pitkow, X., Latham P., \& Pouget, A. (2014)
+\newblock Information-limiting correlations.
+\newblock \emph{Nature Neuroscience}, \emph{17}, 1410--1417.
+
+\bibitem[{Zylberberg et~al.(2016)}]{zylberberg2016}
+Zylberberg, J., Cafaro, J., Turner, M. H., Shea-Brown, E., Rieke, F. (2016)
+\newblock Direction-Selective Circuits Shape Noise to Ensure a Precise Population Code.
+\newblock \emph{Neuron}, \emph{89}, 369--383.
+
+
 
 \bibitem[{Authors et~al.(2008)Author1, Author2, \&
   Author3}]{Ref2008}
