@@ -79,17 +79,17 @@ This documentation briefly describes the formats required by Neural Computation.
 %%%%%%%%%%%
 
 \section{Introduction}
-Variability is a prominent feature of neural systems: neural responses to external stimuli will vary trial-to-trial even when the stimuli are constant. Furthermore, neural variability exhibits pairwise correlations: these ``noise correlations'' have been observed throughout the cortex \citep{averbeck2006, cohen2011}. They have long been of theoretical interest because their presence has strong implications for neural coding.
+Variability is a prominent feature of neural systems: neural responses to external stimuli will vary trial-to-trial even when the stimuli are constant. Furthermore, neural variability exhibits pairwise correlations: these ``noise correlations'' have been observed throughout the cortex \citep{averbeck2006b, cohen2011}. They have long been of theoretical interest because their presence has strong implications for neural coding \citep{zohary1994, abbott1999}.
 
 From a population coding perspective, a neural population must produce a faithful representation of relevant quantities, such as a stimulus, for their computation. One advantage of population coding is that variability unique to each neuron, or private variability, can be averaged out. If some variability is shared across neurons, i.e. we have noise correlations, larger populations of neurons cannot naively average out the variability. An abundance of theoretical work has explored how shared variability, therefore, can be both detrimental or beneficial to the fidelity of a population code depending on its structure. A  general conclusion of this theoretical work highlights the importance of the geometric relationship between the signal and noise correlations (both of which are stimulus-dependent).
 
-Thus, the sources of neural variability - and their respective contributions to the private and shared components - will have a significant impact on shaping the geometry of the population's correlational structure, and therefore coding ability. For example, private sources of variability such as channel noise or stochastic synaptic vesicle release could be averaged out by large populations of neurons. But sources of variability shared across neurons - such as the variability of presynaptic spike trains - would induce noise correlations and place different constraints on our neural code.  Indeed, any variability carried by an incoming stimulus possesses would also introduce variability in the population. Such ``shared input noise'' is particularly detrimental to the fidelity of a population code.
+Thus, the sources of neural variability - and their respective contributions to the private and shared components - will have a significant impact on shaping the geometry of the population's correlational structure, and therefore coding ability. For example, private sources of variability such as channel noise or stochastic synaptic vesicle release could be averaged out by large populations of neurons. But sources of variability shared across neurons - such as the variability of presynaptic spike trains - would induce noise correlations and place different constraints on our neural code.  Indeed, any variability carried by an incoming stimulus possesses would also introduce variability in the population. Such ``shared input noise'' is particularly detrimental to the fidelity of a population code \citep{morenobote2014}.
 
-In prior work, we examined private and shared variability in the auditory cortex. Specifically, we partitioned sub-threshold variability of a neural populationinto private components (synaptic, thermal, and other local sources of variability) and shared components (variability induced by afferent connections). We found that the private component of the total variability is quite small, while the shared component can be much larger (Figure \ref{fig:private-shared}B). Thus, the large shared component of a neuron's variability, a source of noise correlations, has important consequences for neural coding.
+In prior work, we examined private and shared variability in the auditory cortex \citep{deweese2004}. Specifically, we partitioned sub-threshold variability of a neural populationinto private components (synaptic, thermal, and other local sources of variability) and shared components (variability induced by afferent connections). We found that the private component of the total variability is quite small, while the shared component can be much larger (Figure \ref{fig:private-shared}B). Thus, the large shared component of a neuron's variability, a source of noise correlations, has important consequences for neural coding.
 
-We sought out to explore how shared and private sources of neural variability interact to influence neural coding. As mentioned before, work by Moreno-Bote et al. demonstrated that shared input noise is detrimental to the fidelity of a population code. Here, we instead turn to sources of shared variability which are not carried by stimulus and thus can be manipulated by features of neural computation such as synaptic weighting. We refer to these noise sources as ``common noise'' to distinguish them from the special case of ``shared input noise.'' For example, a common noise source could include an upstream neuron whose action potentials are ``noisy'' in the sense that they are unimportant for the computation of the current stimulus.
+We sought out to explore how shared and private sources of neural variability interact to influence neural coding. As mentioned before, work by Moreno-Bote et al. demonstrated that shared input noise is detrimental to the fidelity of a population code. Here, we instead turn to sources of shared variability which are not carried by stimulus and thus can be manipulated by features of neural computation such as synaptic weighting. We refer to these noise sources as ``common noise'' to distinguish them from the special case of ``shared input noise'' \citep{vidne2012}. For example, a common noise source could include an upstream neuron whose action potentials are ``noisy'' in the sense that they are unimportant for the computation of the current stimulus.
 
-We consider a simple linear-nonlinear architecture and explore how its high-dimensional neural representation is impacted by a common noise source, which acts as an input, and private noise variability across all neurons. We chose this simple architecture as it allowed us to analytically assess coding ability through the Fisher and mutual informations. We found surprising cases where synaptic weighting that introduced more noise into our network via the common noise resulted in improved coding performance. Lastly, we found that the amount of private and common variance was vitally important for what types of synaptic weighting resulted in the network's optimal performance.
+We consider a simple linear-nonlinear architecture, which has been well-studied as a simple model of neural activity \citep{karklin2011} and explore how its high-dimensional neural representation is impacted by a common noise source, which acts as an input, and private noise variability across all neurons. We chose this simple architecture as it allowed us to analytically assess coding ability through the Fisher and mutual informations. We found surprising cases where synaptic weighting that introduced more noise into our network via the common noise resulted in improved coding performance. Lastly, we found that the amount of private and common variance was vitally important for what types of synaptic weighting resulted in the network's optimal performance.
 \begin{figure}[b]
 	\centering
 	\scalebox{0.46}{\includegraphics{img/figure1.pdf}}
@@ -175,9 +175,9 @@ where vector notation denotes the weights ($\mathbf{v}$ and $\mathbf{w}$), priva
 \end{figure}
 
 \subsection{Measures of Coding Strength}
-In order to assess the fidelity of the population code represented by $\boldsymbol{\ell}$ or $\mathbf{r}$, we turn to the Fisher information and the Shannon mutual information. The former has largely been utilized in the context of sensory decoding and correlated variability \citep{abbott1999} while the latter has been well studied in the context of efficient coding. 
+In order to assess the fidelity of the population code represented by $\boldsymbol{\ell}$ or $\mathbf{r}$, we turn to the Fisher information and the Shannon mutual information \citep{cover2006}. The former has largely been utilized in the context of sensory decoding and correlated variability \citep{abbott1999} while the latter has been well studied in the context of efficient coding \citep{attneave1954, barlow1961, bell1997}. 
 
-The Fisher information sets a limit by which the readout of a population code can determine the value of the stimulus. Formally, it sets a lower bound to the variance of an unbiased estimator for the stimulus. In terms of our network architecture, the Fisher information of the representation $\mathbf{r}$ (or $\boldsymbol{\ell}$) quantifies how well we can decode $s$ given the representation. Often, the Fisher information is intractable to calculate analytically; a suitable lower bound is the linear Fisher information:
+The Fisher information sets a limit by which the readout of a population code can determine the value of the stimulus. Formally, it sets a lower bound to the variance of an unbiased estimator for the stimulus. In terms of our network architecture, the Fisher information of the representation $\mathbf{r}$ (or $\boldsymbol{\ell}$) quantifies how well we can decode $s$ given the representation. Often, the Fisher information is intractable to calculate analytically; a suitable lower bound is the linear Fisher information \citep{kohn2016}:
 \begin{align}
 I_F(s) &= \mathbf{f}'(s)^T \boldsymbol{\Sigma}^{-1}(s) \mathbf{f}(s)
 \end{align}
@@ -333,20 +333,35 @@ Similar to the normalized Fisher information, we present the normalized mutual i
 \end{figure}
 	
 \subsection{The benefits of increased heterogeneity}
-	Why are we afforded improved encoding and decoding as the common noise is amplified for certain neurons in the network? An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability induced by the common noise changes with increased heterogeneity. 
+Why are we afforded improved encoding and decoding under increased synaptic weight heterogeneity? An increase in heterogeneity, as we have defined it, ensures that the common noise is magnified in the network. At the same time, however, the structure of the correlated variability induced by the common noise is altered by increased heterogeneity. Previous work has demonstrated that the relationship between signal correlations and noise correlations is important in assessing decoding ability: for example, the sign rule states that noise correlations are beneficial if they are of opposite sign as the signal correlation \citep{hu2014}. Geometrically, the sign rule is a consequence of the intuitive observation that decoding is easier when the noise correlations lie perpendicular to the signal manifold. 
+
+For example, we can examine the correlated trial-to-trial variability between two neurons in our network. Specifically, we plot 1000 samples of activity for two neurons against their signal space (black lines, Figure \ref{fig:figure9}A, B) as a function of $k_{\mathbf{w}}$. Note that the signal space is linear, due to the quadratic linearity (see Appendix). If we examine the activity after the linear stage, we observe that larger weight heterogeneity pushes the variability cloud to lie more orthogonal to the signal space; at the same time, the variance becomes observably larger due to the magnification of the common noise (Figure \ref{fig:figure9}A). Importantly, note that the variability for $k_{\mathbf{w}}=1$ lies parallel to the signal space, signifying the presence of differential correlations. The correlated variability after the nonlinear stage is similar in that orthogonality to the signal space increases with $k_{\mathbf{w}}$. There is a notable difference: squaring the linear stage ensures nonnegative activities, thereby limiting the response space. Thus, for large enough $k_{\mathbf{w}}$, the rectification manifests strongly enough that we enter a regime where increased heterogeneity harms decoding. These plots only demonstrate the relationship between a pair of neurons, while the collective correlated variability structure ultimately dictates decoding performance. They do, however, shed light on how the distribution of synaptic weights can radically shape the shared variability.
+
+The linear stage of our network constitutes a noisy projection of two signals (one of which is not useful to the network) in a high-dimensional space. Thus, we can assess the entire population by examining the relationship between the projecting vectors $\mathbf{v}$ and $\mathbf{w}$. We might expect that improved decoding occurs when these signals are farther apart in the $N$-dimensional space. For a chosen $k_{\mathbf{v}}$, this occurs as $k_{\mathbf{w}}$ is increased when the weights are structured (Figure \ref{fig:figure9}C). When the weights are unstructured, the average angle between the stimulus and weight vectors is large as either $\mu_v$ or $\mu_w$ increases (Figure \ref{fig:figure9}D). Increased heterogeneity implies access to a more diverse selection of weights, thus pushing the two signals apart. The Fisher and mutual informations tell us, in the linear stage, that this is all we need: pushing the signals farther apart will improve coding fidelity, despite any increased corruption in the desired signal.
+
+From this perspective, the nonlinear stage acts as a mapping on the high-dimensional representation. If our nonlinearities were one-to-one, the data processing inequality would ensure that our results from the linear stage would hold. But, as we observed earlier, it is in the nonlinear stage where we see that increased heterogeneity is only beneficial in certain regimes. Thus, the rectifying nature of our nonlinearities is important: the application of both the quadratic nonlinearity and the Poisson spiking restricts the high-dimensional space that our neural code can occupy, and thus limits the benefits of diverse synaptic weighting. 
 	
-	At the linear stage, the answer appears to be clear: an increase in heterogeneity
-	
-\textcolor{red}{[figure 9]}
+\begin{figure}[t]
+	\centering
+	\scalebox{0.30}{\includegraphics{img/figure9.pdf}}
+	\caption{r}
+	\label{fig:figure9}
+\end{figure}
 
 
 
 \section{Discussion}
 
-\textcolor{red}{[do this]}
+We demonstrated in a simple model of neural activity that if synaptic weighting of common noise inputs is broad and heterogeneous, encoding and decoding is actually improved despite amplification of the common noise inputs. We showed that for rectifying nonlinearities, there exists a regime of heterogeneous weights for which coding fidelity is maximized. Lastly, we observed that the relationship between the magnitude of private and shared variability is vital for determining the ideal amount of heterogeneity. In neural circuits where shared variability is dominant (which is generally the case in the brain), larger weight heterogeneity is actually preferred (Figure \ref{fig:fisher-quadratic-common}E).
+
+It may seem unreasonable that our neural circuit possesses the ability to weight common noise inputs. However, excitatory neurons can receive thousands of excitatory synapses in circuits throughout the brain. Some subset of common inputs across a neural population will undoubtedly be irrelevant for the underlying neural computation. Thus, these populations must contend with common noise sources contributing to their overall shared variability and potentially hampering their ability to encode a stimulus. Our work demonstrates that neural circuits, armed with a good set of synaptic weights, need not worry about amplifying potential sources of common noise. Instead, broad, heterogeneous weighting ensures that they will project the signal and noise into a high-dimensional space in such a way that is beneficial for decoding.  This observation is in agreement with recent work that explored the relationship between heterogeneous weighting and degrees of synaptic connectivity \citep{litwin-kumar2017}. Furthermore, synaptic input, irrelevant on one trial, may become the signal on the next: heterogeneous weighting provides a general, robust principle for neural circuits to follow. 
+
+We chose our simple network architecture in order to maintain analytic tractability, which allowed us to explore the rich patterns of behavior it exhibited. It is, however, worthwhile to assess how our qualitative conclusions hold with added complexity in the network. For example, interesting avenues to consider include the implementation of recurrence, spiking dynamics, and more realistic nonlinearities (e.g. rectified linear unit or a squared threshold). In addition, more realistic networks could also be equipped with varying degrees of sparsity as well as inhibitory connections. Past work has explored how to approximate both information theoretic quantities studied here in networks with some subset of these features \citep{beck2011, yarrow2012}. Thus, analyzing how common noise and synaptic weighting interact in more complex networks is of interest for future work.
+
+Lastly, our network established its correlated variability structure by taking a linear combination of a common noise source and private noise sources (though our model ignores any noise potentially carried by the stimulus). This was sufficient to establish low-dimensional shared variability observed in neural circuits. As a consequence, our model as devised enforces stimulus-independent correlated variability. Recent work, however, has demonstrated that correlated variability is in fact stimulus-dependent. Such work used both phenomenological \citep{lin2015, franke2016} and mechanistic \citep{zylberberg2016} models in producing fits to the stimulus-dependent correlated variability. These models all share a doubly stochastic noise structure, stemming from both additive and multiplicative sources of noise \citep{goris2014}. It is therefore worthwhile to fully examine how both additive and multiplicative sources of noise interact with synaptic weighting to influence neural coding.
 
 \subsection*{Acknowledgments}
-
+We thank Jesse Livezey and Ruben Coen-Cagli for useful discussions. P. S. Sachdeva supported by the Department of Defense (DoD) through the National Defense Science \& Engineering Graduate Fellowship (NDSEG) Program.
 
 \section{Appendix}
 
@@ -553,6 +568,11 @@ Barlow, H. (1961).
 \newblock Possible Principles Underlying the Transformations of Sensory Messages.
 \newblock \emph{Sensory Communication}, \emph{MIT Press}, 217--234.
 
+\bibitem[{Beck et~al.(2011)}]{beck2011}
+Beck, J., Bejjanki, V. R., \& Pouget, A. (2011).
+Insights from a Simple Expression for Linear Fisher Information in a Recurrently Connected Population of Spiking Neurons.
+\newblock \emph{Neural Comput.} \emph{23}, 1484--1502.
+
 \bibitem[{Bell \& Sejnowski(1997)}]{bell1997}
 Bell, A. J. \& Sejnowski, T. J. (1997).
 \newblock The ``Independent Components'' of Natural Scenes are Edge Filters.
@@ -603,6 +623,13 @@ Hu, Y., Zylberberg, J., \& Shea-Brown, E. (2014).
 \newblock The Sign Rule and Beyond: Boundary Effects, Flexibility, and Noise Correlations in Neural Population Codes. 
 \newblock \emph{PLOS Comput. Biol.}, \emph{10}, e1003469.
 
+\bibitem[{Kanerva, P.(2009)}]{kanerva2009}
+Kanerva, P. (2009).
+\newblock Hyperdimensional Computing: An Introduction to Computing
+in Distributed Representation with High-Dimensional
+Random Vectors.
+\newblock \emph{Cogn. Comput.}, \emph{1}, 139--159.
+
 \bibitem[{Kanitscheider et~al.(2015)}]{kanitscheider2015}
 Kanitscheider, I., Coen-Cagli, R., Pouget, A. (2015).
 \newblock Origin of information-limiting noise correlations.
@@ -645,10 +672,41 @@ Moreno-Bote, R., Beck, J., Kanitscheider, I., Pitkow, X., Latham P., \& Pouget, 
 \newblock Information-limiting correlations.
 \newblock \emph{Nature Neuroscience}, \emph{17}, 1410--1417.
 
+\bibitem[{Paninski(2004)}]{paninski2004}
+Paninski, L. (2004).
+\newblock Maximum likelihood estimation of cascade point-process neural
+encoding models..
+\newblock \emph{Network: Computation in Neural Systems}, \emph{15}, 243--262.
+
+\bibitem[{Sargent et~al.(2005)}]{sargent2005}
+Sargent, P. B., Saviane, C., Nielsen, T. A., DiGregorio, D. A., \& Silver, R. A. (2005).
+\newblock Rapid vesicular release, quantal variability, and spillover contribution to the precision and reliability of transmission at a glomerular synapse. 
+\newblock \emph{J. Neurosci.}, \emph{25}, 8173--8187.
+
 \bibitem[{Sompolinsky, et~al.(2001)}]{sompolinsky2001}
 Sompolinsky, H., Yoon, H., Kang, K., \& Shamir, M. (2001).
-Population coding in neuronal systems with correlated noise.
+\newblock Population coding in neuronal systems with correlated noise.
 \newblock \emph{Phys. Rev. E}, \emph{64}, 051904.
+
+\bibitem[{Song et~al.(2005)}]{song2005}
+Song, S., Sj{\"o}str{\"o}m, P. J., Reigl, M., Nelson, S., \& Chklovskii, D. B. (2005).
+\newblock Highly nonrandom features of synaptic connectivity in local cortical circuits.
+\newblock \emph{PLoS Biol.}, \emph{3}, e68.
+
+\bibitem[{Vidne et~al.(2012)}]{vidne2012}
+Vidne, M., Ahmadian, Y., Shlens, J., Pillow, J. W., Kulkarni, J., Litke, A. M., Chichilnisky, E. J., Simoncelli, E., \& Paninski, L. (2012).
+\newblock Modeling the impact of common noise inputs on the network activity of retinal ganglion cells.
+\newblock \emph{J. Comput. Neurosci.}, \emph{33}, 97--121.
+
+\bibitem[{Yarrow et~al.(2012)}]{yarrow2012}
+Yarrow, S., Challis, E. Seri\`{e}s, P. (2012).
+\newblock Fisher and Shannon information in finite neural populations..
+\newblock \emph{Neural Comput.}, \emph{24}, 1740--1780.
+
+\bibitem[{Yoon \& Sompolinsky(1998)}]{yoon1998}
+Yoon, H. \& Sompolinsky H. (1998).
+\newblock The effect of correlations on the Fisher information of population codes. 
+\newblock \emph{Adv. Neural Inf. Process. Syst.}, \emph{11}, 167--173. 
 
 \bibitem[{Zohary et~al.(1994)}]{zohary1994}
 Zohary, E., Shadlen, M. N., \& Newsome, W. T. (1994).
@@ -656,7 +714,7 @@ Zohary, E., Shadlen, M. N., \& Newsome, W. T. (1994).
 \newblock \emph{Nature}, \emph{370}, 140--143.
 
 \bibitem[{Zylberberg et~al.(2016)}]{zylberberg2016}
-Zylberberg, J., Cafaro, J., Turner, M. H., Shea-Brown, E., Rieke, F. (2016)
+Zylberberg, J., Cafaro, J., Turner, M. H., Shea-Brown, E., \& Rieke, F. (2016)
 \newblock Direction-Selective Circuits Shape Noise to Ensure a Precise Population Code.
 \newblock \emph{Neuron}, \emph{89}, 369--383.
 
