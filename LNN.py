@@ -143,20 +143,49 @@ class LNN:
         return s, linear, output
 
     def FI_linear_stage(self):
+        """Calculate the Fisher information after the linear stage given the
+        network weights."""
+        # useful quantities
         v2 = np.sum(self.v**2)
         w2 = np.sum(self.w**2)
         vdotw = np.sum(self.v * self.w)
-        sigma_inj = self.sigmaP**2 + self.sigmaC**2 * w2
-        fisher_info = (self.sigmaP**2 * v2 + self.sigmaC**2 * (v2 * w2 - vdotw**2))/(self.sigmaP**2 * sigma_inj)
-        return fisher_info
+
+        # total noise input
+        sigma_noise = self.sigmaP**2 + self.sigmaC**2 * w2
+
+        # calculate fisher information
+        numerator = self.sigmaP**2 * v2 + self.sigmaC**2 * (v2 * w2 - vdotw**2)
+        denominator = self.sigmaP**2 * sigma_noise
+        fisher = numerator / denominator
+        return fisher
+
+    def MI_linear_stage(self):
+        """Calculate the mutual information after the linear stage given the
+        network weights."""
+        # useful quantities
+        v2 = np.sum(self.v**2)
+        w2 = np.sum(self.w**2)
+        vdotw = np.sum(self.v * self.w)
+
+        # noise and stimulus scalings
+        sigma_noise = self.sigmaP**2 + self.sigmaC**2 * w2
+        sigma_stim = self.sigmaP**2 + self.sigmaS**2 * v2
+        kappa = sigma_noise * sigma_stim - self.sigmaC**2 * self.sigmaS**2 * vdotw**2
+
+        # calculate mutual information
+        mutual = -np.log(self.sigmaP) + 0.5 * np.log(kappa / sigma_noise)
+        return mutual
 
     def FI_nonlinear_stage(self, s):
+        """Calculate the Fisher information after the nonlinear stage."""
         if self.nonlinearity_name == 'squared':
             return self.FI_squared_nonlin(s)
         else:
             return ValueError('Nonlinearity not implemented yet.')
 
     def FI_squared_nonlin(self, s):
+        """Calculate the Fisher information after a squared nonlinearity."""
+        # useful constants
         norm = self.sigmaP**2 + 2 * s**2 * self.v**2 + 2 * self.sigmaC**2 * self.w**2
         vw40 = np.sum(self.v**4/norm)
         vw31 = np.sum(self.v**3 * self.w/norm)
@@ -164,12 +193,22 @@ class LNN:
         vw13 = np.sum(self.v * self.w**3/norm)
         vw04 = np.sum(self.w**4/norm)
 
-        VMV = vw40/(2 * self.sigmaP**2) - (s**2 * self.sigmaC**2)/(self.sigmaP**4 + 2 * s**2 * self.sigmaC**2 * self.sigmaP**2 * vw22) * vw31**2
-        WMW = vw04/(2 * self.sigmaP**2) - (s**2 * self.sigmaC**2)/(self.sigmaP**4 + 2 * s**2 * self.sigmaC**2 * self.sigmaP**2 * vw22) * vw13**2
-        VMW = vw22/(2 * self.sigmaP**2) - (s**2 * self.sigmaC**2)/(self.sigmaP**4 + 2 * s**2 * self.sigmaC**2 * self.sigmaP**2 * vw22) * vw13 * vw31
+        # useful matrices
+        VMV = vw40 / (2 * self.sigmaP**2) \
+            - vw31**2 * (s**2 * self.sigmaC**2) \
+            / (self.sigmaP**4 + 2 * s**2 * self.sigmaC**2 * self.sigmaP**2 * vw22)
+        WMW = vw04 / (2 * self.sigmaP**2) \
+            - vw13**2 * (s**2 * self.sigmaC**2) \
+            / (self.sigmaP**4 + 2 * s**2 * self.sigmaC**2 * self.sigmaP**2 * vw22)
+        VMW = vw22 / (2 * self.sigmaP**2) \
+            - vw13 * vw31 * (s**2 * self.sigmaC**2) \
+            / (self.sigmaP**4 + 2 * s**2 * self.sigmaC**2 * self.sigmaP**2 * vw22)
 
-        FI = 4 * s**2 * (VMV - (2 * self.sigmaC**4)/(1 + 2 * self.sigmaC**4 * WMW) * VMW**2)
-        return FI
+        LFI = 4 * s**2 * (
+            VMV - (2 * self.sigmaC**4) / (1 + 2 * self.sigmaC**4 * WMW) * VMW**2
+        )
+
+        return LFI
 
     def FI_squared_nonlin_anal(self, s):
         norm = self.sigmaP**2 + 2 * s**2 * self.v**2 + 2 * self.sigmaC**2 * self.w**2
@@ -210,18 +249,6 @@ class LNN:
             inv_diag = np.diag(np.sqrt(1./np.diag(covar)))
             corr = np.dot(inv_diag, np.dot(covar, inv_diag))
         return corr
-
-    def MI_linear_stage(self):
-        v2 = np.sum(self.v**2)
-        w2 = np.sum(self.w**2)
-        vdotw = np.sum(self.v * self.w)
-
-        sigma_inj = self.sigmaP**2 + self.sigmaC**2 * w2
-        sigma_stim = self.sigmaP**2 + self.sigmaS**2 * v2
-        kappa = sigma_inj * sigma_stim - self.sigmaC**2 * self.sigmaS**2 * vdotw**2
-
-        I = -np.log(self.sigmaP) + 0.5 * np.log(kappa/sigma_inj)
-        return I
 
     @staticmethod
     def struct_weight_maker(N, k):
@@ -293,12 +320,19 @@ class LNN:
     def FI_linear_struct(N, kw, sigmaP, sigmaC):
         """Calculate the Fisher information of the linear stage, with structured
         weights."""
-        fisher = N/(2 * sigmaP**2) * (12 * sigmaP**2 + N * sigmaC**2 * (kw**2 - 1))/(6 * sigmaP**2 + N * sigmaC**2 * (2 * kw**2 + 3 * kw + 1))
+        numerator = (12 * sigmaP**2 + N * sigmaC**2 * (kw**2 - 1))
+        denominator = (6 * sigmaP**2 + N * sigmaC**2 * (2 * kw**2 + 3 * kw + 1))
+        constant = N / (2 * sigmaP**2)
+        fisher = constant * numerator / denominator
         return fisher
 
     @staticmethod
     def MI_linear_struct(N, kw, sigmaP, sigmaC, sigmaS):
         """Calculate the mutual information of the linear stage, with structured
         weights."""
-        mutual = 0.5 * np.log(1 + sigmaS**2/sigmaP**2 * N - 3 * N**2 * (kw+1)**2 * sigmaC**2 * sigmaS**2/(2 * sigmaP**2 * (N * sigmaC**2 * (kw+1) * (2*kw+1) + 6 * sigmaP**2)))
+        numerator = (12 * sigmaP**2 + N * sigmaC**2 * (kw**2 - 1))
+        denominator = (6 * sigmaP**2 + N * sigmaC**2 * (2 * kw**2 + 3 * kw + 1))
+        constant = N / (2 * sigmaP**2)
+        fisher = constant * numerator / denominator
+        mutual = 0.5 * np.log(1 + sigmaS**2 * fisher)
         return mutual

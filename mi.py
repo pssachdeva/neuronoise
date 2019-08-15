@@ -30,25 +30,25 @@ mis = np.zeros((kws.size, n_reps))
 
 # create LNN
 for kw_idx, kw in enumerate(kws):
-	lnn = LNN(
-		N=N, 
-		kv=1, kw=kw,
-		nonlinearity='squared',
-		sigmaM=sigmaM, sigmaC=sigmaC, sigmaS=sigmaS
-	)
-	for rep in range(n_reps):
-		s, l, r = lnn.simulate(n_samples)
-		s = s.reshape((n_samples, 1))
-		r = r.T
-		mi = MutualInformation(X=s, Y=r)
-		mis[kw_idx, rep] = mi.mutual_information(k=3)
+    lnn = LNN(
+        N=N, 
+        kv=1, kw=kw,
+        nonlinearity='squared',
+        sigmaM=sigmaM, sigmaC=sigmaC, sigmaS=sigmaS
+    )
+    for rep in range(n_reps):
+        s, l, r = lnn.simulate(n_samples)
+        s = s.reshape((n_samples, 1))
+        r = r.T
+        mi = MutualInformation(X=s, Y=r)
+        mis[kw_idx, rep] = mi.mutual_information(k=3)
 
 filename =  'mi_N' + str(N) + \
-			'_sigmaM' + str(sigmaM) + \
-			'_sigmaC' + str(sigmaC) + \
-			'_sigmaS' + str(sigmaS) + \
-			'_' + tag + \
-			'.h5'
+            '_sigmaM' + str(sigmaM) + \
+            '_sigmaC' + str(sigmaC) + \
+            '_sigmaS' + str(sigmaS) + \
+            '_' + tag + \
+            '.h5'
 results = h5py.File('mi_results/' + filename, 'w')
 results['results'] = mis
 results.close()

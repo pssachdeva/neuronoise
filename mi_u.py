@@ -1,13 +1,12 @@
 import argparse
 import h5py
 import numpy as np
-import time
 import os
 
 from ksg import *
 from LNN import LNN
 
-### load arguments ###
+# load arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--N', type=int)
 parser.add_argument('--mu', type=float)
@@ -36,28 +35,25 @@ mis = np.zeros((n_reps, dist_reps))
 
 # create LNN
 for dist_rep in range(dist_reps):
-	lnn = LNN(
-		N=N, 
-		kv=1, w=1 + LNN.unstruct_weight_maker(N, 'lognormal', loc=mu, scale=1.),
-		nonlinearity='squared',
-		sigmaM=sigmaM, sigmaC=sigmaC, sigmaS=sigmaS
-	)
-	for rep in range(n_reps):
-		t = time.time()
-		s, l, r = lnn.simulate(n_samples)
-		s = s.reshape((n_samples, 1))
-		r = r.T
-		mi = MutualInformation(X=s, Y=r)
-		mis[dist_rep, rep] = mi.mutual_information(k=3)
-		print(time.time() - t)
+    lnn = LNN(
+        N=N, kv=1, w=1 + LNN.unstruct_weight_maker(N, 'lognormal', loc=mu, scale=1.),
+        nonlinearity='squared',
+        sigmaM=sigmaM, sigmaC=sigmaC, sigmaS=sigmaS)
 
-filename =  tag + 'mi_N' + str(N) + \
-			'_sigmaM' + str(sigmaM) + \
-			'_sigmaC' + str(sigmaC) + \
-			'_sigmaS' + str(sigmaS) + \
-			'_mu' + str(mu) + \
-			'.h5'
-#results = h5py.File('mi_results/' + filename, 'w')
+    for rep in range(n_reps):
+        s, l, r = lnn.simulate(n_samples)
+        s = s.reshape((n_samples, 1))
+        r = r.T
+        mi = MutualInformation(X=s, Y=r)
+        mis[dist_rep, rep] = mi.mutual_information(k=3)
+
+filename = tag + 'mi_N' + str(N) + \
+    '_sigmaM' + str(sigmaM) + \
+    '_sigmaC' + str(sigmaC) + \
+    '_sigmaS' + str(sigmaS) + \
+    '_mu' + str(mu) + \
+    '.h5'
+
 root = args.results_root
 results = h5py.File(os.path.join(root, filename), 'w')
 results['results'] = mis
