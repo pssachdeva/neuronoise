@@ -389,3 +389,96 @@ def plot_asymptotic_coefficients(filename, fax=None):
         labelspacing=0.27,
         columnspacing=0.50)
     lgd.get_frame().set_edgecolor('k')
+
+
+def unstruct_weight_plot_nonlinear_mu(
+    Ns, mus, sigma, repetitions, design='lognormal',
+    sigmaP=1., sigmaS=1., sigmaC=1., nonlinearity='squared', s=1., fax=None,
+    colors=colors
+):
+    # create plot
+    if fax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    else:
+        fig, ax = fax
+
+    # create data arrays
+    data = np.zeros((Ns.size, mus.size, repetitions))
+
+    # iterate over population sizes
+    for N_idx, N in enumerate(Ns):
+        # iterate over noise diversities
+        for mu_idx, mu in enumerate(mus):
+            # iterate over repetitions
+            for rep in range(repetitions):
+                v = np.ones(N)
+                w = 1. + LNN.unstruct_weight_maker(N, design, loc=mu, scale=sigma)
+                lnn = LNN(
+                    v=v, w=w, nonlinearity=nonlinearity,
+                    sigmaP=sigmaP, sigmaS=sigmaS, sigmaC=sigmaC)
+                data[N_idx, mu_idx, rep] = lnn.FI_squared_nonlin(s=s)
+                data_means = np.mean(data[N_idx, :, :], axis=1)
+                data_stdevs = np.std(data[N_idx, :, :], axis=1)
+        # plot fisher informations
+        ax.plot(
+            mus, data_means,
+            color=colors[N_idx],
+            linestyle='-',
+            linewidth=4,
+            zorder=10,
+            label=r'$N = %s$' % N)
+        ax.fill_between(
+            mus, data_means - data_stdevs, data_means + data_stdevs,
+            color=colors[N_idx],
+            alpha=0.50)
+
+    ax.set_facecolor('white')
+    ax.set_xlabel(r'$\mu$', fontsize=30)
+    ax.tick_params(labelsize=20)
+
+    for spine in ax.spines.values():
+        spine.set_edgecolor('k')
+
+    return fig, ax
+
+
+def plot_unstructured_fisher_nonlinear_2d(
+    N, ratios, mus, sigmaC, sigma, repetitions, v=None, s=1., version=1,
+    colors=colors, fax=None
+):
+    # create plot
+    if fax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    else:
+        fig, ax = fax
+
+    if v is None:
+        v = np.ones(N)
+
+    fishers = np.zeros((ratios.size, mus.size, repetitions))
+    avg_fishers = np.zeros((ratios.size, mus.size))
+
+    # iterate over ratios
+    for ratio_idx, ratio in enumerate(ratios):
+        sigmaP = ratio * sigmaC
+        # iterate over noise diversities
+        for mu_idx, mu in enumerate(mus):
+            # iterate over repetitions
+            for rep in range(repetitions):
+                w = 1. + LNN.unstruct_weight_maker(N,
+                                                   'lognormal',
+                                                   loc=mu,
+                                                   scale=sigma)
+                lnn = LNN(
+                    v=v, w=w, nonlinearity='squared',
+                    sigmaP=sigmaP, sigmaS=1., sigmaC=sigmaC)
+
+                fishers[ratio_idx, mu_idx, rep] = lnn.FI_squared_nonlin(s)
+            avg_fishers[ratio_idx, mu_idx] = np.mean(fishers[ratio_idx, mu_idx, :])
+        avg_fishers[ratio_idx, :] = \
+            avg_fishers[ratio_idx, :] / np.max(avg_fishers[ratio_idx, :])
+
+    ax.grid(False)
+    img = ax.imshow(avg_fishers.T, interpolation='spline36', vmin=0, vmax=1)
+
+    return img, fig, ax
