@@ -358,6 +358,42 @@ def plot_fisher_nonlinear_2d(
     return img
 
 
+def plot_fisher_nonlinear_2d_alt(
+    N, ratios, ks, v=None, s=1., version=1, colors=colors, fax=None
+):
+    # create plot
+    if fax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    else:
+        fig, ax = fax
+
+    # create stimulus weights
+    if v is None:
+        v = np.ones(N)
+
+    fishers = np.zeros((ratios.size, ks.size))
+    for ratio_idx, ratio in enumerate(ratios):
+        sigmaP = 1.
+        sigmaC = ratio * sigmaP
+        for k_idx, k in enumerate(ks):
+            if version == 1:
+                w = LNN.struct_weight_maker(N, k)
+            else:
+                w = LNN.struct_weight_maker(N, N/k)
+
+            lnn = LNN(
+                v=v, w=w, nonlinearity='squared',
+                sigmaP=sigmaP, sigmaC=sigmaC)
+            fishers[ratio_idx, k_idx] = lnn.FI_squared_nonlin(s)
+
+        fishers[ratio_idx, :] = fishers[ratio_idx, :] / np.max(fishers[ratio_idx, :])
+
+    ax.grid(False)
+    img = ax.imshow(fishers.T, interpolation='spline36')
+    ax.tick_params(labelsize=20)
+    return img
+
+
 def plot_asymptotic_coefficients(filename, fax=None):
     """Plots the asymptotic coefficients for the."""
     # create plot
@@ -482,3 +518,117 @@ def plot_unstructured_fisher_nonlinear_2d(
     img = ax.imshow(avg_fishers.T, interpolation='spline36', vmin=0, vmax=1)
 
     return img, fig, ax
+
+
+def plot_max_weight_diversity(
+    N, sigmaPs, sigmaCs, v=None, s=1., version=1., colors=colors, fax=None
+):
+    # create plot
+    if fax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    else:
+        fig, ax = fax
+
+    if v is None:
+        v = np.ones(N)
+
+    max_ks = np.zeros((sigmaPs.size, sigmaCs.size))
+    # enumerate over private variances
+    for sigmaP_idx, sigmaP in enumerate(sigmaPs):
+        # enumerate over common variances
+        for sigmaC_idx, sigmaC in enumerate(sigmaCs):
+            fishers = np.zeros(10)
+            # enumerate over diversities
+            for k_idx, k in enumerate(np.arange(1, 11)):
+                if version == 1:
+                    w = LNN.struct_weight_maker(N, k)
+                else:
+                    w = LNN.struct_weight_maker(N, N / k)
+
+                lnn = LNN(
+                    v=v, w=w,
+                    sigmaP=sigmaP, sigmaC=sigmaC,
+                    nonlinearity='squared')
+                fishers[k_idx] = lnn.FI_squared_nonlin(s)
+            max_ks[sigmaP_idx, sigmaC_idx] = np.argmax(fishers) + 1
+    img = ax.imshow(max_ks, interpolation='spline36', vmin=1, vmax=10)
+    ax.tick_params(labelsize=30)
+
+    return fig, ax, img, max_ks
+
+
+def plot_max_weight_diversity_unstructured(
+    N, reps, sigmaPs, sigmaCs, sigma=1., mus=np.linspace(-1., 2., 11),
+    v=None, s=1., fax=None
+):
+    # create plot
+    if fax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    else:
+        fig, ax = fax
+
+    if v is None:
+        v = np.ones(N)
+
+    max_mus = np.zeros((sigmaPs.size, sigmaCs.size))
+    # iterate over private variances
+    for sigmaP_idx, sigmaP in enumerate(sigmaPs):
+        # iterate over common variances
+        for sigmaC_idx, sigmaC in enumerate(sigmaCs):
+            fishers = np.zeros((11, reps))
+            # iterate over scales
+            for mu_idx, mu in enumerate(mus):
+                # iterate over repetitions
+                for rep in range(reps):
+                    w = 1. + LNN.unstruct_weight_maker(
+                        N, 'lognormal',
+                        loc=mu, scale=sigma)
+                    lnn = LNN(
+                        v=v, w=w,
+                        nonlinearity='squared',
+                        sigmaP=sigmaP, sigmaC=sigmaC)
+                    fishers[mu_idx, rep] = lnn.FI_squared_nonlin(s)
+            max_mus[sigmaP_idx, sigmaC_idx] = \
+                mus[np.argmax(np.mean(fishers, axis=1)).ravel()[0]]
+    img = ax.imshow(max_mus, interpolation='spline36', vmin=-1, vmax=2)
+    ax.tick_params(labelsize=30)
+
+    return fig, ax, img, max_mus
+
+
+def plot_scatter_linear(N, s, kv, kw, n_trials, fax=None, color=None):
+    # create plot
+    if fax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    else:
+        fig, ax = fax
+
+    lnn = LNN(N=N, kv=kv, kw=kw, sigmaC=1, sigmaP=1)
+    data = lnn.simulate_noise_linear(s=s, n_trials=n_trials)
+    esses = np.linspace(5, 35, 100)
+    ax.plot(lnn.v[0] * esses, lnn.v[-1] * esses, zorder=10, color='k')
+    if color is not None:
+        ax.scatter(data[0], data[-1], color=color, label=r'$k_{\mathbf{w}} = %s$' % kw)
+    else:
+        ax.scatter(data[0], data[-1])
+
+    return fig, ax
+
+
+def plot_scatter_quadratic(N, s, kv, kw, n_trials, fax=None, color=None):
+    # create plot
+    if fax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(8, 8))
+    else:
+        fig, ax = fax
+
+    lnn = LNN(N=N, kv=kv, kw=kw, sigmaC=1, sigmaP=1)
+    data = lnn.simulate_noise_linear(s=s, n_trials=n_trials)**2
+    esses = np.linspace(5, 35, 100)
+    ax.plot(lnn.v[0] * esses**2, lnn.v[-1] * esses**2, zorder=10, color='k')
+    if color is not None:
+        ax.scatter(data[0], data[-1], color=color, label=r'$k_{\mathbf{w}} = %s$' % kw)
+    else:
+        ax.scatter(data[0], data[-1])
+
+    return fig, ax
