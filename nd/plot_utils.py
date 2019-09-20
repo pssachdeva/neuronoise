@@ -2,7 +2,7 @@ import h5py
 import matplotlib.pyplot as plt
 import numpy as np
 
-from LNN import LNN
+from .LNN import LNN
 
 
 colors = ['#377eb8', '#ff7f00', '#4daf4a',
@@ -17,6 +17,14 @@ def colorbar(mappable):
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     return fig.colorbar(mappable, cax=cax)
+
+
+def discrete_cmap(N, base_cmap=None):
+    """Create an N-bin discrete colormap from a specified input map"""
+    base = plt.get_cmap(base_cmap)
+    color_list = base(np.linspace(0, 1, N))
+    cmap_name = base.name + str(N)
+    return base.from_list(cmap_name, color_list, N)
 
 
 def struct_weight_plot_linear_N(
@@ -608,10 +616,17 @@ def plot_scatter_linear(N, s, kv, kw, n_trials, fax=None, color=None):
 
     lnn = LNN(N=N, kv=kv, kw=kw, sigmaC=1, sigmaP=1)
     data = lnn.simulate_noise_linear(s=s, n_trials=n_trials)
-    esses = np.linspace(5, 35, 100)
-    ax.plot(lnn.v[0] * esses, lnn.v[-1] * esses, zorder=10, color='k')
+    esses = np.linspace(0, 100, 100)
+    ax.plot(lnn.v[0] * esses,
+            lnn.v[-1] * esses,
+            zorder=10,
+            color='k',
+            linewidth=3)
     if color is not None:
-        ax.scatter(data[0], data[-1], color=color, label=r'$k_{\mathbf{w}} = %s$' % kw)
+        ax.scatter(data[0], data[-1],
+                   color=color,
+                   alpha=0.5,
+                   label=r'$k_{\mathbf{w}} = %s$' % kw)
     else:
         ax.scatter(data[0], data[-1])
 
@@ -627,11 +642,18 @@ def plot_scatter_quadratic(N, s, kv, kw, n_trials, fax=None, color=None):
 
     lnn = LNN(N=N, kv=kv, kw=kw, sigmaC=1, sigmaP=1)
     data = lnn.simulate_noise_linear(s=s, n_trials=n_trials)**2
-    esses = np.linspace(5, 35, 100)
-    ax.plot(lnn.v[0] * esses**2, lnn.v[-1] * esses**2, zorder=10, color='k')
+    esses = np.linspace(0, 100, 100)
+    ax.plot(lnn.v[0] * esses**2 + lnn.w[0] * lnn.sigmaC**2 + lnn.sigmaP**2,
+            lnn.v[-1] * esses**2 + lnn.w[-1] * lnn.sigmaC**2 + lnn.sigmaP**2,
+            zorder=10,
+            color='k',
+            linewidth=3)
     if color is not None:
-        ax.scatter(data[0], data[-1], color=color, label=r'$k_{\mathbf{w}} = %s$' % kw)
+        ax.scatter(data[0], data[-1],
+                   color=color,
+                   alpha=0.5,
+                   label=r'$k_{\mathbf{w}} = %s$' % kw)
     else:
-        ax.scatter(data[0], data[-1])
+        ax.scatter(data[0], data[-1], alpha=0.5)
 
     return fig, ax
