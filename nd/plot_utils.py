@@ -323,7 +323,8 @@ def struct_weight_plot_nonlinear_k(
 
 
 def plot_fisher_nonlinear_2d(
-    N, ratios, ks, v=None, s=1., version=1, colors=colors, fax=None
+    N, ratios, ks, v=None, s=1., version=1, colors=colors, fax=None,
+    interpolation='nearest'
 ):
     # create plot
     if fax is None:
@@ -353,13 +354,14 @@ def plot_fisher_nonlinear_2d(
         fishers[ratio_idx, :] = fishers[ratio_idx, :] / np.max(fishers[ratio_idx, :])
 
     ax.grid(False)
-    img = ax.imshow(fishers.T, interpolation='spline36')
+    img = ax.imshow(fishers.T, interpolation=interpolation)
     ax.tick_params(labelsize=20)
     return img
 
 
 def plot_fisher_nonlinear_2d_alt(
-    N, ratios, ks, v=None, s=1., version=1, colors=colors, fax=None
+    N, ratios, ks, v=None, s=1., version=1, colors=colors, fax=None,
+    interpolation='nearest'
 ):
     # create plot
     if fax is None:
@@ -389,7 +391,7 @@ def plot_fisher_nonlinear_2d_alt(
         fishers[ratio_idx, :] = fishers[ratio_idx, :] / np.max(fishers[ratio_idx, :])
 
     ax.grid(False)
-    img = ax.imshow(fishers.T, interpolation='spline36')
+    img = ax.imshow(fishers.T, interpolation=interpolation)
     ax.tick_params(labelsize=20)
     return img
 
@@ -480,7 +482,7 @@ def unstruct_weight_plot_nonlinear_mu(
 
 def plot_unstructured_fisher_nonlinear_2d(
     N, ratios, mus, sigmaC, sigma, repetitions, v=None, s=1., version=1,
-    colors=colors, fax=None
+    colors=colors, fax=None, interpolation='nearest'
 ):
     # create plot
     if fax is None:
@@ -515,13 +517,14 @@ def plot_unstructured_fisher_nonlinear_2d(
             avg_fishers[ratio_idx, :] / np.max(avg_fishers[ratio_idx, :])
 
     ax.grid(False)
-    img = ax.imshow(avg_fishers.T, interpolation='spline36', vmin=0, vmax=1)
+    img = ax.imshow(avg_fishers.T, interpolation=interpolation, vmin=0, vmax=1)
 
     return img, fig, ax
 
 
 def plot_max_weight_diversity(
-    N, sigmaPs, sigmaCs, v=None, s=1., version=1., colors=colors, fax=None
+    N, sigmaPs, sigmaCs, v=None, s=1., version=1., colors=colors, fax=None,
+    interpolation='nearest'
 ):
     # create plot
     if fax is None:
@@ -551,7 +554,7 @@ def plot_max_weight_diversity(
                     nonlinearity='squared')
                 fishers[k_idx] = lnn.FI_squared_nonlin(s)
             max_ks[sigmaP_idx, sigmaC_idx] = np.argmax(fishers) + 1
-    img = ax.imshow(max_ks, interpolation='spline36', vmin=1, vmax=10)
+    img = ax.imshow(max_ks, interpolation=interpolation, vmin=1, vmax=10)
     ax.tick_params(labelsize=30)
 
     return fig, ax, img, max_ks
@@ -559,7 +562,7 @@ def plot_max_weight_diversity(
 
 def plot_max_weight_diversity_unstructured(
     N, reps, sigmaPs, sigmaCs, sigma=1., mus=np.linspace(-1., 2., 11),
-    v=None, s=1., fax=None
+    v=None, s=1., fax=None, interpolation='nearest'
 ):
     # create plot
     if fax is None:
@@ -590,7 +593,7 @@ def plot_max_weight_diversity_unstructured(
                     fishers[mu_idx, rep] = lnn.FI_squared_nonlin(s)
             max_mus[sigmaP_idx, sigmaC_idx] = \
                 mus[np.argmax(np.mean(fishers, axis=1)).ravel()[0]]
-    img = ax.imshow(max_mus, interpolation='spline36', vmin=-1, vmax=2)
+    img = ax.imshow(max_mus, interpolation=interpolation, vmin=-1, vmax=2)
     ax.tick_params(labelsize=30)
 
     return fig, ax, img, max_mus
