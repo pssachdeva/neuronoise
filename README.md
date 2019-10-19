@@ -2,6 +2,8 @@ This repository contains relevant code for all analyses and figures in "Heteroge
 
 To run the code, clone this repository, and install via `pip`:
 
-```pip install -e .```
+```
+pip install -e .
+```
 
 The `figures` directory contains the Jupyter notebooks and Illustrator files used to create the figures in the paper. The `notebooks` directory contains Mathematica notebooks that contain some of the analytic analyses used in the paper's appendices. The `mi_results` directory contains HDF5 files of the results for the mutual information analyses.
