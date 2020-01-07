@@ -31,7 +31,7 @@ class LNN:
     """
     def __init__(
         self, v=None, w=None, kv=None, kw=None, N=None, sigmaS=1.,
-        sigmaC=1., sigmaP=1., nonlinearity=None
+        sigmaC=1., sigmaP=1., nonlinearity='squared'
     ):
         # choose stimulus weights
         if v is None:
@@ -60,14 +60,11 @@ class LNN:
 
         # choose nonlinearity: default, 'squared'
         if nonlinearity is None:
-            self.nonlinearity_name = 'squared'
-            self.nonlinearity = self.squared
+            self.nonlinearity_name = 'identity'
+            self.nonlinearity = self.identity
         elif nonlinearity == 'squared':
             self.nonlinearity_name = 'squared'
             self.nonlinearity = self.squared
-        elif nonlinearity == 'ReLU':
-            self.nonlinearity_name = 'ReLU'
-            self.nonlinearity = self.ReLU
         else:
             raise ValueError('Incorrect nonlinearity choice.')
 
@@ -76,19 +73,17 @@ class LNN:
         self.sigmaC = sigmaC
         self.sigmaP = sigmaP
 
-    # Possible nonlinearities
+    def identity(self, l):
+        """Identity function for compatibility with nonlinearity functionality.
+        """
+        return l
+
     def squared(self, l):
         """Squares input."""
         return l**2
 
-    def ReLU(self, l):
-        """Applies a rectified linear unit to input."""
-        r = np.copy(l)
-        r[r < self.thres] = 0
-        return r
-
-    def simulate_noise_linear(self, s, n_trials):
-        """Simulate the linear component of the network, given a stimulus.
+    def simulate_noise(self, s, n_trials):
+        """Simulate the network, given a stimulus.
 
         Parameters
         ----------
@@ -109,11 +104,13 @@ class LNN:
         xiP = np.random.normal(loc=0, scale=self.sigmaP, size=(self.N, n_trials))
 
         # linear layer output
-        output = np.repeat(np.reshape(self.v * s, (self.N, 1)), n_trials, axis=1) \
+        linear = np.repeat(np.reshape(self.v * s, (self.N, 1)), n_trials, axis=1) \
             + np.outer(self.w, xiC) \
             + xiP
+        # nonlinear layer
+        output = self.nonlinearity(linear)
 
-        return output
+        return output, linear
 
     def simulate(self, n_trials):
         """Simulate the network.
@@ -177,13 +174,6 @@ class LNN:
         return mutual
 
     def FI_nonlinear_stage(self, s):
-        """Calculate the Fisher information after the nonlinear stage."""
-        if self.nonlinearity_name == 'squared':
-            return self.FI_squared_nonlin(s)
-        else:
-            return ValueError('Nonlinearity not implemented yet.')
-
-    def FI_squared_nonlin(self, s):
         """Calculate the Fisher information after a squared nonlinearity."""
         # useful constants
         norm = self.sigmaP**2 + 2 * s**2 * self.v**2 + 2 * self.sigmaC**2 * self.w**2
@@ -210,45 +200,25 @@ class LNN:
 
         return LFI
 
-    def FI_squared_nonlin_anal(self, s):
-        norm = self.sigmaP**2 + 2 * s**2 * self.v**2 + 2 * self.sigmaC**2 * self.w**2
-        vw40 = np.sum(self.v**4/norm)
-        vw31 = np.sum(self.v**3 * self.w/norm)
-        vw22 = np.sum(self.v**2 * self.w**2/norm)
-        vw13 = np.sum(self.v * self.w**3/norm)
-        vw04 = np.sum(self.w**4/norm)
+    def covariance_linear_stage(self):
+        """Calculate the covariance matrix after the linear stage."""
+        covariance = \
+            self.sigmaP**2 * np.identity(self.N) + \
+            + self.sigmaC**2 * np.outer(self.w, self.w)
+        return covariance
 
-        denom = self.sigmaP**4 + self.sigmaP**2 * (self.sigmaC**4 * vw04 + 2 * s**2 * self.sigmaC**2 * vw22) \
-                -2*s**2 * self.sigmaC**6 * (vw13**2 - vw04 * vw22)
-        numer = self.sigmaP**4 * vw40 - self.sigmaC**4 * self.sigmaP**2 *(vw22**2 - vw04 * vw40) - 2 * s**2 * self.sigmaC**2 * self.sigmaP**2 * (vw31**2 - vw22 * vw40) \
-                -2 * s**2 * self.sigmaC**6 * (vw22**3 + vw04 * vw31**2 + vw13**2 * vw40 - vw22 * (2 * vw13 * vw31 + vw04 * vw40))
-        return 2 * s**2 * numer/(self.sigmaP**2 * denom)
-
-    def covar_lin(self):
-        return self.sigmaP**2 * np.identity(self.N) + self.sigmaS**2 * np.outer(self.v, self.v) + self.sigmaC**2 * np.outer(self.w, self.w)
-
-    def covar_squared_nonlin(self, s):
+    def covariance_nonlinear_stage(self, s):
+        """Calculate the covariance matrix after the nonlinear stage."""
         V = self.v**2
         W = self.w**2
-        X = self.v*self.w
-        covar = 2 * self.sigmaP**4 * np.identity(self.N) + 4 * self.sigmaP**2 * s**2 * np.diag(V) + 4 * self.sigmaP**2 * self.sigmaC**2 * np.diag(W) + 4 * s**2 * self.sigmaC**2 * np.outer(X, X) + 2 * self.sigmaC**4 * np.outer(W,W)
-        return covar
-
-    def covar_lin_stim(self):
-        covar = self.sigmaP**2 * np.identity(self.N) + self.sigmaC**2 * np.outer(self.w, self.w) + self.sigmaS**2 * np.outer(self.v, self.v)
-        return covar
-
-    def correlation_matrix(self, s):
-        if self.nonlinearity_name == 'identity':
-            return
-        elif self.nonlinearity_name == 'squared':
-            V = self.v**2
-            W = self.w**2
-            X = self.v*self.w
-            covar = 2 * self.sigmaP**4 * np.identity(self.N) + 4 * self.sigmaP**2 * s**2 * np.diag(V) + 4 * self.sigmaP**2 * self.sigmaC**2 * np.diag(W) + 4 * s**2 * self.sigmaC**2 * np.outer(X, X) + 2 * self.sigmaC**4 * np.outer(W, W)
-            inv_diag = np.diag(np.sqrt(1./np.diag(covar)))
-            corr = np.dot(inv_diag, np.dot(covar, inv_diag))
-        return corr
+        X = self.v * self.w
+        covariance = \
+            2 * self.sigmaP**4 * np.identity(self.N) \
+            + 4 * self.sigmaP**2 * s**2 * np.diag(V) \
+            + 4 * self.sigmaP**2 * self.sigmaC**2 * np.diag(W) \
+            + 4 * s**2 * self.sigmaC**2 * np.outer(X, X) \
+            + 2 * self.sigmaC**4 * np.outer(W, W)
+        return covariance
 
     @staticmethod
     def struct_weight_maker(N, k):
@@ -336,3 +306,10 @@ class LNN:
         fisher = constant * numerator / denominator
         mutual = 0.5 * np.log(1 + sigmaS**2 * fisher)
         return mutual
+
+    @staticmethod
+    def cov2corr(cov):
+        """Converts a covariance matrix to a correlation matrix."""
+        diagonal = np.diag(1./np.sqrt(np.diag(cov)))
+        corr = np.dot(diagonal, np.dot(cov, diagonal))
+        return corr
