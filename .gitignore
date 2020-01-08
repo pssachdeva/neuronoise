@@ -2,10 +2,12 @@
 # Created by https://www.gitignore.io/api/macos,latex,python,jupyternotebooks
 # Edit at https://www.gitignore.io/?templates=macos,latex,python,jupyternotebooks
 
+### Added by user ###
+*.pdf
+
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
 # website: http://jupyter.org/
-
 .ipynb_checkpoints
 */.ipynb_checkpoints/*
 
