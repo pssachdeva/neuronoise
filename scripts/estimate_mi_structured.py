@@ -1,3 +1,5 @@
+"""Estimates the mutual information in the linear-nonlinear network for
+structured weights, for one choice of weight diversities."""
 import argparse
 import h5py
 import numpy as np

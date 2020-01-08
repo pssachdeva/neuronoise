@@ -1,3 +1,5 @@
+"""Estimates the mutual information in the linear-nonlinear network for
+unstructured weights, for one choice of mean."""
 import argparse
 import h5py
 import numpy as np
@@ -21,7 +23,7 @@ def main(args):
     mis = np.zeros((n_draws, n_reps))
 
     # iterate over draws
-    for draw in range(dist_reps):
+    for draw in range(n_draws):
         w = 1 + LNN.unstruct_weight_maker(N, 'lognormal', loc=mu, scale=1.),
         lnn = LNN(
             N=N, kv=1, w=w,
