@@ -657,3 +657,38 @@ def plot_scatter_quadratic(N, s, kv, kw, n_trials, fax=None, color=None):
         ax.scatter(data[0], data[-1], alpha=0.5)
 
     return fig, ax
+
+
+def eigenvalue_analysis(
+    n_samples, lower_bound, upper_bound, kw, s=0.01, sigmaP=0.01, sigmaC=0.01,
+    verbose=False
+):
+    Ns = np.round(np.linspace(lower_bound, upper_bound, n_samples)).astype('int')
+    n_Ns = Ns.size
+
+    eigenvalues = np.zeros((n_Ns, upper_bound))
+    cosine_angles = np.zeros((n_Ns, upper_bound))
+    traces = np.zeros(n_samples)
+    fpr_norms = np.zeros(n_Ns)
+    fishers = np.zeros(n_samples)
+
+    for N_idx, N in enumerate(Ns):
+        if verbose:
+            if N % 100 == 0:
+                print(N)
+        # create network
+        lnn = LNN(kv=1, kw=kw, N=N, sigmaC=sigmaC, sigmaP=sigmaP)
+        # tuning derivative
+        fpr = 2 * s * lnn.v**2
+        # covariance matrix
+        sigma = lnn.covariance_nonlinear_stage(s=s)
+        # eigenvectors and eigenvalues
+        u, v = np.linalg.eigh(sigma)
+        eigenvalues[N_idx, :N] = u
+        # calculate cosine-angle squared
+        fpr_norms[N_idx] = np.sum(fpr**2)
+        cosine_angles[N_idx, :N] = np.dot(v.T, fpr)**2 / fpr_norms[N_idx]
+        traces[N_idx] = np.trace(sigma)
+        fishers[N_idx] = lnn.FI_nonlinear_stage(s=s)
+
+    return Ns, eigenvalues, cosine_angles, traces, fpr_norms, fishers

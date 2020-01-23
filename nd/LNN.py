@@ -174,7 +174,9 @@ class LNN:
         return mutual
 
     def FI_nonlinear_stage(self, s):
-        """Calculate the Fisher information after a squared nonlinearity."""
+        """Calculate the Fisher information after a squared nonlinearity given
+        the network weights. Note that the Fisher information is a function of
+        the stimulus, s."""
         # useful constants
         norm = self.sigmaP**2 + 2 * s**2 * self.v**2 + 2 * self.sigmaC**2 * self.w**2
         vw40 = np.sum(self.v**4/norm)
@@ -208,7 +210,8 @@ class LNN:
         return covariance
 
     def covariance_nonlinear_stage(self, s):
-        """Calculate the covariance matrix after the nonlinear stage."""
+        """Calculate the covariance matrix after the nonlinear stage. Note that
+        the covariance matrix is a function of the stimulus, s."""
         V = self.v**2
         W = self.w**2
         X = self.v * self.w
@@ -243,6 +246,25 @@ class LNN:
         repeats = np.ceil(float(N) / k)
         # repeat the weights, and only extract the first N
         weights = np.repeat(base, repeats)[:N]
+
+        return weights
+
+    @staticmethod
+    def struct_weight_maker_const_mod(N, k):
+        """Creates a vector of structured weights, but forces the norm to be
+        held constant (relative to the kw=1 case).
+
+        """
+        # establish base weights
+        base = np.arange(1, k + 1)
+        # determine number of repeats, possibly overcompensating
+        repeats = np.ceil(float(N) / k)
+        # repeat the weights, and only extract the first N
+        weights = np.repeat(base, repeats)[:N]
+        # normalize weights
+        current_norm = np.sqrt(np.sum(weights**2))
+        desired_norm = np.sqrt(N)
+        weights = weights * (desired_norm / current_norm)
 
         return weights
 
@@ -289,7 +311,27 @@ class LNN:
     @staticmethod
     def FI_linear_struct(N, kw, sigmaP, sigmaC):
         """Calculate the Fisher information of the linear stage, with structured
-        weights."""
+        weights. Static method for use outside of the class.
+
+        Parameters
+        ----------
+        N : int
+            Number of neurons.
+
+        kw : float
+            The weight heterogeneity of the common noise weights.
+
+        sigmaP : float
+            Standard deviation of private noise.
+
+        sigmaC : float
+            Standard deviation of common noise.
+
+        Returns
+        -------
+        fisher : float
+            The Fisher information.
+        """
         numerator = (12 * sigmaP**2 + N * sigmaC**2 * (kw**2 - 1))
         denominator = (6 * sigmaP**2 + N * sigmaC**2 * (2 * kw**2 + 3 * kw + 1))
         constant = N / (2 * sigmaP**2)
@@ -299,7 +341,30 @@ class LNN:
     @staticmethod
     def MI_linear_struct(N, kw, sigmaP, sigmaC, sigmaS):
         """Calculate the mutual information of the linear stage, with structured
-        weights."""
+        weights. Static method for use outside of the class.
+
+        Parameters
+        ----------
+        N : int
+            Number of neurons.
+
+        kw : float
+            The weight heterogeneity of the common noise weights.
+
+        sigmaP : float
+            Standard deviation of private noise.
+
+        sigmaC : float
+            Standard deviation of common noise.
+
+        sigmaS : float
+            Standard deviation of stimulus.
+
+        Returns
+        -------
+        fisher : float
+            The Fisher information.
+        """
         numerator = (12 * sigmaP**2 + N * sigmaC**2 * (kw**2 - 1))
         denominator = (6 * sigmaP**2 + N * sigmaC**2 * (2 * kw**2 + 3 * kw + 1))
         constant = N / (2 * sigmaP**2)

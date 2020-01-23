@@ -54,14 +54,13 @@ class Entropy(object):
         self.X = X
         self.tree = ss.cKDTree(self.X)
 
-
     def entropy(self, k=None, n_jobs=-1):
         """ The classic K-L k-nearest neighbor continuous entropy estimator."""
         if k is None:
             k = self.k
         assert k <= self.n_samples - 1
         nn = self.tree.query(self.X, k + 1, p=float('inf'), n_jobs=n_jobs)[0][:, k]
-        const = digamma(self.n_samples) - digamma(k) + self.n_dim *log(2)
+        const = digamma(self.n_samples) - digamma(k) + self.n_dim * log(2)
         return const + self.n_dim * np.mean(np.log(nn))
 
 
@@ -102,13 +101,11 @@ class MutualInformation(object):
         self.Xtree = ss.cKDTree(self.X)
         self.Ytree = ss.cKDTree(self.Y)
 
-
     @staticmethod
     def normalize(X):
         X = X - X.mean(axis=0, keepdims=True)
         X = X / X.std(axis=0, keepdims=True)
         return X
-
 
     def mutual_information(self, k=None, kind=None, n_jobs=-1):
         """ Mutual information between x and y.
@@ -130,17 +127,29 @@ class MutualInformation(object):
         assert kind in [1, 2]
         # Find nearest neighbors in joint space, p=inf means max-norm
         if kind == 1:
-            dvec = self.tree.query(self.Z, k + 1, p=float('inf'), n_jobs=n_jobs)[0][:,k]
+            dvec = self.tree.query(
+                self.Z, k + 1,
+                p=float('inf'),
+                n_jobs=n_jobs
+            )[0][:, k]
             a = avgdigamma1(self.Xtree, self.X, dvec, n_jobs)
             b = avgdigamma1(self.Ytree, self.Y, dvec, n_jobs)
-            mi =  -a - b
+            mi = -a - b
         elif kind == 2:
-            didxs = self.tree.query(self.Z, k + 1, p=float('inf'), n_jobs=n_jobs)[1] [:,1:]
-            Xdvec = [np.linalg.norm(xi[np.newaxis]-self.X[idxs], ord=np.inf, axis=-1).max() for xi, idxs in zip(self.X, didxs)]
-            Ydvec = [np.linalg.norm(yi[np.newaxis]-self.Y[idxs], ord=np.inf, axis=-1).max() for yi, idxs in zip(self.Y, didxs)]
+            didxs = self.tree.query(
+                self.Z, k + 1,
+                p=float('inf'),
+                n_jobs=n_jobs
+            )[1][:, 1:]
+            Xdvec = \
+                [np.linalg.norm(xi[np.newaxis] - self.X[idxs], ord=np.inf, axis=-1).max()
+                 for xi, idxs in zip(self.X, didxs)]
+            Ydvec = \
+                [np.linalg.norm(yi[np.newaxis] - self.Y[idxs], ord=np.inf, axis=-1).max()
+                 for yi, idxs in zip(self.Y, didxs)]
             a = avgdigamma2(self.Xtree, self.X, Xdvec, n_jobs)
             b = avgdigamma2(self.Ytree, self.Y, Ydvec, n_jobs)
-            mi =  -a - b - 1./k
+            mi = -a - b - 1./k
         else:
             raise ValueError('kind must be either 1 or 2.')
         c, d = digamma(k), digamma(self.n_samples)
