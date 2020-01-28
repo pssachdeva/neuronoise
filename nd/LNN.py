@@ -223,6 +223,20 @@ class LNN:
             + 2 * self.sigmaC**4 * np.outer(W, W)
         return covariance
 
+    def fisher_exp_nonlinearity(self, s):
+        mu = self.v * s
+        sigma = self.covariance_linear_stage()
+        diagonal = np.diag(sigma)
+
+        f = np.exp(mu + 0.5 * diagonal)
+        fprime = self.v * f
+        cov = np.exp(np.add.outer(mu, mu) + np.add.outer(diagonal, diagonal)) * \
+            (np.exp(sigma) - 1)
+        inv_cov = np.linalg.inv(cov)
+
+        fisher = np.dot(fprime, np.dot(inv_cov, fprime))
+        return fisher
+
     @staticmethod
     def struct_weight_maker(N, k):
         """Creates a vector of "structured" weights.
